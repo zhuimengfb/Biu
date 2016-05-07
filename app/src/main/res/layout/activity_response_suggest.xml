@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}"
+     >
+    <include layout="@layout/publish_top_tab"
+        android:id="@+id/toptablayout"/>
+    
+    <!-- 最下面输入文本信息编辑框 -->
+        <EditText
+            android:id="@+id/replysug_inputcontent"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="8dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:inputType="text"
+            android:background="@color/umeng_fb_gray"
+            android:hint="@string/inputresponseinfo"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="15sp"/>
+    <Spinner
+        android:id="@+id/sperateline"
+        android:layout_height="2dp"
+        android:layout_width="fill_parent"
+        android:layout_above="@id/replysug_inputcontent"
+        android:background="@color/umeng_fb_gray" 
+        />
+    <!-- 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fb_reply_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/sperateline">
+        
+    </android.support.v4.widget.SwipeRefreshLayout>
+     -->
+	<android.support.v4.widget.SwipeRefreshLayout
+	    android:id="@+id/fb_reply_refresh"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/toptablayout"
+	    android:layout_above="@id/sperateline">
+    	<ListView 
+	        android:layout_above="@id/sperateline"
+		   	android:id="@+id/suggest_history_lv"
+		   	android:layout_width="fill_parent"
+		   	android:layout_height="wrap_content">
+		</ListView> 
+	</android.support.v4.widget.SwipeRefreshLayout>
+</RelativeLayout>	
+    
+

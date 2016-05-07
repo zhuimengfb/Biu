@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 我发表的ListView项目的布局文件 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="20dp" >
+
+    <LinearLayout
+        android:id="@+id/mypublishtar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/mypubitemtimetv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#00000000"
+            android:textColor="@android:color/tertiary_text_light"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/titlenum_publish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shownum"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="10sp"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/mypubitemcontenttv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mypublishtar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/dialog3"
+        android:gravity="left"
+        android:paddingBottom="18dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="20dp"
+        android:textSize="@dimen/mypublish_content_size" />
+
+</RelativeLayout>

@@ -1,0 +1,108 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <include
+        android:id="@+id/tabtoplayout"
+        layout="@layout/publish_top_tab" />
+    <!-- 发表内容、字数，可能存在的图片 -->
+
+    <RelativeLayout
+        android:id="@+id/contentandimglayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tabtoplayout"
+        android:gravity="bottom" >
+
+        <EditText
+            android:id="@+id/publishcontent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:background="#F2F2F2"
+            android:gravity="top"
+            android:hint="@string/defaultcontent"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:lineSpacingExtra="6.0dp"
+            android:minHeight="120dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10.0dp"
+            android:paddingRight="10.0dp"
+            android:paddingTop="10.0dp"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="16.0sp" />
+
+        <LinearLayout
+            android:id="@+id/imgandcountlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/publishcontent"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/imagetopublish"
+                android:layout_width="60dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="10dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <com.biu.biu.tools.EditTextLengthIndicate
+                android:id="@+id/publishcontcount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="200"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12.0sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contentandimglayout"
+        android:background="@android:color/white"
+        android:gravity="bottom" >
+
+        <ImageButton
+            android:id="@+id/addphoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="#00000000"
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp"
+            android:paddingTop="1dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/camera" />
+
+        <CheckBox
+            android:id="@+id/showplacecheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/addphoto"
+            android:button="@drawable/publishcheckbox_selector"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp" >
+        </CheckBox>
+
+        <TextView
+            android:id="@+id/publish_showplace"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@id/showplacecheck"
+            android:paddingTop="3dp"
+            android:text="@string/showmyplace"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

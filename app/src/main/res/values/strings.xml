@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Biu</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_tab_home">TabHomeActivity</string>
+    <string name="title_activity_tab_me">TabMeActivity</string>
+    <string name="title_home">周围1500米的事</string>
+    <string name="title_me">我</string>
+    <string name="title_moonbox">月光宝盒</string>
+    <string name="title_peep">偷看</string>
+    <string name="title_morehot">更多热帖</string>
+    <string name="title_more_peep_topic">更多话题</string>
+    <string name="title_activity_publish">PublishActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_publish">发表</string>
+    <string name="title_detail">详情</string>
+    <string name="submit">提交</string>
+    <string name="showmyplace">显示我当前的位置</string>
+    <string name="defaultcontent">请输入文字</string>
+    <string name="title_activity_response_suggest">ResponseSuggestActivity</string>
+    <string name="inputresponseinfo">请输入要反馈的文字信息</string>
+    <string name="title_activity_my_publish">MyPublishActivity</string>
+    <string name="title_activity_my_reply">MyReplyActivity</string>
+    <string name="title_activity_http_test">HttpTestActivity</string>
+    <string name="title_activity_tip_detail">TipDetailActivity</string>
+    <string name="pushtoreply">点此评论…</string>
+    <string name="send">发送</string>
+    <string name="morehottips">更多热帖</string>
+    <string name="nomoonbox">在这里你可以埋下自己的秘密，只有在发帖位置附近20米之内才有机会看到，离开这个范围帖子会自动消失。</string>
+    <!-- 发表页面 -->
+    <string name="takephotos">拍照</string>
+    <string name="localimage">本地图片</string>
+    <string name="cancle">取消</string>
+    <!-- Me 页面 -->
+    <string name="me_mypublish">我发表的</string>
+    <string name="me_myreply">我回复的</string>
+    <string name="me_moonbox">月光宝盒</string>
+    <string name="me_suggestion">反馈建议</string>
+    <string name="me_checkversion">用户协议</string>
+    <!-- 偷看页面 -->
+    <string name="peep_new">新鲜事</string>
+    <!-- 自定义组件 -->
+    <string name="pull_to_refresh">下拉可以刷新</string>
+    <string name="release_to_refresh">松开可以刷新</string>
+    <string name="lastUpdateTime">最近更新：%s</string>
+    <string name="load_full">已加载全部</string>
+    <string name="no_data">暂无数据</string>
+    <string name="more">加载中</string>
+    <string name="you_need_to_grant_read_phone_state_permission">你需要授予我们获取设备信息的权限哦</string>
+    <string name="hint">提示</string>
+    <!--
+    <string name="pull_to_refresh_pull_label">下拉刷新…</string>
+    <string name="pull_to_refresh_release_label">释放以刷新…</string>
+    <string name="pull_to_refresh_refreshing_label">加载中…</string> 
+    <string name="pull_to_refresh_tap_label">单击更新…</string>
+    -->
+    <string name="pull_to_refresh_updated_at_label">最近更新于: </string>
+    <string name="loadmore_label">加载更多</string>
+    <string name="loading_label">正在加载....</string>
+
+    <drawable name="clr_normal">#00000000</drawable>
+    <drawable name="clr_pressed">#A4A4A4</drawable>
+
+    <!-- 消除警告，可忽略 -->
+    <string name="d">图片描述</string>
+    <string name="title_activity_more_hot">MoreHotActivity</string>
+    <string name="title_activity_moon_detail">MoonDetailActivity</string>
+    <string name="title_activity_moonbox">MoonboxActivity</string>
+    <string name="title_activity_peep">PeepActivity</string>
+    <string name="title_activity_peek_detail">PeekDetailActivity</string>
+    <string name="title_activity_peep_home">PeepHomeActivity</string>
+    <string name="title_activity_public_topic">PublicTopicActivity</string>
+    <string name="title_activity_choose_photo_resource">ChoosePhotoResourceActivity</string>
+    <string name="title_activity_more_hot_peep_topic">MoreHotPeepTopicActivity</string>
+    <string name="title_activity_choose_image">请选择一张图片</string>
+    <string name="title_activity_choose_img_res">ChooseImgResActivity</string>
+    <string name="title_activity_show_image">MainActivity</string>
+    <string name="title_activity_biumap">MainActivity</string>
+    <string name="chooseplace">兴趣位置</string>
+    <string name="poi_title">你的兴趣位置</string>
+    <string name="poi_save">保存</string>
+    <string name="poi_place">poi</string>
+    <string name="poi_item_delete">删除</string>
+    <string name="dialog_poi_save">保存</string>
+    <string name="dialog_poi_cancel">取消</string>
+    <string name="biumap_putin_hint">输入并查询您的兴趣位置</string>
+    <string name="biumap_cancel">取消</string>
+    <string name="peek_poi_title">我的兴趣位置</string>
+    <string name="peek_poi_hint">点击右上角的按钮搜寻你的兴趣位置</string>
+    <string name="poi_place_show">当前位置的名称</string>
+    <string name="peep_home_tip">当前位置还没有话题帖子，点击右上角的“+”按钮可以发帖!</string>
+    <string name="home_top_center_new">最新</string>
+    <string name="home_top_center_hot">热门</string>
+    <string name="user_agreement">协议\n1、不能谩骂、诽谤、伤害其他人\n2、不能谩骂、诽谤、伤害其他人\n3、不需要注册同时请保持自己的风度\n4、不要发表攻击性的、不堪入目的
+        言论，如果有此类信息可以在详情页举报、我们会做相应处理\n5、如果你的言论持续被举报超过三次，那么你将收到警告或封号\n6、向您保证，你的隐私绝对安全，因为我们也不知道你到底是谁</string>
+    <string name="user_help">帮助\nBiu是一款匿名的社交软件，在这里我们只能看到周围1500米内大家都在谈论些什么。不需要高、大、上、牛奔的标准就是您的帖子被赞次数，得到赞最多的几个
+        将成为热门贴！此外探索页面我们可以参与本校热门话题的讨论。还等什么，有什么想法、观察、笑话想跟周围的人分享，就来biu一下吧！</string>
+    <string name="title_activity_activity_user_agreement">用户协议</string>
+</resources>
