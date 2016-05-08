@@ -1,11 +1,12 @@
 package com.biu.biu.main;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -19,6 +20,7 @@ import com.biu.biu.tools.AutoListView;
 import com.biu.biu.tools.AutoListView.OnLoadListener;
 import com.biu.biu.tools.AutoListView.OnRefreshListener;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.views.base.BaseActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,8 +28,11 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class PeepHomeActivity extends Activity implements OnRefreshListener,
-		OnLoadListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class PeepHomeActivity extends BaseActivity implements OnRefreshListener,
+															  OnLoadListener {
 
 	private class PeepPublishClickListener implements OnClickListener {
 		private boolean flag = true;
@@ -88,16 +93,34 @@ public class PeepHomeActivity extends Activity implements OnRefreshListener,
 	// 发表帖子“+”新的响应区域、
 	private LinearLayout peepHomePublishBt;
 
+	@BindView(R.id.peep_toolbar)
+	Toolbar toolbar;
+	@BindView(R.id.fab_add_topic)
+	FloatingActionButton addTopicFab;
+	@BindView(R.id.peep_title)
+	TextView peepTitle;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_peep_home);
+		ButterKnife.bind(this);
 		findId();
 		intView();
+		initToolbar();
 		initParam();
-		mTitletv.setText(mTopicTitle); // 设置标题
+		peepTitle.setText(mTopicTitle);
+		initEvent();
+		//mTitletv.setText(mTopicTitle); // 设置标题
 	}
-
+	private void initToolbar(){
+		toolbar.setTitle("");
+		setSupportActionBar(toolbar);
+		setBackableToolbar(toolbar);
+	}
+	private void initEvent() {
+		addTopicFab.setOnClickListener(new PeepPublishClickListener());
+	}
 	private void initParam() {
 		// TODO Auto-generated method stub
 		Intent intent = this.getIntent();
@@ -120,7 +143,7 @@ public class PeepHomeActivity extends Activity implements OnRefreshListener,
 		mListView.setOnLoadListener(this);
 		mListView.setPageSize(30);
 		mPeepHomeGettedCount = 0;
-		// 发表新话题
+		/*// 发表新话题
 		mSubNewBtn.setOnClickListener(new PeepPublishClickListener());
 		// 新的响应区域发帖添加单击事件
 		peepHomePublishBt.setOnClickListener(new PeepPublishClickListener());
@@ -132,7 +155,7 @@ public class PeepHomeActivity extends Activity implements OnRefreshListener,
 				// TODO Auto-generated method stub
 				finish();
 			}
-		});
+		});*/
 
 		// // 点击进入话题的详情页
 		// mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -155,11 +178,11 @@ public class PeepHomeActivity extends Activity implements OnRefreshListener,
 	private void findId() {
 		// TODO Auto-generated method stub
 		mListView = (AutoListView) findViewById(R.id.peep_showtopic_lv);
-		mSubNewBtn = (ImageButton) findViewById(R.id.submit_new);
-		mBackBtn = (ImageButton) findViewById(R.id.publish_back);
-		mTitletv = (TextView) findViewById(R.id.TabTopTitle);
-		peepHomePublishBt = (LinearLayout) this
-				.findViewById(R.id.peep_home_publish_bt);
+		/*mSubNewBtn = (ImageButton) findViewById(R.id.submit_new);
+		mBackBtn = (ImageButton) findViewById(R.id.publish_back);*/
+		//mTitletv = (TextView) findViewById(R.id.TabTopTitle);
+		/*peepHomePublishBt = (LinearLayout) this
+				.findViewById(R.id.peep_home_publish_bt);*/
 	}
 
 	public class PeepHomeHander extends Handler {
@@ -268,7 +291,7 @@ public class PeepHomeActivity extends Activity implements OnRefreshListener,
 	/**
 	 * 获得指定新鲜事话题中的主题内容
 	 * 
-	 * @param mPeepHomeGettedCount2
+	 * @param GettedCount
 	 */
 	private void getPeepItem(int GettedCount) {
 		// TODO Auto-generated method stub

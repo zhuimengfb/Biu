@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    >
+<android.support.v7.widget.CardView
+    android:id="@+id/news_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="?android:selectableItemBackground"
     android:descendantFocusability="blocksDescendants"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    app:cardElevation="2dp"
+    android:layout_marginLeft="0dp"
+    android:layout_marginRight="0dp"
+    android:layout_marginTop="4dp"
+    app:cardElevation="10dp"
     >
 
 
@@ -38,9 +44,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toRightOf="@id/iv_head_icon"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
-            android:text="@string/app_name"
+            android:textSize="15sp"
+            android:text="@string/owner"
             />
     </RelativeLayout>
 
@@ -49,20 +56,17 @@
         android:layout_width="match_parent"
         android:layout_below="@id/lv_head"
         android:layout_marginTop="10dp"
-        android:descendantFocusability="blocksDescendants"
         android:layout_height="wrap_content"
          >
 
         <TextView
             android:id="@+id/topiccontent"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="10dp"
             android:gravity="center_vertical"
-            android:minHeight="60dp"
+            android:minHeight="40dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:text="nihao"
             android:textSize="@dimen/homeitemcontentsize" />
         <!-- 图片是在内容和攒、踩按钮的下方 -->
 
@@ -70,6 +74,8 @@
             android:id="@+id/topicimg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="200dp"
+            android:maxHeight="500dp"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/topiccontent"
             android:scaleType="centerCrop" />
@@ -89,7 +95,7 @@
     <LinearLayout
         android:id="@+id/pubinfolayout"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_below="@id/publishplace"
         android:orientation="horizontal"
         android:paddingBottom="8dp" >
@@ -97,28 +103,18 @@
         <TextView
             android:id="@+id/create_at_tv"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="bottom"
-            android:paddingTop="6dp"
+            android:gravity="center_vertical"
             android:textColor="@android:color/darker_gray"
             android:textSize="@dimen/homeitemsubtextsize" />
-
-        <com.facebook.drawee.view.DraweeView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_insert_comment_white_18dp"
-            />
 
         <TextView
             android:id="@+id/reply_num_tv"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="bottom"
-            android:paddingTop="6dp"
+            android:gravity="center_vertical"
             android:textColor="@android:color/darker_gray"
             android:textSize="@dimen/homeitemsubtextsize" />
         <!-- 右边的三个按钮竖直平分所占用空间 -->
@@ -136,7 +132,6 @@
                 android:layout_alignParentLeft="true"
                 android:background="#00000000"
                 android:paddingRight="5dp"
-                android:paddingTop="6dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/arrow1" />
 
@@ -149,7 +144,7 @@
                 android:layout_toRightOf="@id/likebtn"
                 android:gravity="center"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="18sp" />
+                android:textSize="10sp" />
 
             <ImageButton
                 android:id="@+id/treadbtn"
@@ -159,19 +154,11 @@
                 android:background="#00000000"
                 android:paddingLeft="5dp"
                 android:paddingRight="10dp"
-                android:paddingTop="6dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/arrow2" />
         </RelativeLayout>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/listitemline"
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:layout_below="@id/pubinfolayout"
-        android:background="#DCDCDC"
-        android:contentDescription="itemdiv" />
-
 </RelativeLayout>
 </android.support.v7.widget.CardView>
+</RelativeLayout>

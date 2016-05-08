@@ -1,21 +1,60 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="${relativePackage}.${activityClass}" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/normal_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:titleTextColor="@color/white"
+            android:fillViewport="false"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/location"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <android.support.v7.widget.SearchView
+                android:id="@+id/search_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                >
+            </android.support.v7.widget.SearchView>
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
 
     <!-- 标题栏 -->
+    <!--<include
+        android:id="@+id/toolbar_include"
+        layout="@layout/normal_toolbar"
+        />-->
 
-    <include
+  <!--  <include
         android:id="@+id/maptop"
-        layout="@layout/biumap_top_bar" />
+        layout="@layout/biumap_top_bar"
+        />-->
 
     <LinearLayout
         android:id="@+id/maparea"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/maptop"
+        android:layout_below="@id/normal_toolbar"
         android:background="@android:color/white"
         android:orientation="vertical" >
 
@@ -38,57 +77,6 @@
                 android:background="@color/umeng_fb_white"
                 android:orientation="vertical" >
 
-                <RelativeLayout
-                    android:id="@+id/putinpart"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/umeng_fb_gray"
-                    android:orientation="horizontal" >
-
-                    <!-- 设定一个图片按钮 当点击编辑文本框时显示，其他时间则是隐藏 -->
-
-                    <EditText
-                        android:id="@+id/putIn"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/umeng_fb_white"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:hint="@string/biumap_putin_hint"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingTop="5dp"
-                        android:singleLine="true"
-                        android:textSize="@dimen/poi_edittext_size" />
-
-                    <Button
-                        android:id="@+id/backtonormal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginTop="3dp"
-                        android:background="#00000000"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="2dp"
-                        android:paddingRight="2dp"
-                        android:paddingTop="10dp"
-                        android:text="@string/biumap_cancel"
-                        android:textColor="@color/umeng_fb_white"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
-
-                    <!-- 定义一个显示动态查询结果的ListView -->
-                </RelativeLayout>
                 <!-- 显示动态查询的结果列表 -->
 
                 <ListView
@@ -100,5 +88,18 @@
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_location_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:borderWidth="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="50dp"
+        app:rippleColor="@color/colorPrimaryDark"
+        android:src="@drawable/location_done_icon"
+        />
 
 </RelativeLayout>

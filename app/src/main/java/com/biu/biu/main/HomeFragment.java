@@ -11,17 +11,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.biu.biu.R;
 import com.biu.biu.tools.AutoListView;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.views.base.BaseFragment;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class HomeFragment extends Fragment
+public class HomeFragment extends BaseFragment
     implements AutoListView.OnRefreshListener, AutoListView.OnLoadListener {
   // 在请求帖子数据的时候。第一次时ListVIew中的帖子尺寸为10，之后帖子的尺寸为30
   // private Boolean firstThreadOrNot = true;
@@ -174,8 +175,7 @@ public class HomeFragment extends Fragment
       @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     // TODO Auto-generated method stub
     super.onCreateView(inflater, container, savedInstanceState);
-    View homeView = inflater.inflate(R.layout.activity_tab_home, container,
-        false);
+    View homeView = inflater.inflate(R.layout.activity_tab_home, container, false);
     return homeView;
   }
 
@@ -187,40 +187,12 @@ public class HomeFragment extends Fragment
     // TODO Auto-generated method stub
     super.onViewCreated(view, savedInstanceState);
     floatingActionButton = (FloatingActionButton) (getActivity().findViewById(R.id.fab_add));
-    mHomeListView = (AutoListView) (getActivity()
-        .findViewById(R.id.home_showtopic));
-
-    listViewAdapter = new HomeListAdapter(this.getActivity(),
-        mHomeListItems);// 第一次实例化
+    mHomeListView = (AutoListView) (getActivity().findViewById(R.id.home_showtopic));
+    listViewAdapter = new HomeListAdapter(this.getActivity(), mHomeListItems);// 第一次实例化
     listViewAdapter.setListView(mHomeListView);
     mHomeListView.setAdapter(listViewAdapter);
     mHomeListView.setOnRefreshListener(this);
     mHomeListView.setOnLoadListener(this);
-    // this.refreshByTimer();
-    // mHomeListView.setfootVisibility(false); // 不显示下边脚布局。
-    // 避免误触，设置为只有点击内容TextView才能触发进入详情页。
-    // mHomeListView.setOnItemClickListener(new OnItemClickListener() {
-    //
-    // @Override
-    // public void onItemClick(AdapterView<?> parent, View view,
-    // int position, long id) {
-    // // TODO Auto-generated method stub
-    // int nPosition = position - 1; // 减去header
-    // if(nPosition >= mHomeListView.getCount() - 2)
-    // return;
-    // if(mHomeListItems.get(nPosition).isEmpty)
-    // return;
-    // Intent intent = new Intent();
-    // // intent.setClass(getActivity(), TipDetailActivity.class);
-    // intent.setClass(getActivity(), PeepDetailActivity.class);
-    // intent.putExtra("thread_id", mHomeListItems.get(nPosition).id);
-    // intent.putExtra("DetailMode",
-    // PeepDetailActivity.TIPDETAIL_FOR_HOMETIP);
-    // // intent.putExtra("displayformoon", false); // 设置详情页格式为月光宝盒详情页
-    // getActivity().startActivity(intent);
-    // }
-    //
-    // });
     mMoreHottv = (TextView) getActivity().findViewById(R.id.morehot);
     // homeHandler = new HomeHandler(); // 在onActivityCreated中进行此操作
     mtipsGettedCount = 0; // 每次创建视图时，归零已经得到的帖子数
@@ -229,6 +201,19 @@ public class HomeFragment extends Fragment
       public void onClick(View v) {
         Intent intent = new Intent();
         intent.setClass(getActivity(), PublishTopicActivity.class);
+        intent.putExtra("PublishMode", PublishTopicActivity.PUBLISH_FOR_HOMETIP);
+        getActivity().startActivity(intent);
+      }
+    });
+    mHomeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), PeepDetailActivity.class);
+        intent.putExtra("thread_id", mHomeListItems.get(position-1).id);
+        intent.putExtra("DetailMode",
+            PeepDetailActivity.TIPDETAIL_FOR_HOMETIP);
         getActivity().startActivity(intent);
       }
     });
@@ -287,14 +272,8 @@ public class HomeFragment extends Fragment
         case FIRST_PAGE_GET_ERROR:
           usefirstBuffer = true;
           mHomeListView.onRefreshComplete();
-          Toast.makeText(getActivity(), "获取首页信息失败，请检查网络连接！",
-              Toast.LENGTH_SHORT).show();
-          // if(errordesc.isEmpty()){
-          //
-          // }else{
-          // Toast.makeText(getActivity(), errordesc,
-          // Toast.LENGTH_SHORT).show();
-          // }
+         showShortToast( "获取首页信息失败，请检查网络连接！");
+
           break;
         case NEXT_PAGE_GET_OK:
           usefirstBuffer = false;
@@ -306,8 +285,7 @@ public class HomeFragment extends Fragment
           break;
         case NEXT_PAGE_GET_ERROR:
           mHomeListView.onLoadComplete();
-          Toast.makeText(getActivity(), "获取分页信息失败，请检查网络连接！",
-              Toast.LENGTH_SHORT).show();
+          showShortToast( "获取分页信息失败，请检查网络连接！");
           break;
         // 首页刷新
         case HOME_LISTVIEW_REFRESH:
@@ -337,11 +315,8 @@ public class HomeFragment extends Fragment
         // locateMoreHot();
         // break;
         case GETLAT_LNGFAILURE:
-
           mHomeListView.onRefreshComplete();
-
-          Toast.makeText(getActivity(), "获取高德定位信息失败，请检查网络连接！",
-              Toast.LENGTH_SHORT).show();
+          showShortToast("获取高德定位信息失败，请检查网络连接！");
           break;
       }
 

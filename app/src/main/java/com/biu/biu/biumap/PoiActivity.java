@@ -1,19 +1,23 @@
 package com.biu.biu.biumap;
 
 
-import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,16 +32,19 @@ import com.biu.biu.R;
 import com.biu.biu.main.HomeFragment;
 import com.biu.biu.main.HotHomeFragment;
 import com.biu.biu.main.TipItemInfo;
-import com.biu.biu.main.dialog.SavePoiDialog;
 import com.biu.biu.tools.AutoListView;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.views.base.BaseActivity;
 
 import org.json.JSONArray;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 //兴趣点的2500米页面
-public class PoiActivity extends FragmentActivity implements OnClickListener {
+public class PoiActivity extends BaseActivity implements OnClickListener {
 	// 定义两个fragment 最新和热点
 	private HomeFragment HomeFg;
 	private HotHomeFragment hotHomeFragment;
@@ -75,13 +82,14 @@ public class PoiActivity extends FragmentActivity implements OnClickListener {
 	private boolean mthreadisrunning = false;
 	private boolean mfirstRefresh = true;
 	private TextView mMoreHottv = null;
-	private ImageButton poiback;
 	// 设置一个变量也用识别是否是在刷新 使得nextlistItemsBuffer清空
 	private boolean ctrlRefresh = false;
 	// 兴趣点的地点名称
 	private String poiPlaceName = null;
 	// 显示当前位置的TextView
 	private TextView poiPlaceShow;
+	@BindView(R.id.toolbar)
+	Toolbar toolbar;
 	// 专门用于定时刷新的Handler
 	private Handler refreshHandler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -100,25 +108,16 @@ public class PoiActivity extends FragmentActivity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_poi);
+		ButterKnife.bind(this);
 		homeFrgNew = (Button) findViewById(R.id.home_frg_new);
 		homeFrgHot = (Button) findViewById(R.id.home_frg_hot);
 
 		mHomeListView = (AutoListView) findViewById(R.id.home_showtopic);
-		poiback = (ImageButton) findViewById(R.id.poi_back);
 		poiPlaceShow = (TextView) findViewById(R.id.poi_place_name);
 		saveContentArea = (LinearLayout) findViewById(R.id.save_description);
 		poiContent = (FrameLayout) findViewById(R.id.poi_content);
 		// 地理编码相关的初始化S
 		initGeocode();
-		// 添加单击事件(取消按钮)
-		poiback.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				PoiActivity.this.finish();
-			}
-		});
 
 		// 获取意图对象中的兴趣点的位置坐标数值
 		centerLat = getIntent().getDoubleExtra("centerLat", -1.0);
@@ -134,11 +133,36 @@ public class PoiActivity extends FragmentActivity implements OnClickListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				// 此处点击保存弹出一个对话框然后保存三个变量，。经度坐标和用户的描述信息
-				Dialog saveMyPoiDialog = new SavePoiDialog(PoiActivity.this,
+				/*Dialog saveMyPoiDialog = new SavePoiDialog(PoiActivity.this,
 						centerLat, centerLng, poiPlaceName,
 						R.style.poi_save_dialog, poiSave);
-				saveMyPoiDialog.show();
+				saveMyPoiDialog.show();*/
+				final PoiDatabaseHelper poiDbHelper = new PoiDatabaseHelper(PoiActivity.this, "poi.db", null, 1);
+				final EditText content = new EditText(PoiActivity.this);
+				content.setHint("帮这个兴趣点起个容易识别的名称");
+				final AlertDialog alertDialog = new AlertDialog.Builder(PoiActivity.this).setTitle
+						("保存位置").setView(content).setPositiveButton("保存", new
+						DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								SQLiteDatabase db = poiDbHelper.getWritableDatabase();
+								ContentValues contentValues = new ContentValues();
+								contentValues.put("lat", centerLat);
+								contentValues.put("lng", centerLng);
+								contentValues.put("placename", poiPlaceName);
+								contentValues.put("description", content.getText()
+										.toString());
+								db.insert("poi", null, contentValues);
+								// 那个保存按钮消失
+								poiSave.setVisibility(View.GONE);
+							}
+						}).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
 
+					}
+				}).create();
+				alertDialog.show();
 			}
 		});
 		savedOrNot = getIntent().getBooleanExtra("savedornot", false);
@@ -178,6 +202,23 @@ public class PoiActivity extends FragmentActivity implements OnClickListener {
 		homeFrgHot.setOnClickListener(this);
 		Log.i("latlng", centerLat + "   " + centerLng);
 		setDefaultFragment();
+		initView();
+	}
+
+	private void initView() {
+		setSupportActionBar(toolbar);
+		ActionBar actionBar = getSupportActionBar();
+		if (actionBar != null) {
+			actionBar.setTitle("");
+			actionBar.setHomeButtonEnabled(true);
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
+		toolbar.setNavigationOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
 	}
 
 	@Override

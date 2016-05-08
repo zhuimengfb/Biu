@@ -153,7 +153,7 @@ public class PeepListAdapter extends BaseAdapter {
 		}
 
 		if (mListItems.get(position).isEmpty) {
-			listItemView.Contenttv.setText("该话题附近没有人发帖，点击右上角“+”号可以第一个发帖。");
+			listItemView.Contenttv.setText("该话题附近没有人发帖，快来发帖吧！");
 			listItemView.img.setVisibility(View.GONE);
 			listItemView.pubtimetv.setVisibility(View.GONE);
 			listItemView.Topbtn.setVisibility(View.GONE);

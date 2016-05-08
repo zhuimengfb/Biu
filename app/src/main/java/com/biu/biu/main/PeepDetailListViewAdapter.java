@@ -55,6 +55,7 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
 		public ImageButton treadbtn;
 		public TextView treadcounttv;
 		public ImageView imageView;
+		public TextView userName;
 	}
 
 	public void setListView(ListView listview) {
@@ -113,7 +114,7 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
 
 			// 获取要用到的控件
 			listItemView = new PeepDetailListItemView();
-
+			listItemView.userName = (TextView) convertView.findViewById(R.id.tv_user_name);
 			listItemView.contentTv = (TextView) convertView
 					.findViewById(R.id.contenttv);
 			listItemView.likebtn = (ImageButton) convertView
@@ -148,6 +149,17 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
 		//
 		// }
 		// 设置文本内容
+		if (position==0){
+			listItemView.userName.setText("楼主");
+		} else if (position==1){
+			listItemView.userName.setText("沙发");
+		} else if (position==2){
+			listItemView.userName.setText("板凳");
+		} else if (position == 3) {
+			listItemView.userName.setText("地板");
+		} else {
+			listItemView.userName.setText((position+1)+"楼");
+		}
 		listItemView.contentTv.setText(mListItemsInfo.get(position).content);
 		// 设置发表时间和回复数
 		listItemView.pubtimetv.setText(mListItemsInfo.get(position).created_at);
@@ -425,7 +437,7 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
 	/**
 	 * 设置详情适配器的适配模式，不设置时默认为HOME和偷看，使用相同适配方式；月光宝盒需要做特殊处理
 	 * 
-	 * @param tipdetailForMoonboox
+	 * @param detailmode
 	 */
 	public void setDetailMode(int detailmode) {
 		// TODO Auto-generated method stub

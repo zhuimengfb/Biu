@@ -332,14 +332,14 @@ public class HomeListAdapter extends BaseAdapter {
 			// listItemView.homeContenttv
 			// .setOnClickListener(new HomeContentClickListener(tipid));
 			// 提示错误是空值
-			listItemView.biumain
+			/*listItemView.biumain
 					.setOnClickListener(new HomeContentClickListener(tipid));
 			listItemView.replayCounttv
 					.setOnClickListener(new HomeContentClickListener(tipid));
 			listItemView.publishTimetv
 					.setOnClickListener(new HomeContentClickListener(tipid));
 			listItemView.publishPlacetv
-			.setOnClickListener(new HomeContentClickListener(tipid));
+			.setOnClickListener(new HomeContentClickListener(tipid));*/
 			// convertView.setOnTouchListener(new OnTouchListener() {
 			//
 			// @Override
@@ -348,8 +348,8 @@ public class HomeListAdapter extends BaseAdapter {
 			// return false;
 			// }
 			// });
-			listItemView.img.setOnClickListener(new HomeContentClickListener(
-					tipid));
+			/*listItemView.img.setOnClickListener(new HomeContentClickListener(
+					tipid));*/
 			// 处理图片
 			String urltemp = mlistItemsinfo.get(position).imgurl;
 			if (urltemp != null && !urltemp.equals("null")) {
@@ -451,7 +451,7 @@ public class HomeListAdapter extends BaseAdapter {
 		private class TimeThread extends Thread {
 			public void run() {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(1);
 					flag = true;
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -534,7 +534,7 @@ public class HomeListAdapter extends BaseAdapter {
 		private class TimeThread extends Thread {
 			public void run() {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(1);
 					flag = true;
 				} catch (Exception e) {
 					e.printStackTrace();

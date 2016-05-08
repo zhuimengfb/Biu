@@ -1,19 +1,32 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="${relativePackage}.${activityClass}" >
+    android:layout_height="match_parent">
 
-    <include
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_publish"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:fillViewport="false"
+        android:gravity="center"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        >
+        </android.support.v7.widget.Toolbar>
+
+    <!--<include
         android:id="@+id/tabtoplayout"
-        layout="@layout/publish_top_tab" />
+        layout="@layout/publish_top_tab" />-->
     <!-- 发表内容、字数，可能存在的图片 -->
 
     <RelativeLayout
         android:id="@+id/contentandimglayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tabtoplayout"
+        android:layout_below="@id/toolbar_publish"
         android:gravity="bottom" >
 
         <EditText
@@ -104,5 +117,16 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="15sp" />
     </RelativeLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_topic_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        app:rippleColor="@color/colorPrimaryDark"
+        android:src="@drawable/location_done_icon"
+        />
 
 </RelativeLayout>

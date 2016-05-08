@@ -1,22 +1,19 @@
 package com.biu.biu.main;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +23,7 @@ import com.biu.biu.tools.AutoListView;
 import com.biu.biu.tools.AutoListView.OnLoadListener;
 import com.biu.biu.tools.AutoListView.OnRefreshListener;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.views.base.BaseActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import org.apache.http.HttpEntity;
@@ -44,13 +42,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MyPublishActivity extends Activity implements OnRefreshListener,
-		OnLoadListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MyPublishActivity extends BaseActivity implements OnRefreshListener,
+															   OnLoadListener {
 
 	private AutoListView mListView = null;
-	private TextView mtabToptv = null;
-	private Button mtabTopbt = null;
-	private ImageButton mtabBackbt = null;
 	// private ArrayList<HashMap<String, Object>> mmyPublishInfo = new
 	// ArrayList<HashMap<String, Object>>(); // 存储数据
 	private MyPublishHandler myPublishHandler = null;
@@ -71,11 +69,16 @@ public class MyPublishActivity extends Activity implements OnRefreshListener,
 	// 重新定义适配器
 	private MyPublishAdapter publishAdapter = null;
 
+	@BindView(R.id.toolbar_my_publish)
+	Toolbar toolbar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_publish);
+		ButterKnife.bind(this);
 		findViewId();
+		initToolbar();
 		// initParam();
 		mfisrtRefresh = true; // 第一次启动
 		initView();
@@ -88,7 +91,9 @@ public class MyPublishActivity extends Activity implements OnRefreshListener,
 				// TODO Auto-generated method stub
 				int nPosition = position - 1; // 减去header
 				if (nPosition >= mypublishlistitems.size()) // 剔除当点击footer时的响应
+				{
 					return;
+				}
 				if (mypublishlistitems.get(nPosition).getPush_num() > 0) {
 					mfisrtRefresh = true;
 					new Thread(new ClearPushNumThread(mypublishlistitems.get(
@@ -123,7 +128,10 @@ public class MyPublishActivity extends Activity implements OnRefreshListener,
 
 		});
 	}
-
+	private void initToolbar() {
+		setSupportActionBar(toolbar);
+		setBackableToolbar(toolbar);
+	}
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
@@ -192,8 +200,6 @@ public class MyPublishActivity extends Activity implements OnRefreshListener,
 		// TODO Auto-generated method stub
 		// addTestData(); // 添加默认数据
 		// 初始化TabTop相关描述文字
-		mtabToptv.setText("我发表的");
-		mtabTopbt.setVisibility(Button.GONE);
 		// 重新配置
 		// msimpleAdapter = new SimpleAdapter(this, mypublishlistitems,
 		// R.layout.mypublishlistitem, new String[] { "pubtime",
@@ -205,16 +211,6 @@ public class MyPublishActivity extends Activity implements OnRefreshListener,
 		mListView.setOnRefreshListener(this);
 		mListView.setOnLoadListener(this);
 		mListView.setPageSize(10); // 设置每次加载10条
-		// 回退按钮
-		mtabBackbt.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				MyPublishActivity.this.finish();
-			}
-
-		});
 	}
 
 	@SuppressWarnings("unused")
@@ -243,9 +239,6 @@ public class MyPublishActivity extends Activity implements OnRefreshListener,
 	private void findViewId() {
 		// TODO Auto-generated method stub
 		mListView = (AutoListView) findViewById(R.id.mypublishlistview);
-		mtabToptv = (TextView) findViewById(R.id.TabTopTitle);
-		mtabTopbt = (Button) findViewById(R.id.submit_new);
-		mtabBackbt = (ImageButton) findViewById(R.id.publish_back);
 	}
 
 	/*

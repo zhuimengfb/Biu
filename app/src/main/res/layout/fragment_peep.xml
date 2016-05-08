@@ -1,10 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/umeng_fb_gray"
-    android:orientation="vertical"
-    tools:context="${relativePackage}.${activityClass}" >
+    android:background="@color/white"
+    >
 
     <com.biu.biu.tools.AutoListView
         android:id="@+id/peep_listview"
@@ -19,12 +18,15 @@
         android:layout_height="wrap_content"
         android:background="@color/umeng_fb_gray"
         android:focusable="false"
+        android:layout_below="@id/peep_listview"
         android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
         android:text="@string/peek_poi_title"
-        android:textSize="@dimen/peepitemsubtitlesize" />
+        android:textSize="@dimen/peepitemsubtitlesize"
+        android:visibility="gone"
+        />
 
     <TextView
         android:id="@+id/poi_tip"
@@ -37,11 +39,25 @@
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
         android:textSize="@dimen/homeitemcontentsize"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/my_poi_list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/poi_title"
+        />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_search"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        app:borderWidth="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/toolbar_map_icon2"
+        app:rippleColor="@color/colorPrimaryDark"
+        />
 
-</LinearLayout>
+</RelativeLayout>

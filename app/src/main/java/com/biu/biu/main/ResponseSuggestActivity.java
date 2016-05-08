@@ -1,21 +1,20 @@
 package com.biu.biu.main;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.biu.biu.R;
 import com.biu.biu.replysuggestion.ChatAdapter;
 import com.biu.biu.replysuggestion.ChatEntity;
+import com.biu.biu.views.base.BaseActivity;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.fb.SyncListener;
@@ -25,48 +24,68 @@ import com.umeng.fb.model.Reply;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResponseSuggestActivity extends Activity {
-	private TextView mTabTopView = null;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class ResponseSuggestActivity extends BaseActivity {
 	private EditText contentEditText = null;
-	private Button sendButton = null;
 	private ListView chatListView = null;
 	// 下拉刷新组件
 	private SwipeRefreshLayout mSwipeRefreshLayout = null;
 	private List<ChatEntity> chatList = null;
 	private ChatAdapter chatAdapter = null;
-	private ImageButton mtabBackbt = null;
-	
+
 	private Conversation mComversation = null;
+	@BindView(R.id.toolbar_suggestion)
+	Toolbar toolbar;
+	@BindView(R.id.bt_send)
+	SimpleDraweeView sendSimpleDraweeView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_response_suggest);
+		ButterKnife.bind(this);
 		findViewId();		// 获得控件对象
+		initToolbar();
 		// 初始化友盟会话对象
 		mComversation = new FeedbackAgent(this).getDefaultConversation();
 		InitView();
-		
+		initEvent();
 	}
 
+	private void initEvent() {
+		sendSimpleDraweeView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String userreply = contentEditText.getText().toString();
+				if(userreply.isEmpty()){
+					Toast.makeText(ResponseSuggestActivity.this, "请输入内容", Toast.LENGTH_SHORT).show();
+				}else{
+					// 内容不为空，发送消息
+					contentEditText.setText("");
+					sendUserReply(userreply);
+				}
+			}
+		});
+	}
+	private void initToolbar() {
+		setSupportActionBar(toolbar);
+		setBackableToolbar(toolbar);
+	}
 	/*
 	 * 获得页面控件对象
 	 */
 	private void findViewId() {
-		mTabTopView = (TextView)findViewById(R.id.TabTopTitle);	 // 标题栏的说明
 		// 下拉刷新组件，这个以后要改
 		mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.fb_reply_refresh);
 		// 编辑框
 		contentEditText = (EditText)this.findViewById(R.id.replysug_inputcontent);
-		sendButton = (Button)findViewById(R.id.submit_new);
 		chatListView = (ListView)findViewById(R.id.suggest_history_lv);
-		// 左上角的回退按钮
-		mtabBackbt = (ImageButton)findViewById(R.id.publish_back);
 	}
 
 	private void InitView() {
 		// TODO Auto-generated method stub
 		
-		mTabTopView.setText("反馈建议");
 //		InitSampleData();		// 初始化示例数据
 		// 创建Adapter并为ListView设置Adapter
 		chatList = new ArrayList<ChatEntity>();
@@ -82,32 +101,7 @@ public class ResponseSuggestActivity extends Activity {
 				sync();
 			}
 		});
-		// 发送按钮
-		sendButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				String userreply = contentEditText.getText().toString();
-				if(userreply.isEmpty()){
-					Toast.makeText(ResponseSuggestActivity.this, "请输入内容", Toast.LENGTH_SHORT).show();
-				}else{
-					// 内容不为空，发送消息
-					contentEditText.setText("");
-					sendUserReply(userreply);
-				}
-			}
-		});
-		
-		/**
-		 * 回退按钮
-		 */
-		mtabBackbt.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				ResponseSuggestActivity.this.finish();
-			}
-			
-		});
+
 		
 		// 下拉刷新
 //		mSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {

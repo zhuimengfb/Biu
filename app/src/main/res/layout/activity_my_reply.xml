@@ -1,17 +1,35 @@
 <!-- 我评论的 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context="${relativePackage}.${activityClass}" >
+     >
 
-    <include layout="@layout/publish_top_tab"/>
+    <RelativeLayout
+        android:id="@+id/toolbar_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_reply"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:fillViewport="false"
+            app:title="@string/my_reply"
+            app:titleTextColor="@color/white"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            >
+        </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
+   <!-- <include layout="@layout/publish_top_tab"/>-->
     
     <com.biu.biu.tools.AutoListView 
         android:id="@+id/myreplylistview"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent">
+        android:layout_below="@id/toolbar_layout"
+        >
     </com.biu.biu.tools.AutoListView>
 
-</LinearLayout>
+</RelativeLayout>

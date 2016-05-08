@@ -2,7 +2,7 @@
 <resources>
 
     <dimen name="homeitemsubtextsize">10sp</dimen>
-    <dimen name="homeitemcontentsize">15sp</dimen>
+    <dimen name="homeitemcontentsize">18sp</dimen>
     <dimen name="homeitemmorehottips">15sp</dimen>
     <!-- peepfragmen标题大小 -->
     <dimen name="peepitemtextsize">15sp</dimen>

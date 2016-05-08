@@ -1,35 +1,29 @@
 package com.biu.biu.views;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageButton;
+import android.support.v7.widget.Toolbar;
 
 import com.biu.biu.R;
+import com.biu.biu.views.base.BaseActivity;
 
-public class ActivityUserAgreement extends Activity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-	private ImageButton userAgrback = null;
+public class ActivityUserAgreement extends BaseActivity {
 
+
+	@BindView(R.id.toolbar_user_agreement)
+	Toolbar toolbar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_activity_user_agreement);
-		this.initControllers();
+		ButterKnife.bind(this);
+		setSupportActionBar(toolbar);
+		setBackableToolbar(toolbar);
 	}
 
-	private void initControllers() {
-		userAgrback = (ImageButton) this.findViewById(R.id.usrag_back);
-		userAgrback.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				ActivityUserAgreement.this.finish();
-			}
-		});
-	}
 
 	@Override
 	protected void onResume() {

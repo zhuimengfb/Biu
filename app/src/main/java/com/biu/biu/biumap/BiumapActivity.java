@@ -1,26 +1,21 @@
 package com.biu.biu.biumap;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,15 +41,16 @@ import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.baidu.mapapi.search.sug.SuggestionSearchOption;
 import com.biu.biu.R;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.views.base.BaseActivity;
 import com.umeng.socialize.utils.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BiumapActivity extends Activity {
-	// 添加新的块状响应区域
-	private LinearLayout goToPoiArea;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
+public class BiumapActivity extends BaseActivity {
 	private MapView biuMapView;
 	// 中心位置// 声明一个中心位置的变量
 	private LatLng mapCenter = new LatLng(0, 0);
@@ -64,11 +60,7 @@ public class BiumapActivity extends Activity {
 	private OverlayOptions optionsCenter = null;
 	// 地图中心的地标
 	private Marker centerMarker = null;;
-	private LinearLayout biuTopBar;
-	private EditText putIn;
 	private ListView showResult;
-	private ImageButton mapToPeek;
-	private Button backToNormal;
 	// 定义结果显示的适配器
 	private ShowResultAdapter showResultAdapter;
 	// 定义动态查询的结果集
@@ -78,19 +70,26 @@ public class BiumapActivity extends Activity {
 	// 建议查询的监听
 	private OnGetSuggestionResultListener biuListener;
 	// 跳转按钮
-	private ImageButton goToPoi;
 	// 定义中心位置的地点名称
 	private String placeName = "";
 	private RelativeLayout putInPart;
 	// 顶一个布尔型的变量，点击地图操作时确保是normao状态
 	private boolean normalOrNot = true;
+	@BindView(R.id.normal_toolbar)
+	Toolbar toolbar;
+  @BindView(R.id.fab_location_done)
+  FloatingActionButton fabLocationDone;
+  @BindView(R.id.search_map)
+  SearchView mapSearchView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_biumap);
-		putInPart = (RelativeLayout) this.findViewById(R.id.putinpart);
+		ButterKnife.bind(this);
+      initToolbar();
+      initEvent();
 		biuMapView = (MapView) this.findViewById(R.id.biumapview);
 		biuBaiduMap = biuMapView.getMap();
 		LatLng clientCenter = new LatLng(
@@ -102,21 +101,7 @@ public class BiumapActivity extends Activity {
 				.newMapStatus(biuMapStatus);
 		biuBaiduMap.setMapStatus(mapStatusUpdate);
 		// 获取地图显示页面的顶部top
-		biuTopBar = (LinearLayout) this.findViewById(R.id.maptop);
-		putIn = (EditText) this.findViewById(R.id.putIn);
 		showResult = (ListView) this.findViewById(R.id.showResult);
-		mapToPeek = (ImageButton) this.findViewById(R.id.mapToPeek);
-		backToNormal = (Button) this.findViewById(R.id.backtonormal);
-		goToPoi = (ImageButton) this.findViewById(R.id.gotopoi);
-		goToPoiArea = (LinearLayout) this.findViewById(R.id.go_to_poi_area);
-		mapToPeek.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				BiumapActivity.this.finish();
-			}
-		});
 		biuBaiduMap.setOnMapTouchListener(new OnMapTouchListener() {
 
 			@Override
@@ -124,11 +109,7 @@ public class BiumapActivity extends Activity {
 				// TODO Auto-generated method stub
 				if (!normalOrNot) {
 					biuMapView.requestFocus();
-					biuTopBar.setVisibility(LinearLayout.VISIBLE);
-					backToNormal.setVisibility(View.GONE);
 					showResult.setVisibility(View.GONE);
-					toNormal();
-					// 关闭输入法
 					InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					inputMethodManager.hideSoftInputFromWindow(
 							BiumapActivity.this.getCurrentFocus()
@@ -138,8 +119,7 @@ public class BiumapActivity extends Activity {
 				}
 			}
 		});
-		biuBaiduMap
-				.setOnMapStatusChangeListener(new OnMapStatusChangeListener() {
+		biuBaiduMap.setOnMapStatusChangeListener(new OnMapStatusChangeListener() {
 
 					@Override
 					public void onMapStatusChangeStart(MapStatus status) {
@@ -159,26 +139,6 @@ public class BiumapActivity extends Activity {
 						// 随着状态的变化，兴趣位置的地标也随着发生变化
 						mapCenter = status.target;
 						centerMarker.setPosition(mapCenter);
-						// 重定义placename
-						// 地图状态变化的时候确保是normal状态
-						// normalOrNot = true;
-						// if (!normalOrNot) {
-						// biuMapView.requestFocus();
-						// biuTopBar.setVisibility(LinearLayout.VISIBLE);
-						// backToNormal.setVisibility(View.GONE);
-						// showResult.setVisibility(View.GONE);
-						// toNormal();
-						// // 关闭输入法
-						// InputMethodManager inputMethodManager =
-						// (InputMethodManager)
-						// getSystemService(Context.INPUT_METHOD_SERVICE);
-						// inputMethodManager.hideSoftInputFromWindow(
-						// BiumapActivity.this.getCurrentFocus()
-						// .getWindowToken(),
-						// InputMethodManager.HIDE_NOT_ALWAYS);
-						// normalOrNot = true;
-						// }
-
 					}
 				});
 		biuBaiduMap.setOnMapLoadedCallback(new OnMapLoadedCallback() {
@@ -199,12 +159,30 @@ public class BiumapActivity extends Activity {
 		initPutIn();
 	}
 
+	private void initToolbar() {
+      setSupportActionBar(toolbar);
+      ActionBar actionBar = getSupportActionBar();
+      if (actionBar != null) {
+        actionBar.setHomeButtonEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+      }
+      toolbar.setNavigationOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          onBackPressed();
+        }
+      });
+    }
+
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		// 在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
-		biuMapView.onDestroy();
-		biuSuggestionSearch.destroy();
+        biuMapView=null;
+      biuBaiduMap=null;
+      if (biuSuggestionSearch != null) {
+        biuSuggestionSearch.destroy();
+      }
+      super.onDestroy();
 	}
 
 	@Override
@@ -226,11 +204,30 @@ public class BiumapActivity extends Activity {
 		biuMapView.onPause();
 	}
 
+  private void initEvent(){
+    fabLocationDone.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(BiumapActivity.this,
+            PoiActivity.class);
+        intent.putExtra("centerLat", mapCenter.latitude);
+        intent.putExtra("centerLng", mapCenter.longitude);
+        if (placeName != null && placeName != "") {
+          intent.putExtra("placeName", placeName);
+        } else {
+          intent.putExtra("placeName", "unknown");
+        }
+        intent.putExtra("savedornot", false);
+        // 跳转到兴趣点位置的2500米范围
+        startActivity(intent);
+      }
+    });
+  }
 	// }
 	// 控制地图页面控件的显示和隐藏
 	private void initControllers() {
 		// 新点击响应区域
-		goToPoiArea.setOnClickListener(new OnClickListener() {
+		/*goToPoiArea.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -248,10 +245,10 @@ public class BiumapActivity extends Activity {
 				// 跳转到兴趣点位置的2500米范围
 				startActivity(intent);
 			}
-		});
+		});*/
 
 		// 像goToPoi控件添加事件监听
-		goToPoi.setOnClickListener(new OnClickListener() {
+		/*goToPoi.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -269,45 +266,9 @@ public class BiumapActivity extends Activity {
 				// 跳转到兴趣点位置的2500米范围
 				startActivity(intent);
 			}
-		});
+		});*/
 
-		putIn.setFocusable(true);
-		putIn.setOnFocusChangeListener(new OnFocusChangeListener() {
 
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-				if (hasFocus) {
-					// 标识状态的布尔型变量为false
-					normalOrNot = false;
-					// 获得焦点的时候将顶部topBar隐藏起來
-					biuTopBar.setVisibility(LinearLayout.GONE);
-
-					showResult.setVisibility(View.VISIBLE);
-					putInPart.setBackgroundColor(0xff26D5B6);
-					LayoutParams rlp = new LayoutParams(
-							LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT);
-					rlp.setMargins(15, 15, 150, 15);
-					// rlp.rightMargin = 180;
-					// rlp.leftMargin = 15;
-					// rlp.topMargin = 15;
-					// rlp.bottomMargin = 15;
-					rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT,
-							RelativeLayout.TRUE);
-					rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,
-							RelativeLayout.TRUE);
-					putIn.setLayoutParams(rlp);
-					backToNormal.setVisibility(View.VISIBLE);
-
-				} else {
-					// 失去焦点的时候恢复原来的状态
-					biuTopBar.setVisibility(LinearLayout.VISIBLE);
-					showResult.setVisibility(View.GONE);
-				}
-
-			}
-		});
 		// 点击地图窗口焦点设置在地图窗口
 		biuMapView.setOnClickListener(new OnClickListener() {
 
@@ -318,33 +279,12 @@ public class BiumapActivity extends Activity {
 			}
 		});
 
-		// 返回地图页面的正式情况即不是地图的最大化，并显示顶部的bar
-		backToNormal.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				// 地图窗口获得焦点
-				biuMapView.requestFocus();
-				biuTopBar.setVisibility(LinearLayout.VISIBLE);
-				backToNormal.setVisibility(View.GONE);
-				showResult.setVisibility(View.GONE);
-				toNormal();
-				// 关闭输入法
-				InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				inputMethodManager.hideSoftInputFromWindow(BiumapActivity.this
-						.getCurrentFocus().getWindowToken(),
-						InputMethodManager.HIDE_NOT_ALWAYS);
-
-			}
-		});
-
 	}
 
 	// 定义和初始化EditText控件putIn
 	private void initPutIn() {
 		// 定义查询时候的适配器
-		showResultList = new ArrayList<SuggestionInfo>();
+		showResultList = new ArrayList<>();
 		Log.i("BIUMAPADAPTER", "定义地图查询的适配器");
 		// 初始化动态显示查询结果的适配器
 		showResultAdapter = new ShowResultAdapter(this,
@@ -378,35 +318,25 @@ public class BiumapActivity extends Activity {
 		};
 		// 添加建议查询的监听
 		biuSuggestionSearch.setOnGetSuggestionResultListener(biuListener);
-		putIn.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// TODO Auto-generated method stub
-				Log.i("EDITTEXT——change", "onTextChanged");
-				Log.i("EDITTEXT——change----s1", s.toString());
-				// 定义每次变化时的动态查询的
-				String content = s.toString();// 查询的内容
-				// 发起建议查询的请求
-				biuSuggestionSearch
-						.requestSuggestion(new SuggestionSearchOption()
-								.keyword(content).city(""));
-			}
+      mapSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+          return false;
+        }
 
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-				Log.i("EDITTEXT——change", "beforeTextChanged");
-				Log.i("EDITTEXT——change----s2", s.toString());
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-				Log.i("EDITTEXT——change", "afterTextChanged");
-			}
-		});
+        @Override
+        public boolean onQueryTextChange(String newText) {
+          if (newText==null|| "".equals(newText)){
+            showResult.setVisibility(View.GONE);
+          } else {
+			  showResult.setVisibility(View.VISIBLE);
+            biuSuggestionSearch
+                .requestSuggestion(new SuggestionSearchOption()
+                    .keyword(newText).city(""));
+          }
+          return false;
+        }
+      });
 	}
 
 	// 定义动态显示查询的结果
@@ -486,13 +416,9 @@ public class BiumapActivity extends Activity {
 	// 定义showResult列表中的每一个数据项类
 	private void resetController(String placeName, LatLng point) {
 		// 背景恢复为灰色
-		this.toNormal();
-		putIn.setText(placeName);
 		showResultList.clear();
 		showResultAdapter.notifyDataSetChanged();
 		biuMapView.requestFocus();
-		biuTopBar.setVisibility(LinearLayout.VISIBLE);
-		backToNormal.setVisibility(View.GONE);
 		// 点击一个结果项将试图的中心移动该处
 		if (point != null) {
 			mapCenter = new LatLng(point.latitude, point.longitude);
@@ -508,19 +434,6 @@ public class BiumapActivity extends Activity {
 		this.placeName = placeName;
 	}
 
-	private void toNormal() {
-		putInPart.setBackgroundColor(getResources().getColor(
-				R.color.umeng_fb_gray));
-		LayoutParams rlp = new LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		rlp.rightMargin = 10;
-		rlp.leftMargin = 10;
-		rlp.topMargin = 10;
-		rlp.bottomMargin = 10;
-		rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-		rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-		putIn.setLayoutParams(rlp);
 
-	}
 
 }

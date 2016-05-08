@@ -1,7 +1,6 @@
 package com.biu.biu.main;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -12,6 +11,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -38,6 +39,7 @@ import com.biu.biu.R;
 import com.biu.biu.thread.PostNewTopicTempThread;
 import com.biu.biu.tools.EditTextLengthIndicate;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.views.base.BaseActivity;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,7 +50,10 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PublishTopicActivity extends Activity implements
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class PublishTopicActivity extends BaseActivity implements
 		AMapLocationListener {
 	private String mTopicId = null;
 	private EditText mPublishContent;
@@ -56,8 +61,8 @@ public class PublishTopicActivity extends Activity implements
 	private TextView mContentCount;
 	private EditTextLengthIndicate mContentLengthIndicate;
 	private TextView mshowPlace;
-	private Button mTabTopSubmit;
-	private ImageButton mTabBackbt;
+	/*private Button mTabTopSubmit;
+	private ImageButton mTabBackbt;*/
 	private double mLat = 3.0;
 	private double mLng = 125.0;
 	private boolean mIsShowPlace = false; // 是否显示我的位置，关联选择框
@@ -85,17 +90,61 @@ public class PublishTopicActivity extends Activity implements
 	public final static int PUBLISH_FOR_MOONBOOX = 1; // 发表月光宝盒帖子
 	public final static int PUBLISH_FOR_PEEPTOPIC = 2; // 发表偷看话题帖子
 
+	@BindView(R.id.toolbar_publish)
+	Toolbar toolbar;
+	@BindView(R.id.fab_topic_done)
+	FloatingActionButton fabTopicDone;
+
 	private byte[] mBitmapbyteArray; // 存储压缩图片之后的二维数组
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_publish_topic);
+		ButterKnife.bind(this);
 		findId();
 		initConfigParam();
+		initToolbar();
+		initFab();
 		initView();
 	}
 
+	private void initToolbar() {
+		toolbar.setTitle(getResources().getString(R.string.publish_topic));
+		setSupportActionBar(toolbar);
+		ActionBar actionBar = getSupportActionBar();
+		if (actionBar != null) {
+			actionBar.setHomeButtonEnabled(true);
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
+		toolbar.setNavigationOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
+	}
+	private void initFab() {
+		fabTopicDone.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				synchronized (this) {
+					if (!mCanbePublish)
+						return;
+					String text = mPublishContent.getText().toString();
+					if (text.isEmpty()) {
+						Toast.makeText(PublishTopicActivity.this, "请输入新话题内容！",
+								Toast.LENGTH_SHORT).show();
+						return;
+					}
+					mCanbePublish = false;
+					Toast.makeText(PublishTopicActivity.this, "正在发表新主题，请耐心等待！",
+							Toast.LENGTH_SHORT).show();
+					PostNewTip();
+				}
+			}
+		});
+	}
 	/**
 	 * 发表帖子
 	 */
@@ -255,7 +304,7 @@ public class PublishTopicActivity extends Activity implements
 				});
 
 		// 右上角的提交内容
-		mTabTopSubmit.setOnClickListener(new OnClickListener() {
+		/*mTabTopSubmit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -278,17 +327,17 @@ public class PublishTopicActivity extends Activity implements
 				}
 
 			}
-		});
+		});*/
 
 		// 左上角回退按钮
-		mTabBackbt.setOnClickListener(new OnClickListener() {
+		/*mTabBackbt.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				finish();
 			}
-		});
+		});*/
 
 		// 添加图片
 		mAddPhotoImage.setOnClickListener(new OnClickListener() {
@@ -320,8 +369,8 @@ public class PublishTopicActivity extends Activity implements
 		mContentLengthIndicate = (EditTextLengthIndicate) findViewById(R.id.publishcontcount);
 		mImageToPublish = (ImageView) findViewById(R.id.imagetopublish); // 要发表的图片
 		mshowPlace = (TextView) findViewById(R.id.publish_showplace);
-		mTabTopSubmit = (Button) findViewById(R.id.submit_new); // 右上角的提交按钮
-		mTabBackbt = (ImageButton) findViewById(R.id.publish_back); // 左上角回退按钮
+		/*mTabTopSubmit = (Button) findViewById(R.id.submit_new); // 右上角的提交按钮
+		mTabBackbt = (ImageButton) findViewById(R.id.publish_back); // 左上角回退按钮*/
 	}
 
 	/**

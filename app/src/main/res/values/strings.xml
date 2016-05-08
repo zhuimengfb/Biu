@@ -55,7 +55,22 @@
     <string name="pull_to_refresh_pull_label">下拉刷新…</string>
     <string name="pull_to_refresh_release_label">释放以刷新…</string>
     <string name="pull_to_refresh_refreshing_label">加载中…</string> 
-    <string name="pull_to_refresh_tap_label">单击更新…</string>
+    <string name="pull_to_refresh_tap_label">单击更新…</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     -->
     <string name="pull_to_refresh_updated_at_label">最近更新于: </string>
     <string name="loadmore_label">加载更多</string>
@@ -99,4 +114,13 @@
     <string name="user_help">帮助\nBiu是一款匿名的社交软件，在这里我们只能看到周围1500米内大家都在谈论些什么。不需要高、大、上、牛奔的标准就是您的帖子被赞次数，得到赞最多的几个
         将成为热门贴！此外探索页面我们可以参与本校热门话题的讨论。还等什么，有什么想法、观察、笑话想跟周围的人分享，就来biu一下吧！</string>
     <string name="title_activity_activity_user_agreement">用户协议</string>
+    <string name="owner">楼主</string>
+    <string name="interest_location">兴趣位置</string>
+    <string name="location">位置</string>
+    <string name="publish_topic">发表话题</string>
+    <string name="detail">详情</string>
+    <string name="my_publish">我的发表</string>
+    <string name="my_reply">我的回复</string>
+    <string name="you_need_to_grant_read_storage_state_permission">你需要允许我们获取读取设备图库的权限哦</string>
+    <string name="you_need_to_grant_read_location_state_permission">你需要允许我们获取设备位置信息哦</string>
 </resources>

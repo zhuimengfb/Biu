@@ -1,6 +1,5 @@
 package com.biu.biu.main;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,13 +8,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,6 +22,7 @@ import com.biu.biu.R;
 import com.biu.biu.thread.GetHttpThread;
 import com.biu.biu.thread.PostTopicReplyThread;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.views.base.BaseActivity;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.controller.UMServiceFactory;
@@ -52,16 +52,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-//import com.biu.biu.main.PeepDetailListViewAdapter.TipLikeClickListener;
-//import com.biu.biu.main.PeepDetailListViewAdapter.TipTreadClickListener;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class PeepDetailActivity extends Activity {
+
+public class PeepDetailActivity extends BaseActivity {
 	private final static String SHARETAG = "Share";
 
 	private ListView mReplyListView; // 评论ListView
 	private EditText mReplyContentEdit; // 回复内容
 	private ImageButton mSendReplyBtn;
-	private ImageButton mTabBackBtn;
 	private ImageButton mDeleteTipBtn = null;
 	protected boolean mIsScrolltoEnd = false; // 是否将评论ListView滚动到最下面
 	private TipItemInfo mTargetTipInfo = new TipItemInfo(); // 存储详情目标帖子的所有信息
@@ -89,10 +89,8 @@ public class PeepDetailActivity extends Activity {
 	public final static int TIPDETAIL_FOR_HOMETIP = 0; // 首页帖子的详情
 	public final static int TIPDETAIL_FOR_MOONBOOX = 1; // 月光宝盒帖子的详情
 	public final static int TIPDETAIL_FOR_PEEPTOPIC = 2; // 话题帖子的详情
-
-	// 右上角新的相应区域
-	private LinearLayout detailTopRightBt;
-
+	@BindView(R.id.toolbar_peep)
+	Toolbar toolbar;
 	// 分享
 	private final UMSocialService mController = UMServiceFactory
 			.getUMSocialService("com.umeng.share");
@@ -209,10 +207,12 @@ public class PeepDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_peep_detail);
+		ButterKnife.bind(this);
 		localornot = getIntent().getBooleanExtra("localornot", true);
 		findId();
 		initParam();
 		initView();
+		initToolbar();
 		msimpleAdapter = new PeepDetailListViewAdapter(this, simpledatalist,
 				localornot);
 		if (mDetailMode == TIPDETAIL_FOR_MOONBOOX)
@@ -290,60 +290,10 @@ public class PeepDetailActivity extends Activity {
 			}
 
 		});
-		// 回退按钮
-		mTabBackBtn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				PeepDetailActivity.this.finish();
-			}
-
-		});
 		// 如果是从“我的发表”页面过来的，则显示删除按钮
 		if (mCanDeleteTip) {
 			// 修改后此控件已经是可见了(zb)
 			mDeleteTipBtn.setVisibility(View.VISIBLE);
-
-			// 为新的响应区域添加单击事件
-			detailTopRightBt.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					new AlertDialog.Builder(PeepDetailActivity.this)
-							.setMessage("是否删除？")
-							.setPositiveButton("确认",
-									new DialogInterface.OnClickListener() {
-
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											// TODO Auto-generated method stub
-											deleteTip();
-										}
-
-										// 删除这个帖子
-										private void deleteTip() {
-											// TODO Auto-generated method stub
-											String url = "http://api.bbbiu.com:1234"
-													+ "/threads/"
-													+ mTargetTipInfo.id;
-											DelTipThread tipThread = new DelTipThread(
-													mTargetTipInfo.id, url);
-											Thread thread = new Thread(
-													tipThread);
-											thread.start();
-											Toast.makeText(
-													PeepDetailActivity.this,
-													"帖子已删除", Toast.LENGTH_SHORT)
-													.show();
-										}
-									}).setNegativeButton("取消", null).show();
-
-				}
-			});
 
 			mDeleteTipBtn.setOnClickListener(new OnClickListener() {
 
@@ -384,18 +334,6 @@ public class PeepDetailActivity extends Activity {
 				}
 			});
 		} else {
-			// 为右上角添加新的响应区域
-			detailTopRightBt.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN,
-							SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QQ,
-							SHARE_MEDIA.QZONE);
-					mController.openShare(PeepDetailActivity.this, false);
-				}
-			});
 
 			mDeleteTipBtn.setOnClickListener(new OnClickListener() {
 
@@ -624,6 +562,11 @@ public class PeepDetailActivity extends Activity {
 		}
 	}
 
+	private void initToolbar() {
+		toolbar.setTitle(getResources().getString(R.string.detail));
+		setSupportActionBar(toolbar);
+		setBackableToolbar(toolbar);
+	}
 	private void initParam() {
 		// TODO Auto-generated method stub
 		Intent intent = this.getIntent();
@@ -632,7 +575,7 @@ public class PeepDetailActivity extends Activity {
 		mCanDeleteTip = intent.getBooleanExtra("CanDeleteTip", false);
 		if (!mCanDeleteTip) {
 			// mDeleteTipBtn.setBackgroundResource(R.drawable.more);
-			mDeleteTipBtn.setImageResource(R.drawable.more);
+			mDeleteTipBtn.setImageResource(R.drawable.ic_share_white_36dp);
 		} else {
 			mDeleteTipBtn.setImageResource(R.drawable.trash);
 			// mDeleteTipBtn.setBackgroundResource(R.drawable.trash);
@@ -646,12 +589,7 @@ public class PeepDetailActivity extends Activity {
 		mReplyListView = (ListView) findViewById(R.id.replylistview);
 		mReplyContentEdit = (EditText) findViewById(R.id.myreplyedit);
 		mSendReplyBtn = (ImageButton) findViewById(R.id.sendreplybtn); // 发送按钮
-		mTabBackBtn = (ImageButton) findViewById(R.id.publish_back); // 回退按钮
 		mDeleteTipBtn = (ImageButton) findViewById(R.id.shareButton); // 从我的发表进入后显示该
-
-		// 右上角新的响应区域
-		detailTopRightBt = (LinearLayout) this
-				.findViewById(R.id.detail_top_right_bt);
 		if (!localornot) {
 			mReplyContentEdit.setVisibility(View.GONE);
 			mSendReplyBtn.setVisibility(View.GONE);

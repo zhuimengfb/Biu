@@ -20,7 +20,10 @@
 
             <ProgressBar
                 android:id="@+id/refreshing"
-                style="@style/customProgressBar" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyleInverse"
+                />
 
             <TextView
                 android:id="@+id/tip"

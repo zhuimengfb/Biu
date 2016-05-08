@@ -1,22 +1,19 @@
 package com.biu.biu.main;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +23,7 @@ import com.biu.biu.tools.AutoListView;
 import com.biu.biu.tools.AutoListView.OnLoadListener;
 import com.biu.biu.tools.AutoListView.OnRefreshListener;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.views.base.BaseActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import org.apache.http.HttpEntity;
@@ -43,12 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MyReplyActivity extends Activity implements OnRefreshListener,
-		OnLoadListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
+															 OnLoadListener {
 	private AutoListView mListView = null;
-	private TextView mtabToptv = null;
-	private Button mtabTopbt = null;
-	private ImageButton mtabBackbt = null;
 	// private SimpleAdapter msimpleAdapter = null; // “我回复的”的列表框内容适配器
 	// private ArrayList<HashMap<String, Object>> mmyReplyInfo = new
 	// ArrayList<HashMap<String, Object>>(); // 存储数据
@@ -67,7 +65,8 @@ public class MyReplyActivity extends Activity implements OnRefreshListener,
 
 	// 重新定义一个数组适配器
 	private MyReplyAdapter myReplyAdapter = null;
-
+	@BindView(R.id.toolbar_reply)
+	Toolbar toolbar;
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
@@ -108,8 +107,10 @@ public class MyReplyActivity extends Activity implements OnRefreshListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_reply);
+		ButterKnife.bind(this);
 		findViewId();
 		// initParam();
+		initToolbar();
 		mfirstRefresh = true;
 		initView();
 		myRepliesHandler = new MyReplyHandler();
@@ -157,7 +158,10 @@ public class MyReplyActivity extends Activity implements OnRefreshListener,
 		});
 
 	}
-
+	private void initToolbar() {
+      setSupportActionBar(toolbar);
+      setBackableToolbar(toolbar);
+    }
 	private void initParam() {
 		// TODO Auto-generated method stub
 		// SharedPreferences preferences = getSharedPreferences("user_Params",
@@ -170,8 +174,6 @@ public class MyReplyActivity extends Activity implements OnRefreshListener,
 	private void initView() {
 		// TODO Auto-generated method stub
 		// 初始化标题栏
-		mtabToptv.setText("我评论的");
-		mtabTopbt.setVisibility(Button.GONE);
 
 		// addTestData(); // 添加默认数据
 		// 重新定义
@@ -206,20 +208,6 @@ public class MyReplyActivity extends Activity implements OnRefreshListener,
 	private void findViewId() {
 		// TODO Auto-generated method stub
 		mListView = (AutoListView) findViewById(R.id.myreplylistview);
-		mtabToptv = (TextView) findViewById(R.id.TabTopTitle);
-		mtabTopbt = (Button) findViewById(R.id.submit_new);
-		mtabBackbt = (ImageButton) findViewById(R.id.publish_back);
-
-		// 回退按钮
-		mtabBackbt.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				MyReplyActivity.this.finish();
-			}
-
-		});
 	}
 
 	/*

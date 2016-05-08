@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.biu.biu.R;
+import com.biu.biu.biumap.BiumapActivity;
 import com.biu.biu.biumap.PoiActivity;
 import com.biu.biu.biumap.PoiDatabaseHelper;
 import com.biu.biu.tools.AutoListView;
@@ -56,6 +58,9 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class PeepFragment extends Fragment implements OnRefreshListener {
 	private AutoListView mPeepListView;
 	private PeepListViewAdapter mPeepListViewAdapter;
@@ -70,6 +75,8 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 	private String mTopicId;
 
 	private ImageView peepStatusView;
+	@BindView(R.id.fab_search)
+	FloatingActionButton fabSearch;
 
 	public static PeepFragment getInstance(ImageView peepStatusView){
 		PeepFragment peepFragment = new PeepFragment();
@@ -96,7 +103,9 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 					peepStatusView.setVisibility(View.VISIBLE);
 					UserConfigParams.peepStatus = false;
 				} else {
-					peepStatusView.setVisibility(View.INVISIBLE);
+					if (peepStatusView!=null) {
+						peepStatusView.setVisibility(View.INVISIBLE);
+					}
 				}
 				UserConfigParams.peepStatus = false;
 				break;
@@ -219,18 +228,20 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 				item.id = everyJsonObject.getString("id");
 
 				// 获取当前活跃中的话题ID
-				Log.i("当前活跃中的话题ID为————————————————", item.id);
+				Log.i("当前活跃中的话题ID为————", item.id);
 				item.content = everyJsonObject.getString("topic_content");
 				item.allowimg = everyJsonObject.getInt("img_or_not");
 				item.isDeleted = everyJsonObject.getInt("under_or_not");
 				item.creat_at = everyJsonObject.getString("created_at");
 				item.update_at = everyJsonObject.getString("updated_at");
+				//服务端没有下发status造成异常
+				/*
 				item.status = everyJsonObject.getInt("status");
 				if (item.status == 1) {
 					if (UserConfigParams.peepStatus == false) {
 						UserConfigParams.peepStatus = true;
 					}
-				}
+				}*/
 				mListItems.add(item);
 			}
 		} catch (Exception e) {
@@ -246,10 +257,11 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 		// TODO Auto-generated method stub
 		mPeepListView = (AutoListView) getActivity().findViewById(
 				R.id.peep_listview);
+		ButterKnife.bind(this,view);
 		// 显示兴趣点列表控件
 		myPoiList = (ListView) getActivity().findViewById(R.id.my_poi_list);
 		// 兴趣点提示TextView控件
-		poiTip = (TextView) getActivity().findViewById(R.id.poi_tip);
+		poiTitle = (TextView) getActivity().findViewById(R.id.poi_title);
 		super.onViewCreated(view, savedInstanceState);
 		initView();
 		refrestPoiListView();
@@ -286,6 +298,14 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 				intent.putExtra("TopicTitle", mListItems.get(nPosition).content);
 				intent.putExtra("topic_id", mListItems.get(nPosition).id);
 				getActivity().startActivity(intent);
+			}
+		});
+		fabSearch.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(getActivity(), BiumapActivity.class);
+				startActivity(intent);
 			}
 		});
 	}
@@ -538,9 +558,9 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 			} while (cursor.moveToNext());
 		}
 		if (poiObjs.size() <= 0) {
-			poiTip.setVisibility(View.VISIBLE);
+			poiTitle.setVisibility(View.GONE);
 		} else {
-			poiTip.setVisibility(View.GONE);
+			poiTitle.setVisibility(View.VISIBLE);
 		}
 		poiAdapter = new PoiAdapter(getActivity(), R.layout.poi_item, poiObjs);
 		myPoiList.setAdapter(poiAdapter);
@@ -549,7 +569,7 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 	}
 
 	private ListView myPoiList;
-	private TextView poiTip;
+	private TextView poiTitle;
 	private List<Poiobj> poiObjs = new ArrayList<Poiobj>();
 	private PoiAdapter poiAdapter;
 	private PoiDatabaseHelper poiDatabaseHelper;
@@ -566,11 +586,6 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 	// 定义显示兴趣点列表的适配器
 	class PoiAdapter extends ArrayAdapter<Poiobj> {
 		private int resourceId;
-
-		// private ArrayList<GestureDetector> gestureDetectors = new
-		// ArrayList<GestureDetector>();
-		// private GestureListener gestureListener;
-		// private TopTouchListener topTouchListener;
 
 		public PoiAdapter(Context context, int resource, List<Poiobj> objects) {
 			super(context, resource, objects);
@@ -636,14 +651,6 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 							refrestPoiListView();
 						}
 					});
-			// GestureDetector mGestureDetector = null;
-			// TopTouchListener topTouchListener = new TopTouchListener(poiObj,
-			// viewHolder.poiItemCancel, position);
-			// mGestureDetector = new GestureDetector(
-			// PeepFragment.this.getActivity(), new GestureListener(
-			// topTouchListener));
-			// gestureDetectors.add(mGestureDetector);
-			// view.setOnTouchListener(topTouchListener);
 			return view;
 		}
 
@@ -652,133 +659,5 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 			public ImageButton poiItemCancel;
 		}
 
-		// class TopTouchListener implements OnTouchListener {
-		// private Poiobj poiObj;
-		// private Button poiItemCancel;
-		// private int positon;
-		//
-		// public TopTouchListener(Poiobj poiObj, Button poiItemCancel,
-		// int position) {
-		// super();
-		// this.poiObj = poiObj;
-		// this.poiItemCancel = poiItemCancel;
-		// this.positon = position;
-		// }
-		//
-		// @Override
-		// public boolean onTouch(View v, MotionEvent event) {
-		// // TODO Auto-generated method stub
-		//
-		// switch (event.getActionMasked()) {
-		// case MotionEvent.ACTION_DOWN:
-		// break;
-		// case MotionEvent.ACTION_UP:
-		//
-		// case MotionEvent.ACTION_CANCEL:
-		// break;
-		// case MotionEvent.ACTION_MOVE:
-		//
-		// break;
-		// case MotionEvent.ACTION_POINTER_DOWN:
-		// break;
-		// default:
-		// break;
-		// }
-		// return gestureDetectors.get(positon).onTouchEvent(event);
-		// }
-		//
-		// public void goToPoi() {
-		// Intent intent = new Intent(PeepFragment.this.getActivity(),
-		// PoiActivity.class);
-		// intent.putExtra("centerLat", poiObj.lat);
-		// intent.putExtra("centerLng", poiObj.lng);
-		// intent.putExtra("placeName", poiObj.placename);
-		// // 跳转到兴趣点位置的2500米范围
-		// startActivity(intent);
-		//
-		// }
-		//
-		// public void showOrHideButton() {
-		// if (poiItemCancel.getVisibility() == Button.VISIBLE) {
-		// poiItemCancel.setVisibility(Button.GONE);
-		// } else {
-		// poiItemCancel.setVisibility(Button.VISIBLE);
-		// }
-		//
-		// }
-		// }
-		//
-		// class GestureListener extends SimpleOnGestureListener {
-		// private TopTouchListener listener;
-		//
-		// public GestureListener(TopTouchListener topTouchListener) {
-		// this.listener = topTouchListener;
-		// }
-		//
-		// @Override
-		// public boolean onDown(MotionEvent e) {
-		// // 捕获Down事件
-		// return true;
-		// }
-		//
-		// @Override
-		// public boolean onDoubleTap(MotionEvent e) {
-		// // 触发双击事件
-		// Log.i("IMGINF", "双击2222？？？？？？");
-		// // 添加顶部双击事件
-		// return true;
-		// }
-		//
-		// @Override
-		// public boolean onSingleTapUp(MotionEvent e) {
-		// // TODO Auto-generated method stub
-		// Log.i("IMGINF", "单击11111？？？？？？");
-		// return super.onSingleTapUp(e);
-		// }
-		//
-		// @Override
-		// public void onLongPress(MotionEvent e) {
-		// // TODO Auto-generated method stub
-		// Log.i("IMGINF", "长久？？？？？？");
-		// listener.showOrHideButton();
-		// super.onLongPress(e);
-		// }
-		//
-		// @Override
-		// public boolean onScroll(MotionEvent e1, MotionEvent e2,
-		// float distanceX, float distanceY) {
-		// return super.onScroll(e1, e2, distanceX, distanceY);
-		// }
-		//
-		// @Override
-		// public boolean onFling(MotionEvent e1, MotionEvent e2,
-		// float velocityX, float velocityY) {
-		// // TODO Auto-generated method stub
-		//
-		// return super.onFling(e1, e2, velocityX, velocityY);
-		// }
-		//
-		// @Override
-		// public void onShowPress(MotionEvent e) {
-		// // TODO Auto-generated method stub
-		// super.onShowPress(e);
-		// }
-		//
-		// @Override
-		// public boolean onDoubleTapEvent(MotionEvent e) {
-		// // TODO Auto-generated method stub
-		// return super.onDoubleTapEvent(e);
-		// }
-		//
-		// @Override
-		// public boolean onSingleTapConfirmed(MotionEvent e) {
-		// // TODO Auto-generated method stub
-		// Log.i("IMGINF", "确认是单击事件");
-		// listener.goToPoi();
-		// return super.onSingleTapConfirmed(e);
-		// }
-		//
-		// }
-		// }
 	}
 }

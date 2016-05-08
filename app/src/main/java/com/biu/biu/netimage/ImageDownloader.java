@@ -1,16 +1,6 @@
 package com.biu.biu.netimage;
 
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.SoftReference;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +12,16 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.SoftReference;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ImageDownloader {
 	private static final String TAG = "ImageDownloader";
@@ -79,7 +79,6 @@ public class ImageDownloader {
 	
 	/**
 	 * 判断是否需要重新创建线程下载图片，如果需要，返回值为true。
-	 * @param url
 	 * @param mImageView
 	 * @return
 	 */
@@ -110,7 +109,7 @@ public class ImageDownloader {
 	
 	/**
 	 * 删除map中该url的信息，这一步很重要，不然MyAsyncTask的引用会“一直”存在于map中
-	 * @param url
+	 * @param tag
 	 */
 	private void removeTaskFormMap(String tag){
 		if(tag != null && map != null && map.get(tag) != null){
