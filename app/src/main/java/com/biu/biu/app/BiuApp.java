@@ -21,5 +21,6 @@ public class BiuApp extends Application {
 		Fresco.initialize(this);
 		// 百度地图的初始化，。在应用启动的时候初始化
 		SDKInitializer.initialize(getApplicationContext());
+		Log.d("packageName", getPackageName());
 	}
 }

@@ -5,7 +5,7 @@
     <!-- android:targetSdkVersion="23" -->
     <!-- 注册权限 -->
     <permission
-        android:name="com.biu.biu.biu.permission.JPUSH_MESSAGE"
+        android:name="grf.biu.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
 
     <!-- 华为桌面角标许可 -->
@@ -18,6 +18,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -26,7 +28,7 @@
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <!-- 使用推送消息权限 -->
-    <uses-permission android:name="com.biu.biu.biu.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="grf.biu.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -64,12 +66,12 @@
 
         <activity android:name="com.biu.biu.main.SplashActivity"></activity>
         <!-- 百度地图KEY -->
-        <!--<meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="KBGtG5v9ZWxP1NEONobHPZub" />-->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="tLjgI5oEAZYF5Ok7f3dsvWhyRizOtYmg" />
+            android:value="KBGtG5v9ZWxP1NEONobHPZub" />
+        <!--<meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="tLjgI5oEAZYF5Ok7f3dsvWhyRizOtYmg" />-->
         <!--
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -78,12 +80,12 @@
 
 
         <!-- 郭荣峰的高德KEY -->
-       <!-- <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="149e899129266d8f5796d0adb05af5bb" />-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7e1fecefab6c4c192aec321c491d7da2" />
+            android:value="149e899129266d8f5796d0adb05af5bb" />
+        <!--<meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="7e1fecefab6c4c192aec321c491d7da2" />-->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="55278b7cfd98c5a2b90009b9" />
@@ -223,7 +225,7 @@
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="com.biu.biu.biu" />
+                <category android:name="grf.biu" />
             </intent-filter>
         </activity>
         <!-- Required  SDK核心功能 -->
@@ -254,7 +256,7 @@
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.DaemonService" />
 
-                <category android:name="com.biu.biu.biu" />
+                <category android:name="grf.biu" />
             </intent-filter>
         </service>
 
@@ -266,7 +268,7 @@
             <intent-filter android:priority="1000" >
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
                 <!-- Required  显示通知栏 -->
-                <category android:name="com.biu.biu.biu" />
+                <category android:name="grf.biu" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -303,7 +305,7 @@
                 <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
                 <action android:name="cn.jpush.android.intent.CONNECTION" />
                 <!-- 接收网络变化 连接/断开 since 1.6.3 -->
-                <category android:name="com.biu.biu" />
+                <category android:name="grf.biu" />
 
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -314,12 +316,12 @@
         <meta-data
             android:name="JPUSH_CHANNEL"
             android:value="developer-default" />
-        <!--<meta-data
-            android:name="JPUSH_APPKEY"
-            android:value="3cbacd70535af370941760ef" />-->
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="98b6b18f73abc2325170ae73" />
+            android:value="3cbacd70535af370941760ef" />
+        <!--<meta-data
+            android:name="JPUSH_APPKEY"
+            android:value="e901f1b12ba2ffdc2f779a35" />-->
 
         <activity
             android:name="com.umeng.socialize.view.ShareActivity"

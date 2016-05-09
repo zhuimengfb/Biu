@@ -46,7 +46,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.BasicPushNotificationBuilder;
-import cn.jpush.android.api.CustomPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
 
 /**
@@ -111,21 +110,21 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     // 定义通知
     BasicPushNotificationBuilder basicBuild = new BasicPushNotificationBuilder(
         MainActivity.this);
-    basicBuild.statusBarDrawable = R.drawable.icon;
+    basicBuild.statusBarDrawable = R.drawable.jpush_notification_icon;
     basicBuild.notificationFlags = Notification.FLAG_AUTO_CANCEL
         | Notification.FLAG_SHOW_LIGHTS; // 设置为自动消失和呼吸灯闪烁
     basicBuild.notificationDefaults = Notification.DEFAULT_SOUND
         | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS;
     JPushInterface.setPushNotificationBuilder(1, basicBuild);
     // 自定义样式
-    CustomPushNotificationBuilder builder = new CustomPushNotificationBuilder(
+    /*CustomPushNotificationBuilder builder = new CustomPushNotificationBuilder(
         MainActivity.this, R.layout.biu_notication_style, R.id.icon,
         R.id.title, R.id.text);
     // 指定定制的 Notification Layout
     builder.statusBarDrawable = R.drawable.icon;
     // 指定最顶层状态栏小图标
     builder.layoutIconDrawable = R.drawable.icon;
-    JPushInterface.setPushNotificationBuilder(2, builder);
+    JPushInterface.setPushNotificationBuilder(2, builder);*/
   }
 
   // 判定是否显示菜单条上面的两个红点标记

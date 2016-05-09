@@ -158,7 +158,7 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
 		} else if (position == 3) {
 			listItemView.userName.setText("地板");
 		} else {
-			listItemView.userName.setText((position+1)+"楼");
+			listItemView.userName.setText(position+"楼");
 		}
 		listItemView.contentTv.setText(mListItemsInfo.get(position).content);
 		// 设置发表时间和回复数
