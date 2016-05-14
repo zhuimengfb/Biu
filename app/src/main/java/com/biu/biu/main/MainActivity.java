@@ -2,7 +2,11 @@ package com.biu.biu.main;
 
 
 import android.app.Notification;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -30,7 +34,7 @@ import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.biu.biu.R;
+import com.baidu.mapapi.SDKInitializer;
 import com.biu.biu.thread.PostTempPosition;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.biu.biu.views.base.BaseActivity;
@@ -46,7 +50,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.BasicPushNotificationBuilder;
+import cn.jpush.android.api.CustomPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
+import grf.biu.R;
 
 /**
  * 
@@ -76,6 +82,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
 	final int AIRPLAY_MESSAGE_HIDE_TOAST = 2;
 	MainHandler m_Handler;
 	private Toast mToast;
+  private MyReceiver myReceiver;
 
 	// 定义两个改变首页内容的按钮控件
 	private Button homeFrgNew;
@@ -86,7 +93,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
 	private ImageView meStatusView = null;
 
   @BindView(R.id.bottom_navigation_bar)
-	 BottomNavigationBar bottomNavigationBar;
+  BottomNavigationBar bottomNavigationBar;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.toolbar_tab)
@@ -98,33 +105,39 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
+      initReceiver();
 		initSdk();
 		initView();
 		defineHomeBt();
 		checkSoftwareUpdate();
-	}
-
-
+    }
+    private void initReceiver() {
+      myReceiver = new MyReceiver();
+      IntentFilter intentFilter = new IntentFilter();
+      intentFilter.addAction(MeFragment.ME_FRAGMENT_MSG_UPDATE_ACTION);
+      intentFilter.addAction(PeepFragment.PEEP_FRAGMENT_MSG_UPDATE_ACTION);
+      registerReceiver(myReceiver, intentFilter);
+    }
   private void defineNotificationStyle() {
     // 传统通知样式
     // 定义通知
     BasicPushNotificationBuilder basicBuild = new BasicPushNotificationBuilder(
         MainActivity.this);
-    basicBuild.statusBarDrawable = R.drawable.jpush_notification_icon;
+    basicBuild.statusBarDrawable = R.drawable.icon;
     basicBuild.notificationFlags = Notification.FLAG_AUTO_CANCEL
         | Notification.FLAG_SHOW_LIGHTS; // 设置为自动消失和呼吸灯闪烁
     basicBuild.notificationDefaults = Notification.DEFAULT_SOUND
         | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS;
     JPushInterface.setPushNotificationBuilder(1, basicBuild);
     // 自定义样式
-    /*CustomPushNotificationBuilder builder = new CustomPushNotificationBuilder(
+    CustomPushNotificationBuilder builder = new CustomPushNotificationBuilder(
         MainActivity.this, R.layout.biu_notication_style, R.id.icon,
         R.id.title, R.id.text);
     // 指定定制的 Notification Layout
     builder.statusBarDrawable = R.drawable.icon;
     // 指定最顶层状态栏小图标
     builder.layoutIconDrawable = R.drawable.icon;
-    JPushInterface.setPushNotificationBuilder(2, builder);*/
+    JPushInterface.setPushNotificationBuilder(2, builder);
   }
 
   // 判定是否显示菜单条上面的两个红点标记
@@ -162,6 +175,8 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     JPushInterface.init(getApplicationContext());
     JPushInterface.setLatestNotificationNumber(getApplicationContext(), 3);
     this.defineNotificationStyle();
+	  SDKInitializer.initialize(getApplicationContext());
+	  Log.d("packageName", getPackageName());
     checkIsSupportedByVersion();
     defineHWBadgeNum();
   }
@@ -243,6 +258,36 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
 
 			}
 		});
+	}
+
+  class MyReceiver extends BroadcastReceiver{
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      if (intent != null) {
+        switch (intent.getAction()) {
+          case MeFragment.ME_FRAGMENT_MSG_UPDATE_ACTION:
+            int number = intent.getIntExtra(MeFragment.KEY_ME_FRAGMENT_MSG_NUMBER, 0);
+            if (number > 0 && number <= 99) {
+              bottomNavigationBar.showBadgeNumber(2, number + "");
+            } else if (number > 99) {
+              bottomNavigationBar.showBadgeNumber(2, "99+");
+            } else {
+              bottomNavigationBar.hideBadge(2);
+            }
+            break;
+          case PeepFragment.PEEP_FRAGMENT_MSG_UPDATE_ACTION:
+            bottomNavigationBar.showCircleBadge(0);
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+	public BottomNavigationBar getBottomNavigationBar() {
+		return bottomNavigationBar;
 	}
 
 	/*
@@ -566,4 +611,10 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
 			e.printStackTrace();
 		}
 	}
+
+  @Override
+  protected void onDestroy() {
+    unregisterReceiver(myReceiver);
+    super.onDestroy();
+  }
 }

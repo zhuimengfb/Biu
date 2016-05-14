@@ -20,7 +20,6 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
-import com.biu.biu.R;
 import com.biu.biu.thread.GetMoonThread;
 import com.biu.biu.tools.AutoListView;
 import com.biu.biu.tools.AutoListView.OnLoadListener;
@@ -33,6 +32,8 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
+import grf.biu.R;
 
 public class MoonboxActivity extends Activity implements OnRefreshListener,
 		OnLoadListener, AMapLocationListener {

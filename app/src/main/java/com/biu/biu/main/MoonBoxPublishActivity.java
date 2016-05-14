@@ -20,7 +20,8 @@ import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
-import com.biu.biu.R;
+
+import grf.biu.R;
 
 public class MoonBoxPublishActivity extends Activity implements AMapLocationListener{
 	private Double mlat = 0.0;

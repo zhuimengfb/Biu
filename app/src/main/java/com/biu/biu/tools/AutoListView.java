@@ -15,8 +15,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.umeng.socialize.utils.Log;
+
+import grf.biu.R;
 
 /**
  * @author SunnyCoffee

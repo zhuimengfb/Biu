@@ -17,7 +17,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.morehottips.MoreHotPeepTopicActivity;
 import com.biu.biu.netimage.ImageDownloader;
 import com.biu.biu.netimage.OnImageDownload;
@@ -26,6 +25,8 @@ import com.biu.biu.tools.AutoListView;
 import com.biu.biu.userconfig.UserConfigParams;
 
 import java.util.ArrayList;
+
+import grf.biu.R;
 
 public class PeepListAdapter extends BaseAdapter {
 	private class PeepContentClickListener implements OnClickListener {

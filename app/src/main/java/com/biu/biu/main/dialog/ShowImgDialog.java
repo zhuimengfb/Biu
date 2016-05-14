@@ -6,8 +6,9 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.ImageView;
 
-import com.biu.biu.R;
 import com.biu.biu.imageview.MatrixImageView;
+
+import grf.biu.R;
 
 public class ShowImgDialog extends Dialog {
 	private Context context;

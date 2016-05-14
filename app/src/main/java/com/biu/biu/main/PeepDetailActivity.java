@@ -18,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.biu.biu.R;
 import com.biu.biu.thread.GetHttpThread;
 import com.biu.biu.thread.PostTopicReplyThread;
 import com.biu.biu.userconfig.UserConfigParams;
@@ -54,6 +53,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import grf.biu.R;
 
 
 public class PeepDetailActivity extends BaseActivity {

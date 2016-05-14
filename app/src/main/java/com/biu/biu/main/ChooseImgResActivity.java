@@ -8,7 +8,8 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 
-import com.biu.biu.R;
+import grf.biu.R;
+
 
 public class ChooseImgResActivity extends Activity implements OnClickListener {
 

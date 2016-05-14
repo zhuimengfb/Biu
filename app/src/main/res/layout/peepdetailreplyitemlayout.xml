@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginRight="10dp"
     android:layout_marginLeft="10dp"
-    android:layout_marginBottom="2dp"
     >
 
     <android.support.v7.widget.CardView
@@ -15,6 +14,7 @@
         android:background="?android:selectableItemBackground"
         android:descendantFocusability="blocksDescendants"
         app:cardElevation="10dp"
+        android:layout_marginTop="4dp"
         >
         <RelativeLayout
             android:layout_width="match_parent"
@@ -22,7 +22,9 @@
             android:background="@android:color/background_light"
             android:descendantFocusability="blocksDescendants"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" >
+            android:paddingRight="10dp"
+            android:layout_marginBottom="5dp"
+            >
 
         <RelativeLayout
             android:id="@+id/lv_head"

@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.biu.biu.R;
 import com.biu.biu.thread.ClearPushNumThread;
 import com.biu.biu.tools.AutoListView;
 import com.biu.biu.tools.AutoListView.OnLoadListener;
@@ -43,6 +42,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bingoogolapple.badgeview.BGABadgeLinearLayout;
+import grf.biu.R;
 
 public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
 															 OnLoadListener {
@@ -512,6 +513,8 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
 						.findViewById(R.id.myreplycontent);
 				viewHolder.replyToContentView = (TextView) view
 						.findViewById(R.id.myreplyiteminfotv);
+				viewHolder.bgaBadgeLinearLayout = (BGABadgeLinearLayout) view.findViewById(R.id
+						.myreplytar);
 				view.setTag(viewHolder);
 			} else {
 				view = convertView;
@@ -521,18 +524,22 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
 			viewHolder.replyTimeView.setText(replythreadInfo.getReplytime());
 
 			if (replythreadInfo.getPush_num() > 0) {
-				viewHolder.replyPushNumView.setVisibility(TextView.VISIBLE);
+				//viewHolder.replyPushNumView.setVisibility(TextView.VISIBLE);
 				if (replythreadInfo.getPush_num() < 99) {
 					// 可能有问题
 					// String number = Integer.toString(publishThread
 					// .getPush_num());
-					viewHolder.replyPushNumView.setText(Integer
+					/*viewHolder.replyPushNumView.setText(Integer
+							.toString(replythreadInfo.getPush_num()));*/
+					viewHolder.bgaBadgeLinearLayout.showTextBadge(Integer
 							.toString(replythreadInfo.getPush_num()));
 				} else {
-					viewHolder.replyPushNumView.setText("99+");
+//					viewHolder.replyPushNumView.setText("99+");
+					viewHolder.bgaBadgeLinearLayout.showTextBadge("99+");
 				}
 			} else {
-				viewHolder.replyPushNumView.setVisibility(TextView.INVISIBLE);
+//				viewHolder.replyPushNumView.setVisibility(TextView.INVISIBLE);
+				viewHolder.bgaBadgeLinearLayout.hiddenBadge();
 			}
 
 			viewHolder.replyContentView.setText(replythreadInfo
@@ -552,6 +559,8 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
 			TextView replyContentView;
 			// 楼主的帖子内容
 			TextView replyToContentView;
+
+			BGABadgeLinearLayout bgaBadgeLinearLayout;
 
 		}
 	}

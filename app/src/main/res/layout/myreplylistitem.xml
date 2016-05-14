@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 我评论的ListView项目的布局文件 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="20dp" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="10dp">
 
-    <LinearLayout
+    <cn.bingoogolapple.badgeview.BGABadgeLinearLayout
         android:id="@+id/myreplytar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        app:badge_horizontalMargin="8dp"
+        >
 
         <TextView
             android:id="@+id/myreplytimetv"
@@ -36,7 +40,7 @@
             android:textColor="#ffffff"
             android:textSize="10sp"
             android:visibility="gone" />
-    </LinearLayout>
+    </cn.bingoogolapple.badgeview.BGABadgeLinearLayout>
 
     <TextView
         android:id="@+id/myreplycontent"

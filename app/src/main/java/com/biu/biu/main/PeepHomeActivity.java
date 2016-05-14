@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.netimage.ImageDownloader;
 import com.biu.biu.thread.GetPeepThread;
 import com.biu.biu.tools.AutoListView;
@@ -30,6 +29,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import grf.biu.R;
 
 public class PeepHomeActivity extends BaseActivity implements OnRefreshListener,
 															  OnLoadListener {

@@ -3,7 +3,8 @@ package com.biu.biu.main;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.biu.biu.R;
+import grf.biu.R;
+
 
 public class TabHomeActivity extends Activity {
 	

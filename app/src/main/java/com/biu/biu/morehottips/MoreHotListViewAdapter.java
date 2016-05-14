@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.main.PeepDetailActivity;
 import com.biu.biu.main.TipItemInfo;
 import com.biu.biu.netimage.ImageDownloader;
@@ -34,6 +33,8 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+
+import grf.biu.R;
 
 public class MoreHotListViewAdapter extends BaseAdapter {
 
@@ -316,7 +317,7 @@ public class MoreHotListViewAdapter extends BaseAdapter {
 	/**
 	 * 将activity的匿名内部类引用传入adaper，直接发送消息。
 	 * 
-	 * @param handler
+	 * @param
 	 */
 	// public void setHandler(Handler handler){
 	// this.myhandler = handler;

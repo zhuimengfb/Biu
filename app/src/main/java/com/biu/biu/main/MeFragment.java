@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.biu.biu.views.ActivityUserAgreement;
 import com.umeng.update.UmengUpdateAgent;
@@ -33,10 +32,24 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import cn.bingoogolapple.badgeview.BGABadgeFrameLayout;
+import grf.biu.R;
+
 
 public class MeFragment extends Fragment {
+
+	public static final String ME_FRAGMENT_MSG_UPDATE_ACTION = "me_fragment_msg_action";
+	public static final String KEY_ME_FRAGMENT_MSG_NUMBER = "me_fragment_msg_number";
 	// 显示新消息情况的红点
 	private ImageView meStatusView;
+
+	@BindView(R.id.bga_me_publish_frame)
+	BGABadgeFrameLayout publishFrame;
+	@BindView(R.id.bga_me_reply_frame)
+	BGABadgeFrameLayout replyFrame;
+
 
 	private Button myPublishbtn = null;
 	private Button myReplybtn = null;
@@ -185,6 +198,7 @@ public class MeFragment extends Fragment {
 		msgNumHandler = new MsgNumHandler();
 		View meView = inflater.inflate(R.layout.activity_tab_me, container,
 				false);
+		ButterKnife.bind(this, meView);
 		return meView;
 	}
 
@@ -314,42 +328,50 @@ public class MeFragment extends Fragment {
 							"刷新新消息的数目" + "获得的回复新消息数目：：：："
 									+ msgNumDetail.getInt("reply"));
 					if (msgNumDetail.getInt("publish") > 0) {
-						myPublishNum.setVisibility(TextView.VISIBLE);
+						//myPublishNum.setVisibility(TextView.VISIBLE);
 						if (msgNumDetail.getInt("publish") < 99) {
-							myPublishNum.setText(msgNumDetail
+							/*myPublishNum.setText(msgNumDetail
+									.getString("publish"));*/
+							publishFrame.showTextBadge(msgNumDetail
 									.getString("publish"));
 						} else {
-							myPublishNum.setText("99+");
+							/*myPublishNum.setText("99+");*/
+							publishFrame.showTextBadge("99+");
 						}
 						UserConfigParams.meStatus = true;
 
 					} else {
-						myPublishNum.setVisibility(TextView.INVISIBLE);
+						publishFrame.hiddenBadge();
+						/*myPublishNum.setVisibility(TextView.INVISIBLE);*/
 					}
 
 					if (msgNumDetail.getInt("reply") > 0) {
-						myReplyNum.setVisibility(TextView.VISIBLE);
+						/*myReplyNum.setVisibility(TextView.VISIBLE);*/
 						if (msgNumDetail.getInt("reply") < 99) {
-							myReplyNum.setText(msgNumDetail.getString("reply"));
+							/*myReplyNum.setText(msgNumDetail.getString("reply"));*/
+							replyFrame.showTextBadge(msgNumDetail.getString("reply"));
 						} else {
-							myReplyNum.setText("99+");
+							/*myReplyNum.setText("99+");*/
+							replyFrame.showTextBadge("99+");
 						}
 						UserConfigParams.meStatus = true;
 					} else {
-						myReplyNum.setVisibility(TextView.INVISIBLE);
+						/*myReplyNum.setVisibility(TextView.INVISIBLE);*/
+						replyFrame.hiddenBadge();
 					}
+					sendMsgNumBroadcast(msgNumDetail.getInt("reply")+msgNumDetail.getInt("publish") );
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
-				if (UserConfigParams.meStatus) {
+				/*if (UserConfigParams.meStatus) {
 					meStatusView.setVisibility(View.VISIBLE);
 				} else {
 					if (meStatusView!=null) {
 						meStatusView.setVisibility(View.INVISIBLE);
 					}
-				}
+				}*/
 				UserConfigParams.meStatus = false;
 				break;
 			case MSG_NUM_ERR:
@@ -360,6 +382,12 @@ public class MeFragment extends Fragment {
 		}
 	}
 
+	private void sendMsgNumBroadcast(int number) {
+		Intent intent = new Intent();
+		intent.setAction(ME_FRAGMENT_MSG_UPDATE_ACTION);
+		intent.putExtra(KEY_ME_FRAGMENT_MSG_NUMBER, number);
+		getActivity().sendBroadcast(intent);
+	}
 	private final static int MSG_NUM_OK = 0;
 	private final static int MSG_NUM_ERR = -1;
 

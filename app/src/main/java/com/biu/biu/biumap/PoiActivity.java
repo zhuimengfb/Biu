@@ -28,7 +28,6 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.biu.biu.R;
 import com.biu.biu.main.HomeFragment;
 import com.biu.biu.main.HotHomeFragment;
 import com.biu.biu.main.TipItemInfo;
@@ -42,6 +41,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import grf.biu.R;
 
 //兴趣点的2500米页面
 public class PoiActivity extends BaseActivity implements OnClickListener {

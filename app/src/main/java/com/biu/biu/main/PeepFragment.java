@@ -26,7 +26,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.biu.biu.R;
 import com.biu.biu.biumap.BiumapActivity;
 import com.biu.biu.biumap.PoiActivity;
 import com.biu.biu.biumap.PoiDatabaseHelper;
@@ -60,8 +59,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
+import grf.biu.R;
 
 public class PeepFragment extends Fragment implements OnRefreshListener {
+
+	public static final String PEEP_FRAGMENT_MSG_UPDATE_ACTION = "peep_fragment_msg_update_action";
 	private AutoListView mPeepListView;
 	private PeepListViewAdapter mPeepListViewAdapter;
 	private ArrayList<PeepTopicInfo> mListItems = new ArrayList<PeepTopicInfo>(); // 存储各个帖子的文本信息
@@ -100,7 +103,8 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 			case MSG_GET_OK:
 				DealPeekTopicInfo();
 				if (UserConfigParams.peepStatus == true) {
-					peepStatusView.setVisibility(View.VISIBLE);
+					//peepStatusView.setVisibility(View.VISIBLE);
+					sendBroadCast(PEEP_FRAGMENT_MSG_UPDATE_ACTION);
 					UserConfigParams.peepStatus = false;
 				} else {
 					if (peepStatusView!=null) {
@@ -121,6 +125,11 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 
 	}
 
+	private void sendBroadCast(String action) {
+		Intent intent = new Intent();
+		intent.setAction(action);
+		getActivity().sendBroadcast(intent);
+	}
 	// 线程类获取活跃中的话题内容
 	class PeepTopicThread extends Thread {
 		private PeepHandler mHandler;
@@ -406,6 +415,8 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 						.findViewById(R.id.peeplistitem_topic);
 				listItemView.status_topic = (ImageView) convertView
 						.findViewById(R.id.status_topic);
+				listItemView.bgaBadgeRelativeLayout = (BGABadgeRelativeLayout) convertView
+						.findViewById(R.id.topic_status_layout);
 				convertView.setTag(listItemView);
 			} else {
 				listItemView = (PeepListView) convertView.getTag();
@@ -416,13 +427,14 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 			listItemView.peepTopic.setText(mListItems.get(position).content);
 			if (mListItems.get(position).status == 0) {
 				if (position != 0) {
-					listItemView.status_topic
-							.setVisibility(ImageView.INVISIBLE);
+					//listItemView.status_topic.setVisibility(ImageView.INVISIBLE);
+					listItemView.bgaBadgeRelativeLayout.hiddenBadge();
 				} else {
-					listItemView.status_topic.setVisibility(ImageView.GONE);
+					//listItemView.status_topic.setVisibility(ImageView.GONE);
 				}
 			} else {
-				listItemView.status_topic.setVisibility(ImageView.VISIBLE);
+				//listItemView.status_topic.setVisibility(ImageView.VISIBLE);
+				listItemView.bgaBadgeRelativeLayout.showCirclePointBadge();
 			}
 			return convertView;
 		}
@@ -432,6 +444,7 @@ public class PeepFragment extends Fragment implements OnRefreshListener {
 			public TextView peepTopic; // 标题内容
 			// 添加一个imageview显示话题与用户是否有新消息
 			public ImageView status_topic;
+			public BGABadgeRelativeLayout bgaBadgeRelativeLayout;
 		}
 
 		@Override

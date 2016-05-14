@@ -25,7 +25,6 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
-import com.biu.biu.R;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.umeng.analytics.MobclickAgent;
 
@@ -45,6 +44,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import grf.biu.R;
 
 public class PublishActivity extends Activity implements AMapLocationListener{
 	private Button mtabTopSubmit = null;

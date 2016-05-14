@@ -22,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.biu.biu.R;
 import com.biu.biu.bean.ImageFloder;
 import com.biu.biu.imageloader.ListImageDirPopupWindow;
 import com.biu.biu.imageloader.ListImageDirPopupWindow.OnImageDirSelected;
@@ -34,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+
+import grf.biu.R;
 
 public class ChooseImageActivity extends Activity implements OnImageDirSelected {
 	private ProgressDialog mProgressDialog;

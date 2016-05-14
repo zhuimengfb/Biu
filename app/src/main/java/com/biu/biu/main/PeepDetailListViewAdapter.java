@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.main.dialog.ShowImgDialog;
 import com.biu.biu.netimage.ImageDownloader;
 import com.biu.biu.netimage.OnImageDownload;
@@ -27,6 +26,8 @@ import com.biu.biu.netoperate.TipLikeTreadThread;
 import com.biu.biu.userconfig.UserConfigParams;
 
 import java.util.ArrayList;
+
+import grf.biu.R;
 
 public class PeepDetailListViewAdapter extends BaseAdapter {
 

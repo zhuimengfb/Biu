@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.userconfig.UserConfigParams;
 
 import org.apache.http.HttpResponse;
@@ -21,6 +20,8 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.ArrayList;
+
+import grf.biu.R;
 
 public class DetailListAdapter extends BaseAdapter{
 	private String hosturl = "http://api.bbbiu.com:1234";	// 主机域名

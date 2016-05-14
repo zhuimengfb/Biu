@@ -10,13 +10,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.umeng.fb.model.Conversation;
 import com.umeng.fb.model.Reply;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import grf.biu.R;
 
 /*-
  * 反馈建议页面中的聊天历史列表框适配器

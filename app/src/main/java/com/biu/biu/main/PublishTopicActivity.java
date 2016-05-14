@@ -35,7 +35,6 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
-import com.biu.biu.R;
 import com.biu.biu.thread.PostNewTopicTempThread;
 import com.biu.biu.tools.EditTextLengthIndicate;
 import com.biu.biu.userconfig.UserConfigParams;
@@ -52,6 +51,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import grf.biu.R;
 
 public class PublishTopicActivity extends BaseActivity implements
 		AMapLocationListener {

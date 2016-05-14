@@ -11,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.biu.biu.R;
 import com.biu.biu.main.MyDateTimeDeal;
 import com.biu.biu.main.TipItemInfo;
 import com.biu.biu.morehottips.GetMoreHotThread;
@@ -25,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import grf.biu.R;
 
 public class MorePoiHotActivity extends Activity implements OnRefreshListener,
 		OnLoadListener {

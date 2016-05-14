@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.main.PeepDetailActivity;
 import com.biu.biu.main.TipItemInfo;
 import com.biu.biu.morehottips.MoreHotActivity;
@@ -38,6 +37,8 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+
+import grf.biu.R;
 
 /*
  * Home页的ListView的Adapter,自定义的适配器一般继承BaseAdapter类

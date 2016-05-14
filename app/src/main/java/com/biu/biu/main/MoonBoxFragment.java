@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.biu.biu.R;
 import com.biu.biu.tools.AutoListView;
 import com.biu.biu.tools.AutoListView.OnLoadListener;
 import com.biu.biu.tools.AutoListView.OnRefreshListener;
@@ -33,6 +32,8 @@ import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+
+import grf.biu.R;
 
 // 月光宝盒分页
 

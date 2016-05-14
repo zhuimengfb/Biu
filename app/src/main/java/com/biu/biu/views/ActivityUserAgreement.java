@@ -3,11 +3,11 @@ package com.biu.biu.views;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import com.biu.biu.R;
 import com.biu.biu.views.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import grf.biu.R;
 
 public class ActivityUserAgreement extends BaseActivity {
 

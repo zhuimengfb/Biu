@@ -13,11 +13,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.biu.biu.R;
 import com.biu.biu.main.SplashActivity;
 import com.biu.biu.views.base.BaseActivity;
 
 import cn.jpush.android.api.JPushInterface;
+import grf.biu.R;
 
 public class LaunchActivity extends BaseActivity {
 

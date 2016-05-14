@@ -10,11 +10,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.TelephonyManager;
 
-import com.biu.biu.R;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.UUID;
+
+import grf.biu.R;
 
 //import com.biu.biu.badge.BadgeUtil;
 

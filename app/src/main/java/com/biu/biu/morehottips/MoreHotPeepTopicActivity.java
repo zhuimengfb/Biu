@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.main.MyDateTimeDeal;
 import com.biu.biu.main.PeepListAdapter;
 import com.biu.biu.main.TipItemInfo;
@@ -24,6 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import grf.biu.R;
 
 public class MoreHotPeepTopicActivity extends Activity implements OnRefreshListener, OnLoadListener {
 	private AutoListView mListView;

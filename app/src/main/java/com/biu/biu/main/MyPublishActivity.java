@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.biu.biu.R;
 import com.biu.biu.thread.ClearPushNumThread;
 import com.biu.biu.tools.AutoListView;
 import com.biu.biu.tools.AutoListView.OnLoadListener;
@@ -44,6 +43,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bingoogolapple.badgeview.BGABadgeLinearLayout;
+import grf.biu.R;
 
 public class MyPublishActivity extends BaseActivity implements OnRefreshListener,
 															   OnLoadListener {
@@ -444,6 +445,8 @@ public class MyPublishActivity extends BaseActivity implements OnRefreshListener
 						.findViewById(R.id.titlenum_publish);
 				viewHolder.publishContentView = (TextView) view
 						.findViewById(R.id.mypubitemcontenttv);
+				viewHolder.bgaBadgeLinearLayout = (BGABadgeLinearLayout) view.findViewById(R.id
+						.mypublishtar);
 				view.setTag(viewHolder);
 			} else {
 				view = convertView;
@@ -453,18 +456,22 @@ public class MyPublishActivity extends BaseActivity implements OnRefreshListener
 			viewHolder.publishTimeView.setText(publishThread.getCreated_at());
 
 			if (publishThread.getPush_num() > 0) {
-				viewHolder.publishPushNumView.setVisibility(TextView.VISIBLE);
+//				viewHolder.publishPushNumView.setVisibility(TextView.VISIBLE);
 				if (publishThread.getPush_num() < 99) {
 					// 可能有问题
 					// String number = Integer.toString(publishThread
 					// .getPush_num());
-					viewHolder.publishPushNumView.setText(Integer
+					/*viewHolder.publishPushNumView.setText(Integer
+							.toString(publishThread.getPush_num()));*/
+					viewHolder.bgaBadgeLinearLayout.showTextBadge(Integer
 							.toString(publishThread.getPush_num()));
 				} else {
-					viewHolder.publishPushNumView.setText("99+");
+					/*viewHolder.publishPushNumView.setText("99+");*/
+					viewHolder.bgaBadgeLinearLayout.showTextBadge("99+");
 				}
 			} else {
-				viewHolder.publishPushNumView.setVisibility(TextView.INVISIBLE);
+				/*viewHolder.publishPushNumView.setVisibility(TextView.INVISIBLE);*/
+				viewHolder.bgaBadgeLinearLayout.hiddenBadge();
 			}
 
 			viewHolder.publishContentView.setText(publishThread
@@ -477,6 +484,7 @@ public class MyPublishActivity extends BaseActivity implements OnRefreshListener
 			TextView publishTimeView;
 			TextView publishPushNumView;
 			TextView publishContentView;
+			BGABadgeLinearLayout bgaBadgeLinearLayout;
 		}
 	}
 

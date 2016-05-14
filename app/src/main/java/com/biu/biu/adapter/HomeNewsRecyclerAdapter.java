@@ -9,13 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.main.TipItemInfo;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import grf.biu.R;
 
 /**
  * Created by fubo on 2016/5/7 0007.

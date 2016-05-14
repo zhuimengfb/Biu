@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.biu.biu.R;
 import com.biu.biu.tools.AutoListView;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.biu.biu.views.base.BaseFragment;
@@ -39,6 +38,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import grf.biu.R;
 
 public class HomeFragment extends BaseFragment
     implements AutoListView.OnRefreshListener, AutoListView.OnLoadListener {

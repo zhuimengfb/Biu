@@ -10,12 +10,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
-import com.biu.biu.R;
 import com.biu.biu.utils.CommonAdapter;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+
+import grf.biu.R;
 
 public class MyAdapter extends CommonAdapter<String>{
 	private Context mContext;

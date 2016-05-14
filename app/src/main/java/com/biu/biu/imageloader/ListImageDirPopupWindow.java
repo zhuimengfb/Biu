@@ -6,13 +6,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.biu.biu.R;
 import com.biu.biu.bean.ImageFloder;
 import com.biu.biu.utils.BasePopupWindowForListView;
 import com.biu.biu.utils.CommonAdapter;
 import com.biu.biu.utils.ViewHolder;
 
 import java.util.List;
+
+import grf.biu.R;
 
 public class ListImageDirPopupWindow extends BasePopupWindowForListView<ImageFloder>
 {

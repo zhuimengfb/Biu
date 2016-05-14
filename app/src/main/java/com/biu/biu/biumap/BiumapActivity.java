@@ -39,7 +39,6 @@ import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionResult.SuggestionInfo;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.baidu.mapapi.search.sug.SuggestionSearchOption;
-import com.biu.biu.R;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.biu.biu.views.base.BaseActivity;
 import com.umeng.socialize.utils.Log;
@@ -49,6 +48,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import grf.biu.R;
 
 public class BiumapActivity extends BaseActivity {
 	private MapView biuMapView;

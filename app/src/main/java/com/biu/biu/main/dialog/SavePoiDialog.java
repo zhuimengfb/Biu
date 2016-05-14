@@ -14,8 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.biumap.PoiDatabaseHelper;
+
+import grf.biu.R;
 
 public class SavePoiDialog extends Dialog implements
 		View.OnClickListener {

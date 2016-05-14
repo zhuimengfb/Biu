@@ -14,9 +14,10 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.biu.biu.R;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.umeng.analytics.MobclickAgent;
+
+import grf.biu.R;
 
 public class MoonDetailActivity extends Activity {
 	

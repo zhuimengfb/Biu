@@ -15,7 +15,7 @@
 			android:layout_height="?attr/actionBarSize"
 			android:background="@color/colorPrimary"
 			android:fillViewport="false"
-			app:title="@string/my_publish"
+			app:title="@string/me_suggestion"
 			app:titleTextColor="@color/white"
 			app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 			app:popupTheme="@style/AppTheme.PopupOverlay"

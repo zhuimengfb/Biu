@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.biu.biu.R;
 import com.biu.biu.replysuggestion.ChatAdapter;
 import com.biu.biu.replysuggestion.ChatEntity;
 import com.biu.biu.views.base.BaseActivity;
@@ -26,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import grf.biu.R;
 
 public class ResponseSuggestActivity extends BaseActivity {
 	private EditText contentEditText = null;
