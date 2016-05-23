@@ -224,7 +224,7 @@ public class HomeListAdapter extends BaseAdapter {
 		// listItemView.homedownbtn.setImageResource(R.drawable.home_icon4);
 		if (mlistItemsinfo.get(position).isEmpty) {
 			// 无数据
-			listItemView.homeContenttv.setText("您所在位置还没有发帖的人，请按右上角 + 第一个发贴吧");
+			listItemView.homeContenttv.setText("您所在位置还没有发帖的人，快来发帖吧");
 			listItemView.publishPlacetv.setVisibility(TextView.GONE); // 位置信息
 			listItemView.replayCounttv.setVisibility(TextView.GONE); // 回复数
 			// listItemView.DownCounttv.setVisibility(TextView.GONE); // 踩数

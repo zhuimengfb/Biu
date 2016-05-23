@@ -6,72 +6,72 @@
     <!-- 注册权限 -->
     <permission
         android:name="grf.biu.permission.JPUSH_MESSAGE"
-        android:protectionLevel="signature" />
+        android:protectionLevel="signature"/>
 
     <!-- 华为桌面角标许可 -->
-    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
-    <uses-permission android:name="com.huawei.permission.sec.MDM" />
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE"/>
+    <uses-permission android:name="com.huawei.permission.sec.MDM"/>
     <!-- 系统权限 -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" >
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED">
     </uses-permission>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
     <!-- 使用推送消息权限 -->
-    <uses-permission android:name="grf.biu.permission.JPUSH_MESSAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="grf.biu.permission.JPUSH_MESSAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
         android:name="com.biu.biu.app.BiuApp"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name="com.biu.biu.views.LaunchActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
             </intent-filter>
         </activity>
         <activity
             android:name="com.biu.biu.views.ActivityUserAgreement"
             android:label="@string/title_activity_activity_user_agreement"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
-
-        <activity android:name="com.biu.biu.main.SplashActivity"></activity>
+        <activity android:name="com.biu.biu.main.SplashActivity"/>
         <!-- 百度地图KEY -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="KBGtG5v9ZWxP1NEONobHPZub" />
-        <!--<meta-data
+            android:value="KBGtG5v9ZWxP1NEONobHPZub"/>
+        <!--
+            <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="tLjgI5oEAZYF5Ok7f3dsvWhyRizOtYmg" />-->
+            android:value="tLjgI5oEAZYF5Ok7f3dsvWhyRizOtYmg" />
+        -->
         <!--
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -82,61 +82,60 @@
         <!-- 郭荣峰的高德KEY -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="149e899129266d8f5796d0adb05af5bb" />
-        <!--<meta-data
+            android:value="149e899129266d8f5796d0adb05af5bb"/>
+        <!--
+            <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7e1fecefab6c4c192aec321c491d7da2" />-->
+            android:value="7e1fecefab6c4c192aec321c491d7da2" />
+        -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="55278b7cfd98c5a2b90009b9" />
+            android:value="55278b7cfd98c5a2b90009b9"/>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="test" />
+            android:value="test"/>
 
         <service
             android:name="com.umeng.update.net.DownloadingService"
-            android:process=":DownloadingService" >
+            android:process=":DownloadingService">
         </service>
         <!-- 显示地图的活动 -->
         <activity
             android:name="com.biu.biu.biumap.BiumapActivity"
             android:label="@string/chooseplace"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.biu.biu.biumap.PoiActivity"
             android:label="@string/poi_place"
             android:screenOrientation="portrait">
         </activity>
-        <activity
-            android:name="com.umeng.update.UpdateDialogActivity">
+        <activity android:name="com.umeng.update.UpdateDialogActivity">
         </activity>
         <activity
             android:name="com.biu.biu.main.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.biu.biu.main.TabHomeActivity"
-            android:label="@string/title_activity_tab_home" >
+            android:label="@string/title_activity_tab_home">
         </activity>
         <activity
             android:name="com.biu.biu.main.TabMeActivity"
-            android:label="@string/title_activity_tab_me" >
+            android:label="@string/title_activity_tab_me">
         </activity>
         <activity
             android:name="com.biu.biu.main.PublishActivity"
             android:label="@string/title_activity_publish"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
             android:name="com.biu.biu.main.ResponseSuggestActivity"
             android:label="@string/title_activity_response_suggest"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
             android:name="com.biu.biu.main.MyPublishActivity"
@@ -152,7 +151,7 @@
             android:name="com.biu.biu.main.TipDetailActivity"
             android:label="@string/title_activity_tip_detail"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
             android:name="com.biu.biu.morehottips.MoreHotActivity"
@@ -163,7 +162,7 @@
             android:name="com.biu.biu.main.MoonDetailActivity"
             android:label="@string/title_activity_moon_detail"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" >
+            android:windowSoftInputMode="adjustPan|stateHidden">
         </activity>
         <activity
             android:name="com.biu.biu.main.MoonboxActivity"
@@ -179,7 +178,7 @@
             android:name="com.biu.biu.main.PeepDetailActivity"
             android:label="@string/title_activity_peek_detail"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
             android:name="com.biu.biu.main.PeepHomeActivity"
@@ -189,11 +188,11 @@
             android:name="com.biu.biu.main.PublishTopicActivity"
             android:label="@string/title_activity_public_topic"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
             android:name="com.biu.biu.main.ChoosePhotoResourceActivity"
-            android:label="@string/title_activity_choose_photo_resource" >
+            android:label="@string/title_activity_choose_photo_resource">
         </activity>
         <activity
             android:name="com.biu.biu.morehottips.MoreHotPeepTopicActivity"
@@ -207,12 +206,12 @@
         <activity
             android:name="com.biu.biu.main.ChooseImgResActivity"
             android:label="@string/title_activity_choose_img_res"
-            android:theme="@style/MyDialogStyleBottom" >
+            android:theme="@style/MyDialogStyleBottom">
         </activity>
         <!-- 显示图片的活动 -->
         <activity
             android:name="com.biu.biu.main.ShowImageActivity"
-            android:label="@string/title_activity_show_image" >
+            android:label="@string/title_activity_show_image">
         </activity>
 
         <!-- JPush -->
@@ -220,30 +219,30 @@
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
-                <action android:name="cn.jpush.android.ui.PushActivity" />
+                <action android:name="cn.jpush.android.ui.PushActivity"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="grf.biu" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="grf.biu"/>
             </intent-filter>
         </activity>
         <!-- Required  SDK核心功能 -->
         <service
             android:name="cn.jpush.android.service.DownloadService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
         </service>
         <!-- Required SDK 核心功能 -->
         <service
             android:name="cn.jpush.android.service.PushService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTER" />
-                <action android:name="cn.jpush.android.intent.REPORT" />
-                <action android:name="cn.jpush.android.intent.PushService" />
-                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+                <action android:name="cn.jpush.android.intent.REGISTER"/>
+                <action android:name="cn.jpush.android.intent.REPORT"/>
+                <action android:name="cn.jpush.android.intent.PushService"/>
+                <action android:name="cn.jpush.android.intent.PUSH_TIME"/>
             </intent-filter>
         </service>
 
@@ -252,11 +251,11 @@
         <service
             android:name="cn.jpush.android.service.DaemonService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
-                <action android:name="cn.jpush.android.intent.DaemonService" />
+                <action android:name="cn.jpush.android.intent.DaemonService"/>
 
-                <category android:name="grf.biu" />
+                <category android:name="grf.biu"/>
             </intent-filter>
         </service>
 
@@ -264,64 +263,66 @@
         <receiver
             android:name="cn.jpush.android.service.PushReceiver"
             android:enabled="true"
-            android:exported="false" >
-            <intent-filter android:priority="1000" >
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
+            android:exported="false">
+            <intent-filter android:priority="1000">
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY"/>
                 <!-- Required  显示通知栏 -->
-                <category android:name="grf.biu" />
+                <category android:name="grf.biu"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
             <!-- Optional -->
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
 
-                <data android:scheme="package" />
+                <data android:scheme="package"/>
             </intent-filter>
         </receiver>
 
         <!-- Required SDK核心功能 -->
-        <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
+        <receiver android:name="cn.jpush.android.service.AlarmReceiver"/>
 
         <!-- User defined.  For test only  用户自定义的广播接收器 -->
         <receiver
             android:name="com.biu.biu.receiver.MyReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTRATION" />
+                <action android:name="cn.jpush.android.intent.REGISTRATION"/>
                 <!-- Required  用户注册SDK的intent -->
-                <action android:name="cn.jpush.android.intent.UNREGISTRATION" />
-                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
+                <action android:name="cn.jpush.android.intent.UNREGISTRATION"/>
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED"/>
                 <!-- Required  用户接收SDK消息的intent -->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED"/>
                 <!-- Required  用户接收SDK通知栏信息的intent -->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
                 <!-- Required  用户打开自定义通知栏的intent -->
-                <action android:name="cn.jpush.android.intent.ACTION_RICHPUSH_CALLBACK" />
+                <action android:name="cn.jpush.android.intent.ACTION_RICHPUSH_CALLBACK"/>
                 <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
-                <action android:name="cn.jpush.android.intent.CONNECTION" />
+                <action android:name="cn.jpush.android.intent.CONNECTION"/>
                 <!-- 接收网络变化 连接/断开 since 1.6.3 -->
-                <category android:name="grf.biu" />
+                <category android:name="grf.biu"/>
 
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
 
-                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.HOME"/>
             </intent-filter>
         </receiver>
 
         <meta-data
             android:name="JPUSH_CHANNEL"
-            android:value="developer-default" />
+            android:value="developer-default"/>
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="3cbacd70535af370941760ef" />
-        <!--<meta-data
+            android:value="3cbacd70535af370941760ef"/>
+        <!--
+            <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="e901f1b12ba2ffdc2f779a35" />-->
+            android:value="e901f1b12ba2ffdc2f779a35" />
+        -->
 
         <activity
             android:name="com.umeng.socialize.view.ShareActivity"
@@ -329,32 +330,32 @@
             android:launchMode="singleTask"
             android:noHistory="true"
             android:theme="@style/Theme.UMDialog"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
         <activity
             android:name="com.biu.biu.views.wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <!-- 腾讯SSO授权的Activity注册 -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
-            android:noHistory="true" >
+            android:noHistory="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="tencent100424468" />
+                <data android:scheme="tencent100424468"/>
             </intent-filter>
         </activity>
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
     </application>
 
 </manifest>
