@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-    <RelativeLayout
+    <!--<RelativeLayout
         android:id="@+id/toolbar_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -20,7 +20,9 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             >
         </android.support.v7.widget.Toolbar>
-    </RelativeLayout>
+    </RelativeLayout>-->
+    <include
+        layout="@layout/normal_toolbar_layout"/>
 
    <!-- <include layout="@layout/publish_top_tab" />-->
 
@@ -28,7 +30,8 @@
         android:id="@+id/mypublishlistview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:divider="@null"
+        android:divider="@color/timeColor"
+        android:dividerHeight="1dp"
         >
     </com.biu.biu.tools.AutoListView>
 

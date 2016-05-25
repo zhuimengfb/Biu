@@ -64,14 +64,12 @@
         </activity>
         <activity android:name="com.biu.biu.main.SplashActivity"/>
         <!-- 百度地图KEY -->
-        <meta-data
+        <!--<meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="KBGtG5v9ZWxP1NEONobHPZub"/>
-        <!--
+            android:value="KBGtG5v9ZWxP1NEONobHPZub"/>-->
             <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="tLjgI5oEAZYF5Ok7f3dsvWhyRizOtYmg" />
-        -->
         <!--
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -80,14 +78,12 @@
 
 
         <!-- 郭荣峰的高德KEY -->
-        <meta-data
+        <!--<meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="149e899129266d8f5796d0adb05af5bb"/>
-        <!--
+            android:value="149e899129266d8f5796d0adb05af5bb"/>-->
             <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="7e1fecefab6c4c192aec321c491d7da2" />
-        -->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="55278b7cfd98c5a2b90009b9"/>
@@ -213,6 +209,7 @@
             android:name="com.biu.biu.main.ShowImageActivity"
             android:label="@string/title_activity_show_image">
         </activity>
+        <activity android:name="com.biu.biu.user.views.UserInfoActivity"/>
 
         <!-- JPush -->
         <!-- Required SDK核心功能 -->

@@ -13,11 +13,11 @@
     </dimen>
     <dimen name="fixed_height_top_padding_inactive">2dp
     </dimen>
-    <dimen name="fixed_icon_badge_grid_height">36dp
+    <dimen name="fixed_icon_badge_grid_height">48dp
     </dimen>
     <dimen name="fixed_icon_badge_grid_width">48dp
     </dimen>
-    <dimen name="fixed_icon_grid">24dp</dimen>
+    <dimen name="fixed_icon_grid">28dp</dimen>
     <dimen name="fixed_label_active">14sp</dimen>
     <dimen name="fixed_label_inactive">12sp</dimen>
     <dimen name="fixed_max_width">168dp</dimen>

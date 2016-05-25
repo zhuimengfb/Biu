@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import grf.biu.R;
+
 public class BaseActivity extends AppCompatActivity {
 
 	
@@ -25,6 +27,7 @@ public class BaseActivity extends AppCompatActivity {
 			actionBar.setHomeButtonEnabled(true);
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
+		toolbar.setNavigationIcon(R.drawable.back_button);
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

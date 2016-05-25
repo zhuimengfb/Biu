@@ -11,7 +11,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
         android:scaleType="center"
-        android:src="@drawable/launch_icon" >
+        android:src="@drawable/startup_page" >
     </ImageView>
     
 

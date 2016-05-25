@@ -1,6 +1,5 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,54 +7,70 @@
     >
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1" >
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:orientation="vertical"
+        >
 
         <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:id="@+id/iv_icon_outside"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
                 android:layout_centerInParent="true"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 android:src="@drawable/me_icon_bg1" />
 
             <ImageView
+                android:id="@+id/iv_user_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:adjustViewBounds="true"
                 android:scaleType="center"
-                android:src="@drawable/me_icon" />
+                android:src="@drawable/user_icon_big" />
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/bigTitleSize"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/user_name"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/iv_icon_outside"
+                />
         </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:layout_marginTop="5dp"
-        android:background="#00000000"
-        android:orientation="vertical" >
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:paddingTop="15dp"
+        android:background="#F0F0F2"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        >
 
         <!-- <Spinner
             android:layout_width="fill_parent"
             android:layout_height="1dp" /> -->
 
         <!-- 添加新消息 -->
-		<include 
-		    layout="@layout/divider"
-		    />
+
         <cn.bingoogolapple.badgeview.BGABadgeFrameLayout
             android:id="@+id/bga_me_publish_frame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" 
+            android:layout_height="wrap_content"
             android:background="@drawable/mebutton"
             app:badge_horizontalMargin="8dp"
             >
@@ -65,11 +80,12 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#00000000"
-                android:gravity="center_vertical"
-                android:paddingLeft="10dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:gravity="center"
+                android:textColor="@color/smallTitleColor"
                 android:text="@string/me_mypublish"
-                android:textSize="@dimen/me_title_size" />
+                android:textSize="@dimen/userNameSize" />
 
             <TextView
                 android:id="@+id/mypublish_num"
@@ -80,7 +96,7 @@
                 android:gravity="center"
                 android:textColor="#ffffff"
                 android:textSize="10sp"
-                android:visibility="invisible" />
+                android:visibility="gone" />
         </cn.bingoogolapple.badgeview.BGABadgeFrameLayout>
 
         <!-- <Spinner
@@ -92,7 +108,7 @@
         <cn.bingoogolapple.badgeview.BGABadgeFrameLayout
             android:id="@+id/bga_me_reply_frame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" 
+            android:layout_height="wrap_content"
             android:background="@drawable/mebutton"
             app:badge_horizontalMargin="8dp"
             >
@@ -102,11 +118,12 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="#00000000"
-                android:gravity="center_vertical"
-                android:paddingLeft="10dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:gravity="center"
+                android:textColor="@color/smallTitleColor"
                 android:text="@string/me_myreply"
-                android:textSize="@dimen/me_title_size" />
+                android:textSize="@dimen/userNameSize" />
 
             <TextView
                 android:id="@+id/myreply_num"
@@ -117,7 +134,7 @@
                 android:gravity="center"
                 android:textColor="#ffffff"
                 android:textSize="10sp"
-                android:visibility="invisible" />
+                android:visibility="gone" />
         </cn.bingoogolapple.badgeview.BGABadgeFrameLayout>
 		<include 
 		    layout="@layout/divider"
@@ -128,15 +145,16 @@
             android:layout_height="1dp" /> -->
 
         <Button
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             android:id="@+id/me_mysuggestion"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/mebutton"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:textColor="@color/smallTitleColor"
             android:text="@string/me_suggestion"
-            android:textSize="@dimen/me_title_size" />
+            android:textSize="@dimen/userNameSize" />
 
         <!-- <Spinner
             android:layout_width="fill_parent"
@@ -146,18 +164,16 @@
 		    layout="@layout/divider"
 		    />
         <Button
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             android:id="@+id/me_checkversion"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/mebutton"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:textColor="@color/smallTitleColor"
             android:text="@string/me_checkversion"
-            android:textSize="@dimen/me_title_size" />
-		<include 
-		    layout="@layout/divider"
-		    />
+            android:textSize="@dimen/userNameSize" />
         <!-- <Spinner
             android:layout_width="fill_parent"
             android:layout_height="1dp" /> -->

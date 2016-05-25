@@ -1,12 +1,14 @@
 package com.biu.biu.app;
 
 import android.app.Application;
+import android.graphics.Typeface;
 import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 public class BiuApp extends Application {
 	private static final String TAG = "BiuPush";
+	public static Typeface globalTypeface;
 
 	@Override
 	public void onCreate() {
@@ -17,6 +19,6 @@ public class BiuApp extends Application {
 		//JPushInterface.init(this);
 		Fresco.initialize(this);
 		// 百度地图的初始化，。在应用启动的时候初始化
-
+		globalTypeface=Typeface.createFromAsset(getAssets(), "font/lantinghei.TTF");
 	}
 }

@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.biu.biu.app.BiuApp;
 import com.biu.biu.morehottips.MoreHotActivity;
 import com.biu.biu.netimage.ImageDownloader;
 import com.biu.biu.netimage.OnImageDownload;
@@ -238,7 +239,7 @@ public class HomeListAdapter extends BaseAdapter {
 			// listItemView.replyImg.setVisibility(ImageView.GONE);
 		} else {
 			// 显示所有控件
-			listItemView.publishPlacetv.setVisibility(TextView.VISIBLE); // 位置信息
+			listItemView.publishPlacetv.setVisibility(TextView.GONE); // 位置信息
 			listItemView.replayCounttv.setVisibility(TextView.VISIBLE); // 回复数
 			// listItemView.DownCounttv.setVisibility(TextView.VISIBLE); // 踩数
 			listItemView.TopCounttv.setVisibility(TextView.VISIBLE); // 顶数
@@ -254,9 +255,9 @@ public class HomeListAdapter extends BaseAdapter {
 			boolean btreadstate = mlistItemsinfo.get(position).hastreaded;
 			if (blikestate) {
 				listItemView.hometopbtn
-						.setImageResource(R.drawable.arrow1click);
+						.setImageResource(R.drawable.like_after_icon);
 			} else {
-				listItemView.hometopbtn.setImageResource(R.drawable.arrow1);
+				listItemView.hometopbtn.setImageResource(R.drawable.like_before_icon);
 			}
 			// 设置踩的状态
 			if (btreadstate) {
@@ -294,6 +295,7 @@ public class HomeListAdapter extends BaseAdapter {
 			// } else {
 			listItemView.homeContenttv
 					.setText(mlistItemsinfo.get(position).content);
+			listItemView.homeContenttv.setTypeface(BiuApp.globalTypeface);
 			// }
 
 			// 设置发表时间、回复数、顶、踩数量
@@ -304,15 +306,15 @@ public class HomeListAdapter extends BaseAdapter {
 			listItemView.publishTimetv
 					.setText(mlistItemsinfo.get(position).created_at);
 			listItemView.replayCounttv
-					.setText(mlistItemsinfo.get(position).reply_num + "条回复");
+					.setText(mlistItemsinfo.get(position).reply_num);
 			listItemView.TopCounttv.setText(topcount.toString());
 			// listItemView.DownCounttv.setText(downcount.toString());
 			String itemPlace = mlistItemsinfo.get(position).pubplace;
 
 			if (itemPlace.isEmpty() || itemPlace.equals("null")) {
-				listItemView.publishPlacetv.setVisibility(TextView.INVISIBLE);
+				listItemView.publishPlacetv.setVisibility(TextView.GONE);
 			} else {
-				listItemView.publishPlacetv.setVisibility(TextView.VISIBLE);
+				listItemView.publishPlacetv.setVisibility(TextView.GONE);
 				listItemView.publishPlacetv.setText(itemPlace);
 			}
 

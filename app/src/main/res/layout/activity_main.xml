@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <android.support.v7.widget.Toolbar
+    <!--<android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -19,12 +19,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            fresco:placeholderImage="@drawable/logo_small"
-            android:layout_centerVertical="true"
-            />
         <include
             android:id="@+id/toolbar_tab"
             android:layout_width="wrap_content"
@@ -32,18 +26,10 @@
             android:layout_centerInParent="true"
             layout="@layout/toolbar_tab"
             />
-            <!--<com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/toolbar_map_icon"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="5dp"
-                android:background="?android:selectableItemBackground"
-                fresco:placeholderImage="@drawable/toolbar_map_icon2"
-                />-->
         </RelativeLayout>
-    </android.support.v7.widget.Toolbar>
+    </android.support.v7.widget.Toolbar>-->
+    <include
+        layout="@layout/normal_toolbar_layout"/>
 
     <include
         android:id="@+id/maintabtoplayout"

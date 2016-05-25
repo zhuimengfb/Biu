@@ -70,8 +70,10 @@ public class MyPublishActivity extends BaseActivity implements OnRefreshListener
 	// 重新定义适配器
 	private MyPublishAdapter publishAdapter = null;
 
-	@BindView(R.id.toolbar_my_publish)
+	@BindView(R.id.toolbar)
 	Toolbar toolbar;
+	@BindView(R.id.toolbar_title)
+	TextView toolbarTitle;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -132,6 +134,7 @@ public class MyPublishActivity extends BaseActivity implements OnRefreshListener
 	private void initToolbar() {
 		setSupportActionBar(toolbar);
 		setBackableToolbar(toolbar);
+		toolbarTitle.setText(R.string.my_publish);
 	}
 	@Override
 	protected void onPause() {

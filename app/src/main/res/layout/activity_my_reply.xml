@@ -1,11 +1,11 @@
 <!-- 我评论的 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
      >
 
-    <RelativeLayout
+    <!--<RelativeLayout
         android:id="@+id/toolbar_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -21,15 +21,18 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             >
         </android.support.v7.widget.Toolbar>
-    </RelativeLayout>
+    </RelativeLayout>-->
    <!-- <include layout="@layout/publish_top_tab"/>-->
+    <include
+        layout="@layout/normal_toolbar_layout"/>
     
     <com.biu.biu.tools.AutoListView 
         android:id="@+id/myreplylistview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar_layout"
+        android:divider="@color/timeColor"
+        android:dividerHeight="1dp"
         >
     </com.biu.biu.tools.AutoListView>
 
-</RelativeLayout>
+</LinearLayout>
