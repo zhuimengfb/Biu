@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/white">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_add_head_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="12dp"
+        android:layout_centerVertical="true"
+        fresco:roundAsCircle="true"
+        fresco:backgroundImage="@color/colorPrimary"
+        fresco:placeholderImage="@drawable/user_icon"
+        fresco:failureImage="@drawable/user_icon"
+        />
+
+    <TextView
+        android:id="@+id/tv_add_contact_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@id/iv_add_head_icon"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/bigTitleSize"
+        android:textColor="@color/gray"
+        android:text="@string/user_name"
+        />
+    <Button
+        android:id="@+id/bt_add_contact"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="12dp"
+        android:gravity="center"
+        android:background="@color/colorPrimary"
+        android:textSize="@dimen/bigTitleSize"
+        android:text="@string/add"
+        android:textColor="@color/white"
+        />
+    <TextView
+        android:id="@+id/tv_already_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="12dp"
+        android:textSize="@dimen/bigTitleSize"
+        android:textColor="@color/gray"
+        android:text="@string/addAlready"
+        android:visibility="gone"
+        />
+</RelativeLayout>

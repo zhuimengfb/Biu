@@ -35,11 +35,15 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <!-- JMessage Demo required for record audio-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
     <application
         android:name="com.biu.biu.app.BiuApp"
         android:allowBackup="true"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/icon72"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
@@ -129,7 +133,7 @@
         </activity>
         <activity
             android:name="com.biu.biu.main.ResponseSuggestActivity"
-            android:label="@string/title_activity_response_suggest"
+            android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
@@ -210,6 +214,8 @@
             android:label="@string/title_activity_show_image">
         </activity>
         <activity android:name="com.biu.biu.user.views.UserInfoActivity"/>
+        <activity android:name="com.biu.biu.contact.views.AddContactActivity"/>
+        <activity android:name="com.biu.biu.contact.views.ChatActivity"/>
 
         <!-- JPush -->
         <!-- Required SDK核心功能 -->
@@ -234,7 +240,8 @@
         <service
             android:name="cn.jpush.android.service.PushService"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false"
+            android:process=":remote">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTER"/>
                 <action android:name="cn.jpush.android.intent.REPORT"/>
@@ -242,6 +249,19 @@
                 <action android:name="cn.jpush.android.intent.PUSH_TIME"/>
             </intent-filter>
         </service>
+
+        <!--IMReceiver -->
+        <receiver
+            android:name="cn.jpush.im.android.helpers.IMReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter android:priority="1000">
+                <action android:name="cn.jpush.im.android.action.IM_RESPONSE" />
+                <action android:name="cn.jpush.im.android.action.NOTIFICATION_CLICK_PROXY" />
+
+                <category android:name="grf.biu" />
+            </intent-filter>
+        </receiver>
 
         <!-- since 1.8.0 option 可选项。用于同一设备中不同应用的JPush服务相互拉起的功能。 -->
         <!-- 若不启用该功能可删除该组件，将不拉起其他应用也不能被其他应用拉起 -->
@@ -312,14 +332,12 @@
         <meta-data
             android:name="JPUSH_CHANNEL"
             android:value="developer-default"/>
-        <meta-data
+        <!--<meta-data
             android:name="JPUSH_APPKEY"
-            android:value="3cbacd70535af370941760ef"/>
-        <!--
+            android:value="3cbacd70535af370941760ef"/>-->
             <meta-data
             android:name="JPUSH_APPKEY"
             android:value="e901f1b12ba2ffdc2f779a35" />
-        -->
 
         <activity
             android:name="com.umeng.socialize.view.ShareActivity"

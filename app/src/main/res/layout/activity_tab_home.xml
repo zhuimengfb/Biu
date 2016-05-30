@@ -12,6 +12,7 @@
        android:layout_height="fill_parent"
        android:divider="@color/timeColor"
        android:dividerHeight="1dp"
+       android:footerDividersEnabled="false"
        android:descendantFocusability="blocksDescendants"/>
 
     <android.support.design.widget.FloatingActionButton

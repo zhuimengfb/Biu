@@ -217,7 +217,7 @@ public class MeFragment extends Fragment {
 
     @Override
     public void onClick(View v) {
-      UserInfoActivity.toThisActiviyt(getActivity());
+      UserInfoActivity.toThisActivity(getActivity());
     }
   }
 

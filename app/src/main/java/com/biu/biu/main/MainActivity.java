@@ -628,7 +628,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
       PackageManager manager = getPackageManager();
       PackageInfo info = manager.getPackageInfo(
           "com.huawei.android.launcher", 0);
-      if (info.versionCode >= 63029) {
+      if (info != null && info.versionCode >= 63029) {
         isSupportedBade = true;
       }
     } catch (Exception e) {

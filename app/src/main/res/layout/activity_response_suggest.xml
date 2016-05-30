@@ -15,16 +15,23 @@
 			android:layout_height="?attr/actionBarSize"
 			android:background="@color/colorPrimary"
 			android:fillViewport="false"
-			app:title="@string/me_suggestion"
-			app:titleTextColor="@color/white"
+			app:title=""
 			app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 			app:popupTheme="@style/AppTheme.PopupOverlay"
 			>
 		</android.support.v7.widget.Toolbar>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:text="@string/me_suggestion"
+			android:textColor="@color/white"
+			android:textSize="@dimen/titleSize"
+			/>
 		<com.facebook.drawee.view.SimpleDraweeView
 			android:id="@+id/bt_send"
-			android:layout_width="36dp"
-			android:layout_height="36dp"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
 			fresco:placeholderImage="@drawable/ic_send_white_36dp"
 			android:layout_alignParentRight="true"
 			android:layout_marginRight="10dp"

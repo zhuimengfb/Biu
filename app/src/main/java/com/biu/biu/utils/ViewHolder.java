@@ -1,7 +1,5 @@
 package com.biu.biu.utils;
 
-import com.biu.biu.utils.ImageLoader.Type;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.SparseArray;
@@ -10,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.biu.biu.utils.ImageLoader.Type;
 
 public class ViewHolder
 {
@@ -108,7 +108,7 @@ public class ViewHolder
 	 * 为ImageView设置图片
 	 * 
 	 * @param viewId
-	 * @param drawableId
+	 * @param
 	 * @return
 	 */
 	public ViewHolder setImageBitmap(int viewId, Bitmap bm)
@@ -122,7 +122,7 @@ public class ViewHolder
 	 * 为ImageView设置图片
 	 * 
 	 * @param viewId
-	 * @param drawableId
+	 * @param
 	 * @return
 	 */
 	public ViewHolder setImageByUrl(int viewId, String url)

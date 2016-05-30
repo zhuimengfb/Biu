@@ -1,18 +1,50 @@
 package com.biu.biu.contact.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.biu.biu.contact.bean.ContactInfo;
+import com.biu.biu.contact.views.adapter.ContactRecyclerAdapter;
 import com.biu.biu.views.base.BaseFragment;
+import com.camnter.easyrecyclerviewsidebar.EasyRecyclerViewSidebar;
+import com.camnter.easyrecyclerviewsidebar.sections.EasyImageSection;
+import com.camnter.easyrecyclerviewsidebar.sections.EasySection;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import grf.biu.R;
 
 /**
  * Created by fubo on 2016/5/18 0018.
  * email:bofu1993@163.com
  */
 public class ContactListFragment extends BaseFragment implements IContactList {
+
+
+  @BindView(R.id.rv_contact_list)
+  RecyclerView contactRecyclerView;
+  @BindView(R.id.contact_sidebar)
+  EasyRecyclerViewSidebar easyRecyclerViewSidebar;
+  @BindView(R.id.section_layout)
+  RelativeLayout sectionLayout;
+  @BindView(R.id.tv_section_letter)
+  TextView sectionLetter;
+
+
+  private ContactRecyclerAdapter contactRecyclerAdapter;
 
 
   public static ContactListFragment getInstance() {
@@ -24,6 +56,114 @@ public class ContactListFragment extends BaseFragment implements IContactList {
   @Override
   public View onCreateView(LayoutInflater inflater,
       @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    return super.onCreateView(inflater, container, savedInstanceState);
+    View view = inflater.inflate(R.layout.fragment_contact, container, false);
+    ButterKnife.bind(this, view);
+    initView();
+    initData();
+    return view;
   }
+
+  private void initView() {
+    contactRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    contactRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    contactRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity
+        ()).margin(40,60).size(1).build());
+  }
+
+  private void initData() {
+    List<ContactInfo> contactInfoList = new ArrayList<>();
+    ContactInfo contactInfo = new ContactInfo();
+    contactInfo.setName("傅波");
+    contactInfo.setEnglishName("fubo");
+    contactInfoList.add(contactInfo);
+    ContactInfo contactInfo1 = new ContactInfo();
+    contactInfo1.setName("FBI");
+    contactInfo1.setEnglishName("FBI");
+    contactInfoList.add(contactInfo1);
+    ContactInfo contactInfo2 = new ContactInfo();
+    contactInfo2.setName("Angle");
+    contactInfo2.setEnglishName("Angle");
+    contactInfoList.add(contactInfo2);
+    ContactInfo contactInfo3 = new ContactInfo();
+    contactInfo3.setName("ace");
+    contactInfo3.setEnglishName("ace");
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo3);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    contactInfoList.add(contactInfo);
+    ContactInfo contactInfo4 = new ContactInfo();
+    contactInfo4.setName("ZZ");
+    contactInfo4.setEnglishName("ZZ");
+    contactInfoList.add(contactInfo4);
+    contactInfoList.add(contactInfo4);
+    contactInfoList.add(contactInfo4);
+    contactInfoList.add(contactInfo4);
+    contactRecyclerAdapter = new ContactRecyclerAdapter(getActivity(), contactInfoList);
+    contactRecyclerView.setAdapter(contactRecyclerAdapter);
+    updateContactNumber(contactInfoList.size());
+    easyRecyclerViewSidebar.setSections(contactRecyclerAdapter.getSections());
+    easyRecyclerViewSidebar.setFloatView(sectionLayout);
+    easyRecyclerViewSidebar.setOnTouchSectionListener(new EasyRecyclerViewSidebar
+        .OnTouchSectionListener() {
+
+      @Override
+      public void onTouchImageSection(int sectionIndex, EasyImageSection imageSection) {
+
+      }
+
+      @Override
+      public void onTouchLetterSection(int sectionIndex, EasySection letterSection) {
+        sectionLetter.setText(letterSection.letter);
+        ((LinearLayoutManager)contactRecyclerView.getLayoutManager()).scrollToPositionWithOffset(contactRecyclerAdapter.getHeaderPosition
+            (sectionIndex),0);
+      }
+    });
+    contactRecyclerAdapter.setOnItemClickListener(new ContactRecyclerAdapter.OnItemClickListener() {
+      @Override
+      public void onItemClick(ContactInfo contactInfo) {
+        ChatActivity.toChatActivity(getActivity(),contactInfo);
+      }
+    });
+  }
+
+
+  @Override
+  public void updateContactNumber(int number) {
+
+  }
+
+  @Override
+  public void updateContactList(List<ContactInfo> contactInfoList) {
+
+  }
+
+  class AddContactListener implements View.OnClickListener {
+
+    @Override
+    public void onClick(View v) {
+      Intent intent = new Intent();
+      intent.setClass(getActivity(), AddContactActivity.class);
+      getActivity().startActivity(intent);
+    }
+  }
+
 }

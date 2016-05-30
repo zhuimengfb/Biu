@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.biu.biu.app.BiuApp;
 import com.biu.biu.main.dialog.ShowImgDialog;
 import com.biu.biu.netimage.ImageDownloader;
 import com.biu.biu.netimage.OnImageDownload;
@@ -116,18 +117,23 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
 			// 获取要用到的控件
 			listItemView = new PeepDetailListItemView();
 			listItemView.userName = (TextView) convertView.findViewById(R.id.tv_user_name);
+			listItemView.userName.setTypeface(BiuApp.globalTypeface);
 			listItemView.contentTv = (TextView) convertView
 					.findViewById(R.id.contenttv);
+			listItemView.contentTv.setTypeface(BiuApp.globalTypeface);
 			listItemView.likebtn = (ImageButton) convertView
 					.findViewById(R.id.likebtn);
 			listItemView.likecounttv = (TextView) convertView
 					.findViewById(R.id.likecounttv);
+			listItemView.likecounttv.setTypeface(BiuApp.globalTypeface);
 			listItemView.treadbtn = (ImageButton) convertView
 					.findViewById(R.id.treadbtn);
 			listItemView.pubtimetv = (TextView) convertView
 					.findViewById(R.id.create_at_tv); // 发表时间
+			listItemView.pubtimetv.setTypeface(BiuApp.globalTypeface);
 			listItemView.replyNumtv = (TextView) (convertView
 					.findViewById(R.id.reply_num_tv)); // 回复数
+			listItemView.replyNumtv.setTypeface(BiuApp.globalTypeface);
 			if (isTitle) {
 				listItemView.imageView = (ImageView) convertView
 						.findViewById(R.id.titleimg);
@@ -180,11 +186,11 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
 			boolean blikestate = mListItemsInfo.get(position).hasliked;
 			boolean btreadstate = mListItemsInfo.get(position).hastreaded;
 			if (blikestate) {
-				listItemView.likebtn.setImageResource(R.drawable.arrow1click);
+				listItemView.likebtn.setImageResource(R.drawable.like_after_icon);
 				listItemView.likecounttv.setTextColor(Color.rgb(0x25, 0xd4,
 						0xb3));
 			} else {
-				listItemView.likebtn.setImageResource(R.drawable.arrow1);
+				listItemView.likebtn.setImageResource(R.drawable.like_before_icon);
 				listItemView.likecounttv.setTextColor(Color.GRAY);
 			}
 			// 设置踩的状态

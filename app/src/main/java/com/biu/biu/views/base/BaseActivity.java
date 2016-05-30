@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import grf.biu.R;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -34,5 +35,10 @@ public class BaseActivity extends AppCompatActivity {
 				onBackPressed();
 			}
 		});
+	}
+
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
 	}
 }

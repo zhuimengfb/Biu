@@ -79,6 +79,8 @@ public class HomeListAdapter extends BaseAdapter {
 		public ImageButton homedownbtn; // 踩按钮
 		public TextView morehottips; // 更多热帖
 		public RelativeLayout biumain = null; // 响应单击事件进入详情页的部分
+		public ImageView replyIcon;
+		public ImageView shareIcon;
 	}
 
 	public HomeListAdapter(Context context, ArrayList<TipItemInfo> topicInfo) {
@@ -225,6 +227,10 @@ public class HomeListAdapter extends BaseAdapter {
 		// listItemView.homedownbtn.setImageResource(R.drawable.home_icon4);
 		if (mlistItemsinfo.get(position).isEmpty) {
 			// 无数据
+			listItemView.replyIcon = (ImageView) convertView.findViewById(R.id.iv_reply_icon);
+			listItemView.shareIcon = (ImageView) convertView.findViewById(R.id.iv_share_icon);
+			listItemView.replyIcon.setVisibility(View.GONE);
+			listItemView.shareIcon.setVisibility(View.GONE);
 			listItemView.homeContenttv.setText("您所在位置还没有发帖的人，快来发帖吧");
 			listItemView.publishPlacetv.setVisibility(TextView.GONE); // 位置信息
 			listItemView.replayCounttv.setVisibility(TextView.GONE); // 回复数

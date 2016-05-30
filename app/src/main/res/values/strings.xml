@@ -26,7 +26,7 @@
     <string name="title_activity_my_reply">MyReplyActivity</string>
     <string name="title_activity_http_test">HttpTestActivity</string>
     <string name="title_activity_tip_detail">TipDetailActivity</string>
-    <string name="pushtoreply">点此评论…</string>
+    <string name="pushtoreply">写回复…</string>
     <string name="send">发送</string>
     <string name="morehottips">更多热帖</string>
     <string name="nomoonbox">在这里你可以埋下自己的秘密，只有在发帖位置附近20米之内才有机会看到，离开这个范围帖子会自动消失。</string>
@@ -195,4 +195,19 @@
         将成为热门贴！此外探索页面我们可以参与本校热门话题的讨论。还等什么，有什么想法、观察、笑话想跟周围的人分享，就来biu一下吧！</string>
     <string name="agreement4">如果你的言论持续被举报超过三次，那么你将收到警告或封号</string>
     <string name="agreement5">向您保证，你的隐私绝对安全，因为我们也不知道你到底是谁</string>
+    <string name="add_contact">添加新的朋友</string>
+    <string name="contact_number">位好友</string>
+    <string name="head_icon">头像</string>
+    <string name="upload_picture">上传照片</string>
+    <string name="reply">回复</string>
+    <string name="edit_user_info">编辑个人资料</string>
+    <string name="add">添加</string>
+    <string name="addAlready">已添加</string>
+    <string name="add_photo">添加照片</string>
+    <string name="anonymity_publish">匿名发表</string>
+    <string name="should_grant_camera_permission">需要授予相机权限才能上传照片</string>
+    <string name="add_new_friend">添加新的朋友</string>
+    <string name="time">时间</string>
+    <string name="input_nothing">不能输入空消息</string>
+    <string name="register_fail">注册失败</string>
 </resources>

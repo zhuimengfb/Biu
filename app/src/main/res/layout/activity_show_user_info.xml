@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/show_user_info_background"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/normal_toolbar_layout"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="-15dp"
+        >
+
+        <LinearLayout
+            android:id="@+id/indicator_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+        </LinearLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager_show_user_pic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/indicator_layout">
+        </android.support.v4.view.ViewPager>
+
+    </RelativeLayout>
+
+</LinearLayout>

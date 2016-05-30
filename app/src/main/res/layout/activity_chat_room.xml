@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/normal_toolbar_layout"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_chat_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_layout">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/grayBackground"
+        android:layout_alignParentBottom="true">
+
+        <EditText
+            android:id="@+id/et_chat_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="55dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:background="@drawable/edit_background"
+            android:inputType="text"
+            android:imeOptions="actionSend"
+            />
+    </RelativeLayout>
+</RelativeLayout>
