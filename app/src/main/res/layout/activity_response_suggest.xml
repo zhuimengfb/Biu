@@ -1,6 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
      >
@@ -28,11 +27,11 @@
 			android:textColor="@color/white"
 			android:textSize="@dimen/titleSize"
 			/>
-		<com.facebook.drawee.view.SimpleDraweeView
+		<ImageView
 			android:id="@+id/bt_send"
 			android:layout_width="30dp"
 			android:layout_height="30dp"
-			fresco:placeholderImage="@drawable/ic_send_white_36dp"
+			android:src="@drawable/ic_send_white_36dp"
 			android:layout_alignParentRight="true"
 			android:layout_marginRight="10dp"
 			android:layout_centerVertical="true"

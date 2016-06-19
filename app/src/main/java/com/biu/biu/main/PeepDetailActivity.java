@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,13 +18,17 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.biu.biu.thread.GetHttpThread;
 import com.biu.biu.thread.PostTopicReplyThread;
+import com.biu.biu.user.entity.SimpleUserInfo;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.utils.GlobalString;
 import com.biu.biu.views.base.BaseActivity;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -96,6 +101,14 @@ public class PeepDetailActivity extends BaseActivity {
   Toolbar toolbar;
   @BindView(R.id.toolbar_title)
   TextView toolbarTitle;
+
+  @BindView(R.id.layout_anonymity)
+  RelativeLayout anonymityLayout;
+  @BindView(R.id.iv_annoymity_reply)
+  ImageView anonymityImageView;
+
+  private boolean annoyReplyFlag = false;
+
   // 分享
   private final UMSocialService mController = UMServiceFactory
       .getUMSocialService("com.umeng.share");
@@ -158,7 +171,7 @@ public class PeepDetailActivity extends BaseActivity {
     if (imgUrl != null) {
       urlImage = new UMImage(this, imgUrl);
     } else {
-      urlImage = new UMImage(this, R.drawable.icon);
+      urlImage = new UMImage(this, R.drawable.icon72);
       // urlImage = new UMImage(this, BitmapFactory.decodeResource(
       // getResources(), R.drawable.icon320));
       // Bitmap logo = BitmapFactory.decodeResource(getResources(),
@@ -218,8 +231,8 @@ public class PeepDetailActivity extends BaseActivity {
     initParam();
     initView();
     initToolbar();
-    msimpleAdapter = new PeepDetailListViewAdapter(this, simpledatalist,
-        localornot);
+    msimpleAdapter = new PeepDetailListViewAdapter(this, simpledatalist, localornot);
+    msimpleAdapter.setActivity(this);
     if (mDetailMode == TIPDETAIL_FOR_MOONBOOX) {
       msimpleAdapter.setDetailMode(TIPDETAIL_FOR_MOONBOOX);
     }
@@ -227,6 +240,24 @@ public class PeepDetailActivity extends BaseActivity {
     msimpleAdapter.setListView(mReplyListView);
     // 配置分享平台的参数
     this.configPlatforms();
+    initEvent();
+  }
+
+  private void initEvent() {
+    anonymityLayout.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (annoyReplyFlag) {
+          anonymityImageView.setImageURI(Uri.parse(GlobalString.URI_RES_PREFIX + R.drawable
+              .anonymity_reply_before));
+          annoyReplyFlag = false;
+        } else {
+          anonymityImageView.setImageURI(Uri.parse(GlobalString.URI_RES_PREFIX + R.drawable
+              .anonymity_reply_after));
+          annoyReplyFlag = true;
+        }
+      }
+    });
   }
 
   private void initView() {
@@ -449,9 +480,8 @@ public class PeepDetailActivity extends BaseActivity {
       mTargetTipInfo.content = mJsonObject.getString("content");
       mTargetTipInfo.device_id = mJsonObject.getString("device_id");
       mTargetTipInfo.reply_num = mJsonObject.getString("reply_num");
-      Integer likeresult = Integer.parseInt(mJsonObject
-          .getString("like_num"))
-          - Integer.parseInt(mJsonObject.getString("tread_num"));
+      Integer likeresult = Integer.parseInt(mJsonObject.getString("like_num")) - Integer.parseInt
+          (mJsonObject.getString("tread_num"));
       mTargetTipInfo.like_num = likeresult.toString();
       mTargetTipInfo.tread_num = mJsonObject.getString("tread_num");
       mTargetTipInfo.ishot = mJsonObject.getString("is_hot").equals("1");
@@ -464,6 +494,18 @@ public class PeepDetailActivity extends BaseActivity {
       mTargetTipInfo.hasliked = mJsonObject.getBoolean("has_liked");
       mTargetTipInfo.hastreaded = mJsonObject.getBoolean("has_treaded");
       mTargetTipInfo.isTitle = true; // 主题,非评论
+
+      mTargetTipInfo.anony = Integer.parseInt(mJsonObject.getString("anony"));
+      SimpleUserInfo simpleUserInfo = new SimpleUserInfo();
+      if (! mJsonObject.isNull("publisher") && mJsonObject.getJSONObject("publisher") != null) {
+        JSONObject userJson = mJsonObject.getJSONObject("publisher");
+        simpleUserInfo.setJm_id(userJson.getString("jm_id"));
+        simpleUserInfo.setDevice_id(userJson.getString("jm_id"));
+        simpleUserInfo.setNickname(userJson.getString("nickname"));
+        simpleUserInfo.setIcon_small(userJson.getString("icon_small"));
+        simpleUserInfo.setIcon_large(userJson.getString("icon_small"));
+      }
+      mTargetTipInfo.simpleUserInfo = simpleUserInfo;
       // 将主题添加到标记中
       simpledatalist.clear(); // 每次获得帖子评论都重新输入评论内容
       simpledatalist.add(mTargetTipInfo);
@@ -474,16 +516,27 @@ public class PeepDetailActivity extends BaseActivity {
         TipItemInfo replyIteminfo = new TipItemInfo();
         JSONObject everyJsonObject = jsonArray.getJSONObject(i);
         replyIteminfo.id = everyJsonObject.getString("id");
+        replyIteminfo.device_id = everyJsonObject.getString("device_id");
         replyIteminfo.content = everyJsonObject.getString("content");
         replyIteminfo.created_at = timedeal
             .getTimeGapDesc(everyJsonObject.getString("created_at"));
         replyIteminfo.like_num = everyJsonObject.getString("like_num");
-        replyIteminfo.tread_num = everyJsonObject
-            .getString("tread_num");
-        replyIteminfo.hasliked = everyJsonObject
-            .getBoolean("has_liked");
-        replyIteminfo.hastreaded = everyJsonObject
-            .getBoolean("has_treaded");
+        replyIteminfo.tread_num = everyJsonObject.getString("tread_num");
+        replyIteminfo.hasliked = everyJsonObject.getBoolean("has_liked");
+        replyIteminfo.hastreaded = everyJsonObject.getBoolean("has_treaded");
+
+        replyIteminfo.anony = Integer.parseInt(everyJsonObject.getString("anony"));
+        SimpleUserInfo simpleReplyUserInfo = new SimpleUserInfo();
+        if (! everyJsonObject.isNull("publisher") && everyJsonObject.getJSONObject("publisher")
+            != null) {
+          JSONObject userReplyJson = everyJsonObject.getJSONObject("publisher");
+          simpleReplyUserInfo.setJm_id(userReplyJson.getString("jm_id"));
+          simpleReplyUserInfo.setDevice_id(userReplyJson.getString("jm_id"));
+          simpleReplyUserInfo.setNickname(userReplyJson.getString("nickname"));
+          simpleReplyUserInfo.setIcon_small(userReplyJson.getString("icon_small"));
+          simpleReplyUserInfo.setIcon_large(userReplyJson.getString("icon_small"));
+          replyIteminfo.simpleUserInfo = simpleReplyUserInfo;
+        }
         simpledatalist.add(replyIteminfo);
       }
       msimpleAdapter.notifyDataSetChanged();
@@ -576,8 +629,12 @@ public class PeepDetailActivity extends BaseActivity {
         + "/release/";
     String content = replycontent;
     NameValuePair vp1 = new BasicNameValuePair("content", content);
-    NameValuePair vp2 = new BasicNameValuePair("reply_to",
-        mTargetTipInfo.id);
+    NameValuePair vp2 = new BasicNameValuePair("reply_to", mTargetTipInfo.id);
+    if (annoyReplyFlag) {
+      nameValuePairs.add(new BasicNameValuePair("anony", String.valueOf(1)));
+    } else {
+      nameValuePairs.add(new BasicNameValuePair("anony", String.valueOf(0)));
+    }
     nameValuePairs.add(vp1);
     nameValuePairs.add(vp2);
     try {

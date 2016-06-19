@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/add_contact_layout"
     android:layout_width="match_parent"
     android:layout_height="160dp"
     android:background="@color/white"
     android:gravity="center_horizontal">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <cn.bingoogolapple.badgeview.BGABadgeImageView
         android:id="@+id/iv_add_contact"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        fresco:roundAsCircle="true"
-        fresco:backgroundImage="@color/colorPrimary"
-        fresco:placeholderImage="@drawable/tab_contact_page"
         />
 
     <TextView

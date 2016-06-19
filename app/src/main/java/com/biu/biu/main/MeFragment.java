@@ -1,6 +1,7 @@
 package com.biu.biu.main;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,15 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.biu.biu.user.utils.UserPreferenceUtil;
 import com.biu.biu.user.views.UserInfoActivity;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.utils.GlideCircleTransform;
 import com.biu.biu.views.ActivityUserAgreement;
+import com.bumptech.glide.Glide;
 import com.umeng.update.UmengUpdateAgent;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -30,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 
@@ -51,14 +57,6 @@ public class MeFragment extends Fragment {
   @BindView(R.id.bga_me_reply_frame)
   BGABadgeFrameLayout replyFrame;
 
-
-  private Button myPublishbtn = null;
-  private Button myReplybtn = null;
-  // private Button myMoonBox = null;
-  private Button mySuggestion = null;
-  // 版本检测换成用户协议
-  private Button mCheckVersion = null;
-
   // 用户的新消息数情况
   private JSONObject msgNumDetail = null;
   private MsgNumHandler msgNumHandler = null;
@@ -69,6 +67,14 @@ public class MeFragment extends Fragment {
   TextView userName;
   @BindView(R.id.iv_icon_outside)
   ImageView userIconOutside;
+  @BindView(R.id.layout_my_publish)
+  RelativeLayout myPublishLayout;
+  @BindView(R.id.layout_my_reply)
+  RelativeLayout myReplyLayout;
+  @BindView(R.id.layout_my_suggestion)
+  RelativeLayout mySuggestionLayout;
+  @BindView(R.id.layout_check_version)
+  RelativeLayout checkVersionLayout;
 
   public static MeFragment getInstance(ImageView meStatusView) {
 
@@ -77,28 +83,7 @@ public class MeFragment extends Fragment {
     return meFragment;
   }
 
-  public MeFragment() {
-  }
-
-  // 构造函数
-    /*public MeFragment(ImageView meStatusView) {
-		this.meStatusView = meStatusView;
-	}*/
-
-  // private TextView mTabTopictv = null;
-  @Override
-  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-    // TODO Auto-generated method stub
-    super.onActivityCreated(savedInstanceState);
-    // initView();
-
-    InitButtons(); // 初始化Me页面下的所有按钮。
-  }
-
-  private void initView() {
-    // TODO Auto-generated method stub
-    // mTabTopictv.setText("ME");
-  }
+  public MeFragment() {}
 
   @Override
   public void onResume() {
@@ -107,91 +92,32 @@ public class MeFragment extends Fragment {
     UserConfigParams.meStatus = false;
     super.onResume();
     refreshMsgNum();
+    showUserIcon();
+    showNickName();
   }
 
-  private void InitButtons() {
-    // TODO Auto-generated method stub
-    findBtnId();
-    // 我发表的
-    myPublishbtn.setOnClickListener(new OnClickListener() {
-
-      @Override
-      public void onClick(View v) {
-        // TODO Auto-generated method stub
-        Intent intent = new Intent();
-        intent.setClass(getActivity(), MyPublishActivity.class);
-        startActivity(intent);
-      }
-    });
-    // 我回复的
-    myReplybtn.setOnClickListener(new OnClickListener() {
-
-      @Override
-      public void onClick(View v) {
-        // TODO Auto-generated method stub
-        Intent intent = new Intent();
-        intent.setClass(getActivity(), MyReplyActivity.class);
-        startActivity(intent);
-      }
-    });
-    // 月光宝盒
-    // myMoonBox.setOnClickListener(new OnClickListener() {
-    //
-    // @Override
-    // public void onClick(View v) {
-    // // TODO Auto-generated method stub
-    // Intent intent = new Intent();
-    // intent.setClass(getActivity(), MoonboxActivity.class);
-    // startActivity(intent);
-    // }
-    // });
-    // 反馈建议
-    mySuggestion.setOnClickListener(new OnClickListener() {
-
-      @Override
-      public void onClick(View v) {
-        // TODO Auto-generated method stub
-        // 下面的代码是使用友盟提供的UI
-        // FeedbackAgent agent = new FeedbackAgent(getActivity());
-        // agent.startFeedbackActivity();
-        // 2015年4月10日使用友盟的反馈建议模块
-        Intent intent = new Intent();
-        intent.setClass(getActivity(), ResponseSuggestActivity.class);
-        startActivity(intent);
-      }
-
-    });
-
-    // 给反馈建议加上按下和弹起事件监听
-    // mySuggestion.setOn
-    // mCheckVersion.setOnClickListener(new CheckUpdatebtnListener());
-    mCheckVersion.setOnClickListener(new OnClickListener() {
-
-      @Override
-      public void onClick(View v) {
-        // TODO Auto-generated method stub
-        Intent toUserAgreement = new Intent(MeFragment.this
-            .getActivity(), ActivityUserAgreement.class);
-        startActivity(toUserAgreement);
-
-      }
-    });
+  private void toUserAgreeActivity() {
+    Intent toUserAgreement = new Intent(MeFragment.this
+        .getActivity(), ActivityUserAgreement.class);
+    startActivity(toUserAgreement);
   }
 
-  /**
-   * 获得四个按钮的ID
-   */
-  private void findBtnId() {
-    // TODO Auto-generated method stub
-    // mTabTopictv =
-    // (TextView)(getActivity().findViewById(R.id.TabTopTitle));
-    myPublishbtn = (Button) (getActivity().findViewById(R.id.me_mypublish));
-    myReplybtn = (Button) (getActivity().findViewById(R.id.me_myreply));
-    // myMoonBox = (Button) (getActivity().findViewById(R.id.me_moonbox));
-    mySuggestion = (Button) (getActivity()
-        .findViewById(R.id.me_mysuggestion));
-    mCheckVersion = (Button) (getActivity()
-        .findViewById(R.id.me_checkversion));
+  private void toSuggestionActivity() {
+    Intent intent = new Intent();
+    intent.setClass(getActivity(), ResponseSuggestActivity.class);
+    startActivity(intent);
+  }
+
+  private void toMyPublishActivity() {
+    Intent intent = new Intent();
+    intent.setClass(getActivity(), MyPublishActivity.class);
+    startActivity(intent);
+  }
+
+  private void toMyReplyActivity() {
+    Intent intent = new Intent();
+    intent.setClass(getActivity(), MyReplyActivity.class);
+    startActivity(intent);
   }
 
   @Override
@@ -203,17 +129,58 @@ public class MeFragment extends Fragment {
     View meView = inflater.inflate(R.layout.activity_tab_me, container,
         false);
     ButterKnife.bind(this, meView);
+    showNickName();
+    showUserIcon();
     initEvent();
     return meView;
+  }
+
+  private void showNickName() {
+    if (! StringUtils.isEmpty(UserPreferenceUtil.getUserPreferenceNickName())) {
+      userName.setText(UserPreferenceUtil.getUserPreferenceNickName());
+    }
+  }
+
+  private void showUserIcon() {
+    Glide.with(getActivity()).load(Uri.fromFile(new File(UserPreferenceUtil.getUserIconAddress())
+    )).error(R.drawable.default_user_icon2).transform(new GlideCircleTransform(getActivity()))
+        .into(userIcon);
   }
 
   private void initEvent() {
     userIcon.setOnClickListener(new UserClickListener());
     userName.setOnClickListener(new UserClickListener());
     userIconOutside.setOnClickListener(new UserClickListener());
+    myPublishLayout.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        toMyPublishActivity();
+      }
+    });
+    myReplyLayout.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        toMyReplyActivity();
+      }
+    });
+    mySuggestionLayout.setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View v) {
+        toSuggestionActivity();
+      }
+
+    });
+    checkVersionLayout.setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View v) {
+        toUserAgreeActivity();
+      }
+    });
   }
 
-  class UserClickListener implements OnClickListener{
+  class UserClickListener implements OnClickListener {
 
     @Override
     public void onClick(View v) {
@@ -349,7 +316,7 @@ public class MeFragment extends Fragment {
             if (msgNumDetail.getInt("publish") > 0) {
               //myPublishNum.setVisibility(TextView.VISIBLE);
               if (msgNumDetail.getInt("publish") < 99) {
-							/*myPublishNum.setText(msgNumDetail
+                            /*myPublishNum.setText(msgNumDetail
 									.getString("publish"));*/
                 publishFrame.showTextBadge(msgNumDetail
                     .getString("publish"));

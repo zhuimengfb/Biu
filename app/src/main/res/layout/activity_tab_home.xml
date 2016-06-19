@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     >
 
-   
    <com.biu.biu.tools.AutoListView
        android:id="@+id/home_showtopic"
        android:layout_width="fill_parent"
@@ -27,13 +26,12 @@
         android:src="@drawable/fab_add"
         app:rippleColor="@color/colorPrimaryDark"
         />
-
-<!-- 
-    <grf.biu.PullToRefreshListView
-        android:id="@+id/home_showtopic"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" 
-        android:cacheColorHint="#00000000"
-        android:fastScrollEnabled="true"/>
-         -->
+    <ImageView
+        android:id="@+id/iv_no_publish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/no_publish"
+        android:visibility="gone"
+        />
 </RelativeLayout>

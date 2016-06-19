@@ -1,217 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:fresco="http://schemas.android.com/tools"
-    >
-<android.support.v7.widget.CardView
     android:id="@+id/news_card"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:selectableItemBackground"
-    android:descendantFocusability="blocksDescendants"
-    android:layout_marginLeft="0dp"
-    android:layout_marginRight="0dp"
-    app:cardElevation="10dp"
-    >
-
-
-<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/background_light"
-    android:descendantFocusability="blocksDescendants"
-    android:layout_marginLeft="12dp"
-    android:layout_marginRight="12dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginBottom="12dp"
     >
 
     <RelativeLayout
-        android:id="@+id/lv_head"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:gravity="center_vertical"
-        >
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/iv_head_icon"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_centerVertical="true"
-            android:background="@drawable/default_user_icon2"
-            fresco:placeholderImage="@drawable/default_user_icon2"
-            fresco:failureImage="@drawable/default_user_icon2"
-            fresco:roundAsCircle="true"
-            />
-        <TextView
-            android:id="@+id/tv_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/iv_head_icon"
-            android:layout_marginLeft="8dp"
-            android:gravity="center_vertical"
-            android:typeface="sans"
-            android:textSize="@dimen/userNameSize"
-            android:textColor="@color/gray"
-            android:text="@string/owner"
-            />
-
-        <TextView
-            android:id="@+id/create_at_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_alignParentRight="true"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/tagSize" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/biumain"
-        android:layout_width="match_parent"
-        android:layout_below="@id/lv_head"
-        android:layout_marginTop="5dp"
         android:layout_height="wrap_content"
-         >
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/background_light"
+        android:descendantFocusability="blocksDescendants"
+        android:paddingBottom="12dp"
+        >
 
-        <TextView
-            android:id="@+id/topiccontent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:textColor="@color/smallTitleColor"
-            android:paddingTop="5dp"
-            android:textSize="@dimen/bigTitleSize" />
-        <!-- 图片是在内容和攒、踩按钮的下方 -->
-
-        <ImageView
-            android:id="@+id/topicimg"
+        <RelativeLayout
+            android:id="@+id/lv_head"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginTop="10dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/topiccontent"
-            android:scaleType="centerCrop" />
-        <!-- 图片下面是发表时间之类的 -->
-    </RelativeLayout>
+            android:layout_height="36dp"
+            android:gravity="center_vertical"
+            >
 
-    <TextView
-        android:id="@+id/publishplace"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/biumain"
-        android:focusable="false"
-        android:paddingTop="6dp"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="@dimen/homeitemsubtextsize"
-        android:visibility="gone"
-        />
+            <RelativeLayout
+                android:id="@+id/user_info_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/pubinfolayout"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/publishplace"
-        android:gravity="center_vertical"
-        >
+                <ImageView
+                    android:id="@+id/iv_head_icon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/default_user_icon2"
+                    />
 
-        <ImageButton
-            android:id="@+id/iv_reply_icon"
-            android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/iv_head_icon"
+                    android:gravity="center_vertical"
+                    android:text="@string/owner"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/userNameSize"
+                    android:typeface="sans"
+                    />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/create_at_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/tagSize"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/biumain"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="@drawable/reply_before_icon"
-            />
+            android:layout_below="@id/lv_head"
+            android:layout_marginTop="5dp"
+            >
 
+            <TextView
+                android:id="@+id/topiccontent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:textColor="@color/smallTitleColor"
+                android:textSize="@dimen/bigTitleSize"/>
+            <!-- 图片是在内容和攒、踩按钮的下方 -->
+
+            <ImageView
+                android:id="@+id/topicimg"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_below="@id/topiccontent"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:scaleType="centerCrop"/>
+            <!-- 图片下面是发表时间之类的 -->
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/reply_num_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:layout_toRightOf="@id/iv_reply_icon"
-            android:layout_marginLeft="8dp"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/tagSize" />
-        <!-- 右边的三个按钮竖直平分所占用空间 -->
-
-        <ImageButton
-            android:id="@+id/likebtn"
-            android:layout_width="wrap_content"
+            android:id="@+id/publishplace"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/reply_num_tv"
-            android:layout_marginLeft="30dp"
-            android:background="@drawable/like_before_icon" />
-
-        <TextView
-            android:id="@+id/likecounttv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/likebtn"
-            android:layout_marginLeft="8dp"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/tagSize" />
-
-        <ImageView
-            android:id="@+id/iv_share_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/share_before"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
+            android:layout_below="@id/biumain"
+            android:focusable="false"
+            android:paddingTop="6dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/homeitemsubtextsize"
+            android:visibility="gone"
             />
 
         <RelativeLayout
-            android:id="@+id/topandtreadlayout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:visibility="gone"
+            android:id="@+id/pubinfolayout"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@id/publishplace"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
             >
 
-            <!--<ImageButton
-                android:id="@+id/likebtn"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_alignParentLeft="true"
-                android:background="#00000000"
-                android:paddingRight="5dp"
+            <ImageView
+                android:id="@+id/iv_reply_icon"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/reply_before_icon"
                 android:scaleType="centerInside"
-                android:src="@drawable/arrow1" />-->
+                />
 
-            <!--<TextView
+
+            <TextView
+                android:id="@+id/reply_num_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@id/iv_reply_icon"
+                android:gravity="center_vertical"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/tagSize"/>
+            <!-- 右边的三个按钮竖直平分所占用空间 -->
+            <TextView
                 android:id="@+id/likecounttv"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_alignTop="@id/likebtn"
-                android:layout_toLeftOf="@id/treadbtn"
-                android:layout_toRightOf="@id/likebtn"
-                android:gravity="center"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="10sp" />-->
-
-            <ImageButton
-                android:id="@+id/treadbtn"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:background="#00000000"
-                android:paddingLeft="5dp"
-                android:paddingRight="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/arrow2"
-                android:visibility="gone"/>
-        </RelativeLayout>
-    </RelativeLayout>
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/gray"
+                android:text="123"
+                android:textSize="@dimen/tagSize"/>
+            <ImageView
+                android:id="@+id/likebtn"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/likecounttv"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/like_before_icon"
+                android:scaleType="centerInside"/>
 
-</RelativeLayout>
-</android.support.v7.widget.CardView>
+
+
+            <ImageView
+                android:id="@+id/iv_share_icon"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@id/reply_num_tv"
+                android:src="@drawable/share_before"
+                android:scaleType="centerInside"
+                />
+
+            <RelativeLayout
+                android:id="@+id/topandtreadlayout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:visibility="gone"
+                >
+
+                <!--<ImageButton
+                    android:id="@+id/likebtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentLeft="true"
+                    android:background="#00000000"
+                    android:paddingRight="5dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/arrow1" />-->
+
+                <!--<TextView
+                    android:id="@+id/likecounttv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignTop="@id/likebtn"
+                    android:layout_toLeftOf="@id/treadbtn"
+                    android:layout_toRightOf="@id/likebtn"
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="10sp" />-->
+
+                <ImageButton
+                    android:id="@+id/treadbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:background="#00000000"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="10dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/arrow2"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+    <!--</android.support.v7.widget.CardView>-->
 </RelativeLayout>

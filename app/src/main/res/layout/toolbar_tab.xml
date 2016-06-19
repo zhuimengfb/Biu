@@ -60,7 +60,9 @@
                         android:layout_height="fill_parent"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:background="@drawable/switching2"
+                        android:paddingLeft="-10dp"
+                        android:paddingRight="-10dp"
+                        android:background="@drawable/switch_active"
                         android:text="@string/home_top_center_new"
                         android:textColor="@color/biu_main_color"
                         android:textSize="@dimen/top_center_size" />
@@ -71,7 +73,9 @@
                         android:layout_height="fill_parent"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:background="@drawable/switching4"
+                        android:paddingLeft="-10dp"
+                        android:paddingRight="-10dp"
+                        android:background="@drawable/switch_inactive"
                         android:text="@string/home_top_center_hot"
                         android:textColor="@color/umeng_fb_white"
                         android:textSize="@dimen/top_center_size" />

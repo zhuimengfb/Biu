@@ -215,7 +215,13 @@
         </activity>
         <activity android:name="com.biu.biu.user.views.UserInfoActivity"/>
         <activity android:name="com.biu.biu.contact.views.AddContactActivity"/>
-        <activity android:name="com.biu.biu.contact.views.ChatActivity"/>
+        <activity android:name="com.biu.biu.contact.views.ChatActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            />
+        <activity android:name="com.biu.biu.user.views.ShowUserInfoActivity"/>
+        <activity android:name="com.biu.biu.user.views.SendRequestActivity"
+                  android:theme="@style/MyDialogStyleBottom"/>
+        <activity android:name="com.biu.biu.contact.views.ChatPicOriginalActivity"/>
 
         <!-- JPush -->
         <!-- Required SDK核心功能 -->
@@ -250,12 +256,12 @@
             </intent-filter>
         </service>
 
-        <!--IMReceiver -->
+        <!--IMReceiver 禁用,使用自定义的receiver -->
         <receiver
             android:name="cn.jpush.im.android.helpers.IMReceiver"
             android:enabled="true"
             android:exported="false">
-            <intent-filter android:priority="1000">
+            <intent-filter android:priority="999">
                 <action android:name="cn.jpush.im.android.action.IM_RESPONSE" />
                 <action android:name="cn.jpush.im.android.action.NOTIFICATION_CLICK_PROXY" />
 
@@ -307,7 +313,7 @@
             android:name="com.biu.biu.receiver.MyReceiver"
             android:enabled="true"
             android:exported="false">
-            <intent-filter>
+            <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.REGISTRATION"/>
                 <!-- Required  用户注册SDK的intent -->
                 <action android:name="cn.jpush.android.intent.UNREGISTRATION"/>
@@ -321,6 +327,8 @@
                 <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
                 <action android:name="cn.jpush.android.intent.CONNECTION"/>
                 <!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <action android:name="cn.jpush.im.android.action.IM_RESPONSE" />
+                <action android:name="cn.jpush.im.android.action.NOTIFICATION_CLICK_PROXY" />
                 <category android:name="grf.biu"/>
 
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -371,6 +379,12 @@
             android:name="com.tencent.connect.common.AssistActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <meta-data android:name="DATABASE" android:value="biu.db" />
+        <meta-data android:name="VERSION" android:value="2" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.biu.biu.entity" />
+
     </application>
 
 </manifest>

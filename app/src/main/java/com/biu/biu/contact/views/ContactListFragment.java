@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.biu.biu.contact.bean.ContactInfo;
+import com.biu.biu.contact.entity.ContactInfo;
+import com.biu.biu.contact.presenter.ContactPresenter;
 import com.biu.biu.contact.views.adapter.ContactRecyclerAdapter;
+import com.biu.biu.user.utils.UserPreferenceUtil;
 import com.biu.biu.views.base.BaseFragment;
 import com.camnter.easyrecyclerviewsidebar.EasyRecyclerViewSidebar;
 import com.camnter.easyrecyclerviewsidebar.sections.EasyImageSection;
@@ -31,7 +33,7 @@ import grf.biu.R;
  * Created by fubo on 2016/5/18 0018.
  * email:bofu1993@163.com
  */
-public class ContactListFragment extends BaseFragment implements IContactList {
+public class ContactListFragment extends BaseFragment implements IContactListView {
 
 
   @BindView(R.id.rv_contact_list)
@@ -42,10 +44,13 @@ public class ContactListFragment extends BaseFragment implements IContactList {
   RelativeLayout sectionLayout;
   @BindView(R.id.tv_section_letter)
   TextView sectionLetter;
+  @BindView(R.id.rl_nothing_layout)
+  RelativeLayout nothingLayout;
 
+  private ContactPresenter contactPresenter;
 
   private ContactRecyclerAdapter contactRecyclerAdapter;
-
+  private List<ContactInfo> contactInfoList = new ArrayList<>();
 
   public static ContactListFragment getInstance() {
     ContactListFragment contactListFragment = new ContactListFragment();
@@ -58,6 +63,7 @@ public class ContactListFragment extends BaseFragment implements IContactList {
       @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_contact, container, false);
     ButterKnife.bind(this, view);
+    contactPresenter = new ContactPresenter(this);
     initView();
     initData();
     return view;
@@ -67,59 +73,25 @@ public class ContactListFragment extends BaseFragment implements IContactList {
     contactRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     contactRecyclerView.setItemAnimator(new DefaultItemAnimator());
     contactRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity
-        ()).margin(40,60).size(1).build());
+        ()).margin(40, 60).size(1).build());
   }
 
   private void initData() {
-    List<ContactInfo> contactInfoList = new ArrayList<>();
-    ContactInfo contactInfo = new ContactInfo();
-    contactInfo.setName("傅波");
-    contactInfo.setEnglishName("fubo");
+    /*ContactInfo contactInfo = new ContactInfo();
+    contactInfo.setName("酷派");
+    contactInfo.setEnglishName("kupai");
+    contactInfo.setUserId("ffffffff-a1f3-bbb5-6508-e21700000000");
+    contactPresenter.saveContact(contactInfo);
     contactInfoList.add(contactInfo);
     ContactInfo contactInfo1 = new ContactInfo();
     contactInfo1.setName("FBI");
     contactInfo1.setEnglishName("FBI");
-    contactInfoList.add(contactInfo1);
-    ContactInfo contactInfo2 = new ContactInfo();
-    contactInfo2.setName("Angle");
-    contactInfo2.setEnglishName("Angle");
-    contactInfoList.add(contactInfo2);
-    ContactInfo contactInfo3 = new ContactInfo();
-    contactInfo3.setName("ace");
-    contactInfo3.setEnglishName("ace");
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo3);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    contactInfoList.add(contactInfo);
-    ContactInfo contactInfo4 = new ContactInfo();
-    contactInfo4.setName("ZZ");
-    contactInfo4.setEnglishName("ZZ");
-    contactInfoList.add(contactInfo4);
-    contactInfoList.add(contactInfo4);
-    contactInfoList.add(contactInfo4);
-    contactInfoList.add(contactInfo4);
+    contactInfo1.setUserId("ffffffff-9b6a-5295-ffff-ffffcb1967dc");
+    contactPresenter.saveContact(contactInfo1);
+    contactInfoList.add(contactInfo1);*/
+    contactPresenter.queryContact(UserPreferenceUtil.getUserPreferenceId());
     contactRecyclerAdapter = new ContactRecyclerAdapter(getActivity(), contactInfoList);
     contactRecyclerView.setAdapter(contactRecyclerAdapter);
-    updateContactNumber(contactInfoList.size());
     easyRecyclerViewSidebar.setSections(contactRecyclerAdapter.getSections());
     easyRecyclerViewSidebar.setFloatView(sectionLayout);
     easyRecyclerViewSidebar.setOnTouchSectionListener(new EasyRecyclerViewSidebar
@@ -133,27 +105,35 @@ public class ContactListFragment extends BaseFragment implements IContactList {
       @Override
       public void onTouchLetterSection(int sectionIndex, EasySection letterSection) {
         sectionLetter.setText(letterSection.letter);
-        ((LinearLayoutManager)contactRecyclerView.getLayoutManager()).scrollToPositionWithOffset(contactRecyclerAdapter.getHeaderPosition
-            (sectionIndex),0);
+        ((LinearLayoutManager) contactRecyclerView.getLayoutManager()).scrollToPositionWithOffset
+            (contactRecyclerAdapter.getHeaderPosition(sectionIndex), 0);
       }
     });
     contactRecyclerAdapter.setOnItemClickListener(new ContactRecyclerAdapter.OnItemClickListener() {
       @Override
       public void onItemClick(ContactInfo contactInfo) {
-        ChatActivity.toChatActivity(getActivity(),contactInfo);
+        ChatActivity.toChatActivity(getActivity(), contactInfo);
       }
     });
   }
 
-
   @Override
-  public void updateContactNumber(int number) {
-
+  public void updateContactList(List<ContactInfo> contactInfoList) {
+    if (contactInfoList.size() > 0) {
+      nothingLayout.setVisibility(View.GONE);
+    } else {
+      nothingLayout.setVisibility(View.VISIBLE);
+    }
+    this.contactInfoList.clear();
+    contactRecyclerAdapter.notifyDataSetChanged();
+    this.contactInfoList.addAll(contactInfoList);
+    contactRecyclerAdapter.updateData(this.contactInfoList);
+    easyRecyclerViewSidebar.setSections(contactRecyclerAdapter.getSections());
   }
 
   @Override
-  public void updateContactList(List<ContactInfo> contactInfoList) {
-
+  public void hasNewRequest(int number) {
+    contactRecyclerAdapter.setHasNewRequest(number);
   }
 
   class AddContactListener implements View.OnClickListener {
@@ -166,4 +146,11 @@ public class ContactListFragment extends BaseFragment implements IContactList {
     }
   }
 
+  @Override
+  public void onResume() {
+    if (contactPresenter != null) {
+      contactPresenter.queryUnDealRequestCount();
+    }
+    super.onResume();
+  }
 }

@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="60dp"
+    android:id="@+id/rl_add_contact_request"
     android:background="@color/white">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/iv_add_head_icon"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_centerVertical="true"
-        fresco:roundAsCircle="true"
-        fresco:backgroundImage="@color/colorPrimary"
-        fresco:placeholderImage="@drawable/user_icon"
-        fresco:failureImage="@drawable/user_icon"
         />
 
     <TextView
@@ -24,17 +21,23 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_toRightOf="@id/iv_add_head_icon"
-        android:layout_centerVertical="true"
+        android:layout_alignTop="@id/iv_add_head_icon"
         android:textSize="@dimen/bigTitleSize"
         android:textColor="@color/gray"
         android:text="@string/user_name"
         />
+
+    <RelativeLayout
+        android:id="@+id/layout_status"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true">
     <Button
         android:id="@+id/bt_add_contact"
         android:layout_width="50dp"
         android:layout_height="30dp"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
         android:layout_marginRight="12dp"
         android:gravity="center"
         android:background="@color/colorPrimary"
@@ -47,11 +50,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
         android:layout_marginRight="12dp"
         android:textSize="@dimen/bigTitleSize"
         android:textColor="@color/gray"
         android:text="@string/addAlready"
         android:visibility="gone"
+        />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_add_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/tv_add_contact_name"
+        android:layout_alignLeft="@id/tv_add_contact_name"
+        android:layout_toLeftOf="@id/layout_status"
+        android:layout_toStartOf="@id/layout_status"
+        android:layout_below="@id/tv_add_contact_name"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="5dp"
+        android:singleLine="true"
+        android:textSize="@dimen/tagSize"
+        android:textColor="@color/timeColor"
         />
 </RelativeLayout>

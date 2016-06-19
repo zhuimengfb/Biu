@@ -183,6 +183,11 @@ public class PublishTopicActivity extends BaseActivity implements
         if (mIsShowPlace) {
           parametersmap.put("address", mPlace);
         }
+        if (isAnonymityPublish) {
+          parametersmap.put("anony", String.valueOf(1));
+        } else {
+          parametersmap.put("anony", String.valueOf(0));
+        }
         parametersmap.put("type", "0");
         // thread = new PostNewTopicThread(mCapturePhotoPath, mHandler, url,
         // parametersmap);
@@ -245,6 +250,7 @@ public class PublishTopicActivity extends BaseActivity implements
                 Toast.LENGTH_SHORT).show();
             return;
           }
+
           // 使用全局定位信息
           thread = new PostNewTopicTempThread(mCapturePhotoPath,
               mHandler, url, mTopicId, contentTemp,
@@ -329,7 +335,7 @@ public class PublishTopicActivity extends BaseActivity implements
 		});*/
 
     // 左上角回退按钮
-		/*mTabBackbt.setOnClickListener(new OnClickListener() {
+        /*mTabBackbt.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -368,6 +374,7 @@ public class PublishTopicActivity extends BaseActivity implements
         ChooseImgResActivity.class);
     startActivityForResult(intent, REQUEST_CODE_CHOOSE_IMAGE_SOURCE);
   }
+
   private void initConfigParam() {
     // TODO Auto-generated method stub
     Intent intent = this.getIntent();

@@ -16,10 +16,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginTop="12dp"
+        android:paddingBottom="12dp"
         >
 
         <RelativeLayout
@@ -29,29 +29,32 @@
             android:gravity="center_vertical"
             >
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/iv_head_icon"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_centerVertical="true"
-                android:background="@drawable/default_user_icon2"
-                fresco:failureImage="@drawable/default_user_icon2"
-                fresco:placeholderImage="@drawable/default_user_icon2"
-                fresco:roundAsCircle="true"
-                />
-
-            <TextView
-                android:id="@+id/tv_user_name"
+            <RelativeLayout
+                android:id="@+id/user_info_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@id/iv_head_icon"
-                android:gravity="center_vertical"
-                android:text="@string/owner"
-                android:textColor="@color/gray"
-                android:textSize="@dimen/userNameSize"
-                android:typeface="sans"
-                />
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/iv_head_icon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/default_user_icon2"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/iv_head_icon"
+                    android:gravity="center_vertical"
+                    android:text="@string/owner"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/userNameSize"
+                    android:typeface="sans"
+                    />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/create_at_tv"
@@ -108,12 +111,13 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/iv_reply_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/reply_before_icon"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/reply_before_icon"
                     />
 
                 <TextView
@@ -128,32 +132,34 @@
                     android:textSize="@dimen/tagSize"/>
                 <!-- 右边的三个按钮竖直平分所占用空间 -->
 
-                <ImageButton
-                    android:id="@+id/likebtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
-                    android:layout_toRightOf="@id/reply_num_tv"
-                    android:background="@drawable/like_before_icon"/>
-
                 <TextView
                     android:id="@+id/likecounttv"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="8dp"
-                    android:layout_toRightOf="@id/likebtn"
+                    android:layout_marginRight="5dp"
                     android:gravity="center_vertical"
                     android:textColor="@color/gray"
                     android:textSize="@dimen/tagSize"/>
 
                 <ImageView
+                    android:id="@+id/likebtn"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_toLeftOf="@id/likecounttv"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/like_before_icon"/>
+
+                <ImageView
                     android:id="@+id/iv_share"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="5dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@id/reply_num_tv"
                     android:src="@drawable/share_before"
                     />
 

@@ -51,27 +51,7 @@
     <string name="more">加载中</string>
     <string name="you_need_to_grant_read_phone_state_permission">你需要授予我们获取设备信息的权限哦</string>
     <string name="hint">提示</string>
-    <!--
-    <string name="pull_to_refresh_pull_label">下拉刷新…</string>
-    <string name="pull_to_refresh_release_label">释放以刷新…</string>
-    <string name="pull_to_refresh_refreshing_label">加载中…</string> 
-    <string name="pull_to_refresh_tap_label">单击更新…</string>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    -->
     <string name="pull_to_refresh_updated_at_label">最近更新于: </string>
     <string name="loadmore_label">加载更多</string>
     <string name="loading_label">正在加载....</string>
@@ -123,65 +103,7 @@
     <string name="my_reply">我的回复</string>
     <string name="you_need_to_grant_read_storage_state_permission">你需要允许我们获取读取设备图库的权限哦</string>
     <string name="you_need_to_grant_read_location_state_permission">你需要允许我们获取设备位置信息哦</string>
-    <string name="title_activity_settings">Settings</string>
 
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
     <string name="home">主页</string>
     <string name="contact">通讯录</string>
     <string name="me">我</string>
@@ -210,4 +132,23 @@
     <string name="time">时间</string>
     <string name="input_nothing">不能输入空消息</string>
     <string name="register_fail">注册失败</string>
+    <string name="change_name">更改昵称</string>
+    <string name="confirm">确认</string>
+    <string name="set_name">设置昵称</string>
+    <string name="please_set_your_user_name">请设置您的昵称，非匿名发帖时将会显示自己的昵称，之后也可以进行修改</string>
+    <string name="input_verify_message">请输入验证信息</string>
+    <string name="verification_can_not_be_null">验证信息不能为空\n赞美对方可提高通过率</string>
+    <string name="network_fail">网络不可用，请稍后再试</string>
+    <string name="upload_pic_max_number">上传照片达到最大限制，请先删除部分照片</string>
+    <string name="upload_success">上传成功</string>
+    <string name="upload_fail">上传失败，请稍后再试</string>
+    <string name="long_click_delete">长按可删除图片</string>
+    <string name="sure_to_delete">确认删除？</string>
+    <string name="no_contact_request">还没有好友请求</string>
+    <string name="anonymity">匿名</string>
+    <string name="delete_fail">删除失败，请稍后再试</string>
+    <string name="delete_success">删除成功</string>
+    <string name="delete_request">删除好友请求</string>
+    <string name="no_friend_yet">还没有朋友，快去新鲜事发现吧</string>
+    <string name="no_publish_yet">还没有任何发表</string>
 </resources>

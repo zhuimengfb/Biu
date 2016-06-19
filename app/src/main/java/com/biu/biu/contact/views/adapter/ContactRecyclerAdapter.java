@@ -7,14 +7,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.biu.biu.app.BiuApp;
-import com.biu.biu.contact.bean.ContactInfo;
+import com.biu.biu.contact.entity.ContactInfo;
 import com.biu.biu.contact.views.AddContactActivity;
+import com.biu.biu.utils.GlideCircleTransform;
+import com.biu.biu.utils.GlobalString;
+import com.bumptech.glide.Glide;
 import com.camnter.easyrecyclerviewsidebar.sections.EasySection;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bingoogolapple.badgeview.BGABadgeImageView;
 import grf.biu.R;
 
 /**
@@ -43,6 +47,7 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   private static final int TYPE_NAME_HEADER = 1;
   private static final int TYPE_NORMAL = 2;
   private static final int TYPE_FOOTER = 3;
+  private BGABadgeImageView addImageView;
 
   public ContactRecyclerAdapter(Context context, List<ContactInfo> contactInfos) {
     this.context = context;
@@ -55,6 +60,8 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   }
 
   private void init() {
+    nameIndexs.clear();
+    sectionNames.clear();
     sectionNames.add(new EasySection("*"));
     StringBuilder stringBuilder = new StringBuilder("");
     if (contactInfos != null && contactInfos.size() > 0) {
@@ -132,8 +139,8 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     } else if (getItemViewType(position) == TYPE_NORMAL) {
       int index = getContactPosition(position);
       ((NormalViewHolder) holder).setUserName(contactInfos.get(index).getName());
-      //      ((NormalViewHolder)holder).setUserHeadIcon(Uri.parse(contactInfos.get(index)
-      // .getIconNetAddress()));
+      ((NormalViewHolder) holder).setUserHeadIcon(GlobalString.BASE_URL + "/" + contactInfos.get
+          (index).getIconNetAddress());
       ((NormalViewHolder) holder).setContactLayoutClick(contactInfos.get(index));
     } else if (getItemViewType(position) == TYPE_FOOTER) {
       ((FooterViewHolder) holder).setContactNumber(contactInfos.size());
@@ -148,17 +155,25 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     if (index == 0) {
       return 0;
     }
-    int count=0;
-    for (int i=0;i<nameIndexs.size();i++) {
+    int count = 0;
+    for (int i = 0; i < nameIndexs.size(); i++) {
       if (nameIndexs.get(i) < 0) {
         count++;
       }
       if (count == index) {
-        return i+1;
+        return i + 1;
       }
     }
     return 0;
   }
+
+
+  public void updateData(List<ContactInfo> contactInfoList) {
+    this.contactInfos = contactInfoList;
+    init();
+    notifyDataSetChanged();
+  }
+
   @Override
   public int getItemCount() {
     return nameIndexs.size() + 2;
@@ -173,7 +188,7 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @BindView(R.id.contact_layout)
     LinearLayout contactLayout;
     @BindView(R.id.iv_user_icon)
-    SimpleDraweeView userHeadIcon;
+    ImageView userHeadIcon;
     @BindView(R.id.tv_contact_name)
     TextView userNameTextView;
 
@@ -182,8 +197,9 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
       ButterKnife.bind(this, itemView);
     }
 
-    public void setUserHeadIcon(Uri uri) {
-      userHeadIcon.setImageURI(uri);
+    public void setUserHeadIcon(String path) {
+      Glide.with(context).load(path).transform(new GlideCircleTransform(context)).into
+          (userHeadIcon);
     }
 
     public void setUserName(String name) {
@@ -204,6 +220,17 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
   }
 
+  public void setHasNewRequest(int number) {
+    if (addImageView != null) {
+      if (number > 0) {
+        addImageView.showCirclePointBadge();
+      } else {
+        addImageView.hiddenBadge();
+      }
+    }
+  }
+
+
   class HeaderViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.tv_contact_header)
@@ -222,21 +249,23 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
   class AddHeaderViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.iv_add_contact)
-    SimpleDraweeView addContactImageView;
+    BGABadgeImageView addContactImageView;
     @BindView(R.id.tv_add_contact)
     TextView addContactTextView;
 
     public AddHeaderViewHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
-      /*addContactImageView.setImageURI(Uri.parse("android.resource://" + BiuApp.getContext()
-          .getPackageName() + "/" + R.drawable.tab_contact_page));*/
-      addContactTextView.setTypeface(BiuApp.globalTypeface);
+      Glide.with(context).load(Uri.parse(GlobalString.URI_RES_PREFIX + R.drawable
+          .add_contact_icon)).transform(new GlideCircleTransform(context)).into
+          (addContactImageView);
       addContactImageView.setOnClickListener(new AddNewFriendListener());
       addContactTextView.setOnClickListener(new AddNewFriendListener());
+      addContactTextView.setTypeface(BiuApp.globalTypeface);
+      addImageView = addContactImageView;
     }
 
-    class AddNewFriendListener implements View.OnClickListener{
+    class AddNewFriendListener implements View.OnClickListener {
 
       @Override
       public void onClick(View v) {

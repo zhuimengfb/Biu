@@ -7,13 +7,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.biu.biu.replysuggestion.ChatAdapter;
 import com.biu.biu.replysuggestion.ChatEntity;
 import com.biu.biu.views.base.BaseActivity;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.fb.SyncListener;
@@ -39,7 +39,7 @@ public class ResponseSuggestActivity extends BaseActivity {
 	@BindView(R.id.toolbar_suggestion)
 	Toolbar toolbar;
 	@BindView(R.id.bt_send)
-	SimpleDraweeView sendSimpleDraweeView;
+	ImageView sendSimpleDraweeView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

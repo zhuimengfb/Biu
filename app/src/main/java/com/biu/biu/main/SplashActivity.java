@@ -19,6 +19,7 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.UUID;
 
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import grf.biu.R;
 
@@ -55,6 +56,7 @@ public class SplashActivity extends Activity {
         .getSystemService(Context.TELEPHONY_SERVICE);
     final String tmDevice, tmSerial, androidId;
     tmDevice = "" + tm.getDeviceId();
+    Log.d("deviceId", tmDevice);
     tmSerial = "" + tm.getSimSerialNumber();
     androidId = ""
         + android.provider.Settings.Secure.getString(
@@ -72,9 +74,13 @@ public class SplashActivity extends Activity {
     super.onResume();
     getDeviceuuId(); // 每次程序启动时，首先获取设备ID作为全局参数。
     MobclickAgent.onResume(this);
-    if (!preferences.getBoolean("registered", false)) {
+    if (! preferences.getBoolean("registered", false)) {
       register(getDeviceID(), "123456");
     } else {
+      if (System.currentTimeMillis() - preferences.getLong("lastLogin", 0L) > 60000 * 60 * 24 *
+          5) {
+        login(preferences.getString("userName", ""), preferences.getString("password", ""));
+      }
       toMainActivity();
     }
   }
@@ -84,7 +90,15 @@ public class SplashActivity extends Activity {
       @Override
       public void gotResult(int i, String s) {
         if (i == 0) {
-          toMainActivity();
+          preferences.edit().putLong("lastLogin", System.currentTimeMillis()).apply();
+          UserInfo userInfo = JMessageClient.getMyInfo();
+          userInfo.setNickname(getString(R.string.anonymity));
+          JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+              toMainActivity();
+            }
+          });
         }
       }
     });
@@ -109,8 +123,9 @@ public class SplashActivity extends Activity {
       public void gotResult(int i, String s) {
         Log.d("register callback", i + s);
         if (i == 0) {
-          preferences.edit().putBoolean("registered",true).apply();
-          toMainActivity();
+          preferences.edit().putBoolean("registered", true).putString("userName", userName)
+              .putString("password", password).apply();
+          login(userName, password);
         } else {
           Toast.makeText(BiuApp.getContext(), getString(R.string.register_fail), Toast
               .LENGTH_SHORT).show();
@@ -126,7 +141,7 @@ public class SplashActivity extends Activity {
     UserConfigParams.device_id = device_ID;
     Editor editor = preferences.edit();
     editor.putString("device_ID", device_ID);
-    editor.apply();
+    editor.commit();
     // if(UserConfigParams.device_id.isEmpty()){
     // // 如果设备ID为空，则获得并重写配置参数
     // Editor editor = preferences.edit();

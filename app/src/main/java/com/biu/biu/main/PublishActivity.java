@@ -235,7 +235,6 @@ public class PublishActivity extends Activity implements AMapLocationListener{
 					mIsPublishing = false;
 					e.printStackTrace();
 				}
-				
 				// 向服务器发送发表帖子的post信息
 				publishHandler = new PublishTipHandler();
 				Thread thread = new Thread(new PostNewTipThread(publishHandler));

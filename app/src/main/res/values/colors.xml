@@ -16,6 +16,7 @@
     <color name="green">#00FF00</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
+    <color name="transparent2">#1a000000</color>
     <color name="app_bar_footer_background">#D2D8D2</color>
     <color name="colorPrimaryLight">#AAFFFF</color>
 </resources>

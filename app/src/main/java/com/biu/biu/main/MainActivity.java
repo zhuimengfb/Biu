@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -18,12 +19,15 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,9 +39,11 @@ import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.baidu.mapapi.SDKInitializer;
 import com.biu.biu.contact.views.ContactListFragment;
 import com.biu.biu.thread.PostTempPosition;
+import com.biu.biu.user.entity.AppUserInfo;
+import com.biu.biu.user.model.UserModel;
+import com.biu.biu.user.utils.UserPreferenceUtil;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.biu.biu.views.base.BaseActivity;
 import com.umeng.analytics.MobclickAgent;
@@ -45,6 +51,8 @@ import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.umeng.update.UpdateStatus;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +62,9 @@ import butterknife.ButterKnife;
 import cn.jpush.android.api.BasicPushNotificationBuilder;
 import cn.jpush.android.api.CustomPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
 import grf.biu.R;
 
 /**
@@ -115,6 +126,62 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     initView();
     defineHomeBt();
     checkSoftwareUpdate();
+    initUserName();
+  }
+
+  private void initUserName() {
+    if (StringUtils.isEmpty(UserPreferenceUtil.getPreferences().getString(UserPreferenceUtil
+        .USER_PREFERENCE_NAME_KEY, ""))) {
+      showSetNameDialog();
+    } else {
+      if (UserPreferenceUtil.getPreferences().getBoolean(UserPreferenceUtil
+          .USER_UPDATE_NICK_NAME_FAIL, true)) {
+        updateUserNickName(UserPreferenceUtil.getPreferences().getString(UserPreferenceUtil
+            .USER_PREFERENCE_NAME_KEY, ""));
+      }
+    }
+  }
+
+  private void showSetNameDialog() {
+    LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(MainActivity.this).inflate(R
+        .layout.edit_dialog_layout, null);
+    final EditText editText = (EditText) linearLayout.findViewById(R.id.et_dialog);
+    final AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(getString(R.string
+        .set_name)).setView(linearLayout)
+        .setMessage(getString(R.string.please_set_your_user_name))
+        .setCancelable(false).setPositiveButton(getString(R.string.confirm), new
+            DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                if (! StringUtils.isEmpty(editText.getText().toString())) {
+                  UserPreferenceUtil.getPreferences().edit().putString(UserPreferenceUtil
+                      .USER_PREFERENCE_NAME_KEY, editText.getText().toString()).apply();
+                  updateUserNickName(editText.getText().toString());
+                }
+              }
+            }).create();
+    alertDialog.show();
+  }
+
+  private void updateUserNickName(String nickName) {
+    UserInfo myInfo = JMessageClient.getMyInfo();
+    if (myInfo != null) {
+      myInfo.setNickname(nickName);
+      JMessageClient.updateMyInfo(UserInfo.Field.nickname, myInfo, new BasicCallback() {
+
+        @Override
+        public void gotResult(int i, String s) {
+          if (i != 0) {
+            UserPreferenceUtil.getPreferences().edit().putBoolean(UserPreferenceUtil
+                .USER_UPDATE_NICK_NAME_FAIL, true).apply();
+          } else {
+            UserPreferenceUtil.getPreferences().edit().putBoolean(UserPreferenceUtil
+                .USER_UPDATE_NICK_NAME_FAIL, false).apply();
+          }
+        }
+      });
+    }
+    //TODO 服务器更新
   }
 
   private void initReceiver() {
@@ -130,7 +197,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     // 定义通知
     BasicPushNotificationBuilder basicBuild = new BasicPushNotificationBuilder(
         MainActivity.this);
-    basicBuild.statusBarDrawable = R.drawable.icon;
+    basicBuild.statusBarDrawable = R.drawable.icon72;
     basicBuild.notificationFlags = Notification.FLAG_AUTO_CANCEL
         | Notification.FLAG_SHOW_LIGHTS; // 设置为自动消失和呼吸灯闪烁
     basicBuild.notificationDefaults = Notification.DEFAULT_SOUND
@@ -141,9 +208,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         MainActivity.this, R.layout.biu_notication_style, R.id.icon,
         R.id.title, R.id.text);
     // 指定定制的 Notification Layout
-    builder.statusBarDrawable = R.drawable.icon;
+    builder.statusBarDrawable = R.drawable.icon72;
     // 指定最顶层状态栏小图标
-    builder.layoutIconDrawable = R.drawable.icon;
+    builder.layoutIconDrawable = R.drawable.icon72;
     JPushInterface.setPushNotificationBuilder(2, builder);
   }
 
@@ -183,8 +250,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     JPushInterface.init(getApplicationContext());
     JPushInterface.setLatestNotificationNumber(getApplicationContext(), 3);
     this.defineNotificationStyle();
-    SDKInitializer.initialize(getApplicationContext());
+    //SDKInitializer.initialize(getApplicationContext());
     Log.d("packageName", getPackageName());
+    Log.d("device_id", UserPreferenceUtil.getUserPreferenceId());
     checkIsSupportedByVersion();
     defineHWBadgeNum();
   }
@@ -337,7 +405,6 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
 
   @Override
   protected void onResume() {
-    // TODO Auto-generated method stub
     // 显示或影藏红点状态
     showOrHideStatus();
     initGaodeLocation(); // 初始化高德定位系统（每分钟定位一次，500米定位一次）
@@ -349,6 +416,15 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     super.onResume();
     MobclickAgent.onResume(this);
     JPushInterface.onResume(this);
+    initAppUserInfo();
+    new UserModel().postJMessageId(UserPreferenceUtil.getUserPreferenceId(), UserPreferenceUtil
+        .getUserPreferenceId());
+  }
+
+  //TODO 此处需要初始化更多的信息
+  private void initAppUserInfo() {
+    SharedPreferences preferences = getSharedPreferences("user_Params", MODE_PRIVATE);
+    AppUserInfo.userId = preferences.getString("device_ID", "");
   }
 
   /*
@@ -552,11 +628,11 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         if (homeBtStatus != 0) {
           // 点击显示新帖子
           mFragmentAdapter.changeIndex();
-          homeFrgNew.setBackgroundResource(R.drawable.switching2);
+          homeFrgNew.setBackgroundResource(R.drawable.switch_active);
           // 字体为biu蓝
           homeFrgNew.setTextColor(getResources().getColor(
               R.color.biu_main_color));
-          homeFrgHot.setBackgroundResource(R.drawable.switching4);
+          homeFrgHot.setBackgroundResource(R.drawable.switch_inactive);
           homeFrgHot.setTextColor(getResources().getColor(
               R.color.biu_font_white));
           homeBtStatus = 0;
@@ -579,10 +655,10 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         if (homeBtStatus != 1) {
           mFragmentAdapter.changeIndex();
           Log.i("Hot", "changed..................");
-          homeFrgNew.setBackgroundResource(R.drawable.switching1);
+          homeFrgNew.setBackgroundResource(R.drawable.switch_inactive);
           homeFrgHot.setTextColor(getResources().getColor(
               R.color.biu_main_color));
-          homeFrgHot.setBackgroundResource(R.drawable.switching3);
+          homeFrgHot.setBackgroundResource(R.drawable.switch_active);
           homeFrgNew.setTextColor(getResources().getColor(
               R.color.biu_font_white));
           homeBtStatus = 1;

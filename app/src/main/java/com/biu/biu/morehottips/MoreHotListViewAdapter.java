@@ -360,7 +360,7 @@ public class MoreHotListViewAdapter extends BaseAdapter {
           .findViewById(R.id.create_at_tv);
       listItemView.replayCounttv = (TextView) convertView
           .findViewById(R.id.reply_num_tv);
-      listItemView.hometopbtn = (ImageButton) convertView
+      listItemView.hometopbtn = (ImageView) convertView
           .findViewById(R.id.likebtn);
       listItemView.homedownbtn = (ImageButton) convertView
           .findViewById(R.id.treadbtn);
@@ -568,7 +568,7 @@ public class MoreHotListViewAdapter extends BaseAdapter {
     public TextView publishPlacetv; // 发表时间
     public ImageView pubtimeImg; // 发表时间图标
     public ImageView replyImg; // 回复数图标
-    public ImageButton hometopbtn; // 顶按钮
+    public ImageView hometopbtn; // 顶按钮
     public ImageButton homedownbtn; // 踩按钮
     public ImageView replyIcon;
     public ImageView shareIcon;

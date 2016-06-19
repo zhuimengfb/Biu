@@ -7,35 +7,59 @@
     <include
         android:id="@+id/toolbar_layout"
         layout="@layout/normal_toolbar_layout"/>
+    <RelativeLayout
+        android:id="@+id/input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grayBackground"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/iv_emoj_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="7dp"
+            android:src="@drawable/happy_face_icon"
+            android:scaleType="centerInside"
+            />
+        <ImageView
+            android:id="@+id/iv_send_pic"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="7dp"
+            android:src="@drawable/add_icon"
+            android:layout_alignParentRight="true"
+            />
+
+        <com.rockerhieu.emojicon.EmojiconEditText
+            android:id="@+id/et_chat_content"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/iv_emoj_icon"
+            android:layout_toLeftOf="@id/iv_send_pic"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:inputType="text"
+            android:imeOptions="actionSend"
+            />
+        <FrameLayout
+            android:id="@+id/emojicons"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:layout_below="@id/et_chat_content"
+            />
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_chat_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar_layout">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_layout"
+        android:layout_above="@id/input_layout"
+        >
 
     </android.support.v7.widget.RecyclerView>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="@color/grayBackground"
-        android:layout_alignParentBottom="true">
-
-        <EditText
-            android:id="@+id/et_chat_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="55dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:background="@drawable/edit_background"
-            android:inputType="text"
-            android:imeOptions="actionSend"
-            />
-    </RelativeLayout>
 </RelativeLayout>

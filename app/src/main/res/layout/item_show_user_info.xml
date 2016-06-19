@@ -7,33 +7,10 @@
     android:background="@color/white"
     >
 
-    <RelativeLayout
-        android:id="@+id/operation_layout"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        >
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginRight="140dp"
-            android:src="@drawable/not_like_user_before"
-            />
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="140dp"
-            android:src="@drawable/like_user_before"
-            />
-    </RelativeLayout>
-
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
+        android:id="@+id/iv_show_user_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/operation_layout"
-        android:background="@color/colorPrimary"
+        android:scaleType="centerCrop"
         />
 </RelativeLayout>

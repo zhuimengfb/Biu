@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.bingoogolapple.badgeview.BGABadgeLinearLayout;
 import grf.biu.R;
 
 public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
@@ -62,7 +62,7 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
   private int mOffset = 0; // 获取回复贴时跳过的条数（即已经获得到本地的条数）
 
   // 重新定义存储数据变量
-  private List<ReplythreadInfo> mmyReplyInfo = new ArrayList<ReplythreadInfo>();
+  private List<ReplythreadInfo> mmyReplyInfo = new ArrayList<>();
 
   // 重新定义一个数组适配器
   private MyReplyAdapter myReplyAdapter = null;
@@ -70,6 +70,8 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
   Toolbar toolbar;
   @BindView(R.id.toolbar_title)
   TextView toolbarTitle;
+  @BindView(R.id.rl_nothing_layout)
+  RelativeLayout nothingLayout;
 
   @Override
   protected void onPause() {
@@ -113,13 +115,11 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
     setContentView(R.layout.activity_my_reply);
     ButterKnife.bind(this);
     findViewId();
-    // initParam();
     initToolbar();
     mfirstRefresh = true;
     initView();
     myRepliesHandler = new MyReplyHandler();
     mListView.setOnItemClickListener(new OnItemClickListener() {
-
       @Override
       public void onItemClick(AdapterView<?> parent, View view,
           int position, long id) {
@@ -129,9 +129,8 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
           return;
         }
         if (mmyReplyInfo.get(nPosition).getPush_num() > 0) {
-          new Thread(new ClearPushNumThread(mmyReplyInfo.get(
-              nPosition).getReply_to_id(), myRepliesHandler))
-              .start();
+          new Thread(new ClearPushNumThread(mmyReplyInfo.get(nPosition).getReply_to_id(),
+              myRepliesHandler)).start();
           if (mmyReplyInfo.get(nPosition).getPush_num() != 0) {
             //如果回帖对应有新消息，则进行一次刷新
             mfirstRefresh = true;
@@ -141,21 +140,16 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
         }
         Intent intent = new Intent();
         intent.setClass(MyReplyActivity.this, PeepDetailActivity.class);
-        intent.putExtra("thread_id", mmyReplyInfo.get(nPosition)
-            .getReply_to_id());
+        intent.putExtra("thread_id", mmyReplyInfo.get(nPosition).getReply_to_id());
         String strType = mmyReplyInfo.get(nPosition).getType();
         if (strType.equals("0")) {
-          intent.putExtra("DetailMode",
-              PeepDetailActivity.TIPDETAIL_FOR_HOMETIP);
+          intent.putExtra("DetailMode", PeepDetailActivity.TIPDETAIL_FOR_HOMETIP);
         } else if (strType.equals("1")) {
-          intent.putExtra("DetailMode",
-              PeepDetailActivity.TIPDETAIL_FOR_MOONBOOX);
+          intent.putExtra("DetailMode", PeepDetailActivity.TIPDETAIL_FOR_MOONBOOX);
         } else if (strType.equals("3")) {
-          intent.putExtra("DetailMode",
-              PeepDetailActivity.TIPDETAIL_FOR_PEEPTOPIC);
+          intent.putExtra("DetailMode", PeepDetailActivity.TIPDETAIL_FOR_PEEPTOPIC);
         } else {
-          intent.putExtra("DetailMode",
-              PeepDetailActivity.TIPDETAIL_FOR_HOMETIP);
+          intent.putExtra("DetailMode", PeepDetailActivity.TIPDETAIL_FOR_HOMETIP);
         }
         MyReplyActivity.this.startActivity(intent);
       }
@@ -170,13 +164,11 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
     toolbarTitle.setText(getString(R.string.me_myreply));
   }
 
-  private void initParam() {
-    // TODO Auto-generated method stub
-    // SharedPreferences preferences = getSharedPreferences("user_Params",
-    // MODE_PRIVATE);
-    // device_uuid = preferences.getString("device_ID", "");
-    url = url + UserConfigParams.device_id + "/threads"
-        + "?want_reply=1&limit=100";
+  private void showNoPublish() {
+    nothingLayout.setVisibility(View.VISIBLE);
+  }
+  private void hideNoPublish() {
+    nothingLayout.setVisibility(View.GONE);
   }
 
   private void initView() {
@@ -190,29 +182,23 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
     // "replycontent", "replyInfo" }, new int[] {
     // R.id.myreplytimetv, R.id.myreplycontent,
     // R.id.myreplyiteminfotv });
-    myReplyAdapter = new MyReplyAdapter(this, R.layout.myreplylistitem,
-        mmyReplyInfo);
+    ReplythreadInfo replythreadInfo = new ReplythreadInfo();
+    replythreadInfo.setPush_num(1);
+    replythreadInfo.setReply_id("11");
+    replythreadInfo.setReply_to_id("11");
+    replythreadInfo.setReplycontent("1111");
+    replythreadInfo.setReplytime("111");
+    replythreadInfo.setReplyToContent("3333");
+    replythreadInfo.setType("1");
+    mmyReplyInfo.add(replythreadInfo);
+    myReplyAdapter = new MyReplyAdapter(this, R.layout.myreplylistitem, mmyReplyInfo);
     mListView.setAdapter(myReplyAdapter);
     mListView.setOnRefreshListener(this);
     mListView.setOnLoadListener(this);
     mListView.setPageSize(10); // 设置每次加载10条
   }
 
-  @SuppressWarnings("unused")
-  // private void addTestData() {
-  // // TODO Auto-generated method stub
-  // HashMap<String, Object> map = new HashMap<String, Object>();
-  // map.put("replytime", "我 3分钟前 评论了：");
-  // map.put("replycontent", "是的，颇有同感！");
-  // map.put("replyInfo", "我想变成一棵树，孤独地站在道路的一旁，就没人注意到自己的存在。曾经总是相信生...");
-  // mmyReplyInfo.add(map);
-  // map = new HashMap<String, Object>();
-  // map.put("replytime", "我 1小时前 评论了：");
-  // map.put("replycontent", "路过，赞一个！");
-  // map.put("replyInfo", "时间不能回环，而做过的这些事，像是已经深深打下去的树桩。");
-  // mmyReplyInfo.add(map);
-  //
-  // }
+
   private void findViewId() {
     // TODO Auto-generated method stub
     mListView = (AutoListView) findViewById(R.id.myreplylistview);
@@ -300,16 +286,14 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
         if (httpEntity != null) {
           try {
             bufferedReader = new BufferedReader(
-                new InputStreamReader(httpEntity.getContent(),
-                    "UTF-8"), 8 * 1024);
+                new InputStreamReader(httpEntity.getContent(), "UTF-8"), 8 * 1024);
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {
               entityStringBuilder.append(line + "/n");
             }
             // 利用从HttpEntity中得到的String生成JsonObject
             // 这次确实jsonObject
-            jsonArray = new JSONArray(
-                entityStringBuilder.toString());
+            jsonArray = new JSONArray(entityStringBuilder.toString());
             // 得到了首页数据，传递消息，进行解析并显示
             Message msg = Message.obtain();
             msg.what = GET_MYREPLY_OK;
@@ -373,7 +357,11 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
       }
       mListView.setResultSize(jsonArray.length());
       myReplyAdapter.notifyDataSetChanged();
-
+      if (mmyReplyInfo.size() > 0) {
+        hideNoPublish();
+      } else {
+        showNoPublish();
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -521,8 +509,6 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
             .findViewById(R.id.myreplycontent);
         viewHolder.replyToContentView = (TextView) view
             .findViewById(R.id.myreplyiteminfotv);
-        viewHolder.bgaBadgeLinearLayout = (BGABadgeLinearLayout) view.findViewById(R.id
-            .myreplytar);
         view.setTag(viewHolder);
       } else {
         view = convertView;
@@ -532,22 +518,18 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
       viewHolder.replyTimeView.setText(replythreadInfo.getReplytime());
 
       if (replythreadInfo.getPush_num() > 0) {
-        //viewHolder.replyPushNumView.setVisibility(TextView.VISIBLE);
+        viewHolder.replyPushNumView.setVisibility(TextView.VISIBLE);
         if (replythreadInfo.getPush_num() < 99) {
           // 可能有问题
           // String number = Integer.toString(publishThread
           // .getPush_num());
-					/*viewHolder.replyPushNumView.setText(Integer
-							.toString(replythreadInfo.getPush_num()));*/
-          viewHolder.bgaBadgeLinearLayout.showTextBadge(Integer
+          viewHolder.replyPushNumView.setText(Integer
               .toString(replythreadInfo.getPush_num()));
         } else {
-          //					viewHolder.replyPushNumView.setText("99+");
-          viewHolder.bgaBadgeLinearLayout.showTextBadge("99+");
+          viewHolder.replyPushNumView.setText("99+");
         }
       } else {
-        //				viewHolder.replyPushNumView.setVisibility(TextView.INVISIBLE);
-        viewHolder.bgaBadgeLinearLayout.hiddenBadge();
+        viewHolder.replyPushNumView.setVisibility(TextView.INVISIBLE);
       }
 
       viewHolder.replyContentView.setText(replythreadInfo
@@ -567,8 +549,6 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
       TextView replyContentView;
       // 楼主的帖子内容
       TextView replyToContentView;
-
-      BGABadgeLinearLayout bgaBadgeLinearLayout;
 
     }
   }

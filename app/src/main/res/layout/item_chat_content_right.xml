@@ -26,23 +26,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/iv_chat_user_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
-            fresco:roundAsCircle="true"
-            fresco:placeholderImage="@drawable/user_icon"
-            android:background="@drawable/user_icon"
             />
-        <TextView
+        <com.rockerhieu.emojicon.EmojiconTextView
             android:id="@+id/tv_chat_content"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/iv_chat_user_icon"
             android:minHeight="36dp"
-            android:gravity="center_vertical"
+            android:minWidth="50dp"
+            android:gravity="center"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="10dp"
             android:paddingTop="10dp"
@@ -52,7 +50,24 @@
             android:textColor="@color/white"
             android:textSize="@dimen/bigTitleSize"
             android:background="@drawable/chat_item_right"
+            android:visibility="gone"
             />
-
+            <ImageView
+                android:id="@+id/iv_chat_pic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxHeight="300dp"
+                android:maxWidth="400dp"
+                android:layout_toLeftOf="@id/iv_chat_user_icon"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="10dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:background="@color/colorPrimary"
+                android:visibility="gone"
+                android:scaleType="center"
+                />
     </RelativeLayout>
 </LinearLayout>

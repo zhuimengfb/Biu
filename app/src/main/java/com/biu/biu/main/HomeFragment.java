@@ -16,10 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.biu.biu.tools.AutoListView;
+import com.biu.biu.user.entity.SimpleUserInfo;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.biu.biu.views.base.BaseFragment;
 
@@ -39,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import grf.biu.R;
 
 public class HomeFragment extends BaseFragment
@@ -78,6 +82,8 @@ public class HomeFragment extends BaseFragment
   private boolean mfirstRefresh = true;
   private TextView mMoreHottv = null;
   private FloatingActionButton floatingActionButton;
+  @BindView(R.id.iv_no_publish)
+  ImageView ivNoPublish;
 
   // 设置一个变量也用识别是否是在刷新 使得nextlistItemsBuffer清空
   private boolean ctrlRefresh = false;
@@ -92,16 +98,18 @@ public class HomeFragment extends BaseFragment
         default:
           break;
       }
-    };
+    }
+
+    ;
   };
   // 定义一个计时器
   private Timer refreshTimer;
 
-  public static HomeFragment getInstance(Boolean localOrNot){
-    HomeFragment homeFragment=new HomeFragment();
+  public static HomeFragment getInstance(Boolean localOrNot) {
+    HomeFragment homeFragment = new HomeFragment();
     Bundle args = new Bundle();
     homeFragment.localOrnot = localOrNot;
-    args.putBoolean("LOCAL_OR_NOT",localOrNot);
+    args.putBoolean("LOCAL_OR_NOT", localOrNot);
     homeFragment.setArguments(args);
     return homeFragment;
   }
@@ -109,7 +117,7 @@ public class HomeFragment extends BaseFragment
   // 构造函数
 
 	/*public HomeFragment(Boolean localOrnot) {
-		this.localOrnot = localOrnot;
+        this.localOrnot = localOrnot;
 	}*/
 
   @Override
@@ -177,6 +185,7 @@ public class HomeFragment extends BaseFragment
     // TODO Auto-generated method stub
     super.onCreateView(inflater, container, savedInstanceState);
     View homeView = inflater.inflate(R.layout.activity_tab_home, container, false);
+    ButterKnife.bind(getActivity(), homeView);
     return homeView;
   }
 
@@ -190,6 +199,7 @@ public class HomeFragment extends BaseFragment
     floatingActionButton = (FloatingActionButton) (getActivity().findViewById(R.id.fab_add));
     mHomeListView = (AutoListView) (getActivity().findViewById(R.id.home_showtopic));
     listViewAdapter = new HomeListAdapter(this.getActivity(), mHomeListItems);// 第一次实例化
+    listViewAdapter.setActivity(this.getActivity());
     listViewAdapter.setListView(mHomeListView);
     mHomeListView.setAdapter(listViewAdapter);
     mHomeListView.setOnRefreshListener(this);
@@ -212,10 +222,21 @@ public class HomeFragment extends BaseFragment
 
         Intent intent = new Intent();
         intent.setClass(getActivity(), PeepDetailActivity.class);
-        intent.putExtra("thread_id", mHomeListItems.get(position-1).id);
+        intent.putExtra("thread_id", mHomeListItems.get(position - 1).id);
         intent.putExtra("DetailMode",
             PeepDetailActivity.TIPDETAIL_FOR_HOMETIP);
         getActivity().startActivity(intent);
+      }
+    });
+    listViewAdapter.setTopicNumberListener(new HomeListAdapter.TopicNumberListener() {
+      @Override
+      public void showNoTopic() {
+        showNoPublish();
+      }
+
+      @Override
+      public void hideNoTopic() {
+        hideNoPublish();
       }
     });
   }
@@ -230,7 +251,7 @@ public class HomeFragment extends BaseFragment
   }
 
 	/*
-	 * 得到自定义的HttpClient
+     * 得到自定义的HttpClient
 	 */
   // private HttpClient getHttpClient() {
   // // TODO Auto-generated method stub
@@ -251,7 +272,6 @@ public class HomeFragment extends BaseFragment
    * home页的自定义Handler
    *
    * @author grf
-   *
    */
   class HomeHandler extends Handler {
 
@@ -273,7 +293,7 @@ public class HomeFragment extends BaseFragment
         case FIRST_PAGE_GET_ERROR:
           usefirstBuffer = true;
           mHomeListView.onRefreshComplete();
-         showShortToast( "获取首页信息失败，请检查网络连接！");
+          showShortToast("获取首页信息失败，请检查网络连接！");
 
           break;
         case NEXT_PAGE_GET_OK:
@@ -286,7 +306,7 @@ public class HomeFragment extends BaseFragment
           break;
         case NEXT_PAGE_GET_ERROR:
           mHomeListView.onLoadComplete();
-          showShortToast( "获取分页信息失败，请检查网络连接！");
+          showShortToast("获取分页信息失败，请检查网络连接！");
           break;
         // 首页刷新
         case HOME_LISTVIEW_REFRESH:
@@ -339,7 +359,7 @@ public class HomeFragment extends BaseFragment
     public void run() {
       // TODO Auto-generated method stub
       ncount = 1;
-      while (!UserConfigParams.hasGettedLocation()) { // 没得到经纬度就一直等着
+      while (! UserConfigParams.hasGettedLocation()) { // 没得到经纬度就一直等着
         // Toast.makeText(getActivity(), "等待高德经纬度",
         // Toast.LENGTH_SHORT).show();
         try {
@@ -450,8 +470,9 @@ public class HomeFragment extends BaseFragment
     @Override
     public void run() {
       // TODO Auto-generated method stub
-      if (mthreadisrunning)
+      if (mthreadisrunning) {
         return;
+      }
       mthreadisrunning = true;
       String nextpageurl = "http://api.bbbiu.com:1234/threads";
 
@@ -574,10 +595,8 @@ public class HomeFragment extends BaseFragment
         item.device_id = everyJsonObject.getString("device_id");
         item.id = everyJsonObject.getString("id");
         item.lat = everyJsonObject.getString("lat");
-        Integer likeresult = Integer.parseInt(everyJsonObject
-            .getString("like_num"))
-            - Integer.parseInt(everyJsonObject
-            .getString("tread_num"));
+        Integer likeresult = Integer.parseInt(everyJsonObject.getString("like_num"))
+            - Integer.parseInt(everyJsonObject.getString("tread_num"));
         item.like_num = likeresult.toString();
         item.lng = everyJsonObject.getString("lng");
         item.reply_num = everyJsonObject.getString("reply_num");
@@ -589,6 +608,17 @@ public class HomeFragment extends BaseFragment
         item.pubplace = everyJsonObject.getString("address");
         item.hasliked = everyJsonObject.getBoolean("has_liked");
         item.hastreaded = everyJsonObject.getBoolean("has_treaded");
+        SimpleUserInfo simpleUserInfo = new SimpleUserInfo();
+        item.anony = Integer.parseInt(everyJsonObject.getString("anony"));
+        if (! everyJsonObject.isNull("publisher") && everyJsonObject.get("publisher") != null) {
+          JSONObject userJson = everyJsonObject.getJSONObject("publisher");
+          simpleUserInfo.setJm_id(userJson.getString("jm_id"));
+          simpleUserInfo.setDevice_id(userJson.getString("jm_id"));
+          simpleUserInfo.setNickname(userJson.getString("nickname"));
+          simpleUserInfo.setIcon_small(userJson.getString("icon_small"));
+          simpleUserInfo.setIcon_large(userJson.getString("icon_small"));
+        }
+        item.simpleUserInfo = simpleUserInfo;
         // if (usefirstBuffer && i == 2)
         // item.isDisplayMore = true;
         tempBuffer.add(item);
@@ -606,6 +636,18 @@ public class HomeFragment extends BaseFragment
     }
   }
 
+  private void showNoPublish() {
+    if (ivNoPublish.getVisibility() != View.VISIBLE) {
+      ivNoPublish.setVisibility(View.VISIBLE);
+    }
+  }
+
+  public void hideNoPublish() {
+    if (ivNoPublish.getVisibility() != View.GONE) {
+      ivNoPublish.setVisibility(View.GONE);
+    }
+  }
+
   /**
    * 将下一页数据连接到当前页面，同时再次获得下一页数据。
    */
@@ -614,8 +656,9 @@ public class HomeFragment extends BaseFragment
     ArrayList<Integer> topdowntemp = listViewAdapter
         .getLikeTreadSaveBuffer();
     ArrayList<TipItemInfo> listtempitems = listViewAdapter.getListItems();
-    for (int i = 0; i < nextlistItemsBuffer.size(); i++)
+    for (int i = 0; i < nextlistItemsBuffer.size(); i++) {
       topdowntemp.add(0);
+    }
 
     // 下一条子语句用于控制是不是能不能下拉刷新(因为存在缓冲数据，因而这边的判别不能放在此处)
     // mHomeListView.setResultSize(nextlistItemsBuffer.size());
@@ -638,10 +681,11 @@ public class HomeFragment extends BaseFragment
   public void getNextPageFromServer() {
     // TODO Auto-generated method stub
     // 如果线程正在运行，则放弃此次操作
-    if (mthreadisrunning)
+    if (mthreadisrunning) {
       return;
+    }
     // 若未获得经纬度
-    if (!UserConfigParams.hasGettedLocation()) {
+    if (! UserConfigParams.hasGettedLocation()) {
       mHomeListView.onLoadComplete();
       return;
     }
@@ -701,7 +745,7 @@ public class HomeFragment extends BaseFragment
     // Message msg = homeHandler.obtainMessage();
     // msg.what = HOME_LISTVIEW_REFRESH;
     // // 发送刷新消息
-    if (!UserConfigParams.hasGettedLocation()) {
+    if (! UserConfigParams.hasGettedLocation()) {
       mHomeListView.onRefreshComplete();
       Toast.makeText(getActivity(), "获取定位信息失败！", Toast.LENGTH_SHORT)
           .show();
