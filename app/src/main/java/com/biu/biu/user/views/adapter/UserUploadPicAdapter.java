@@ -9,7 +9,10 @@ import android.widget.Toast;
 
 import com.biu.biu.app.BiuApp;
 import com.biu.biu.user.entity.UserPicInfo;
+import com.biu.biu.utils.GlobalString;
 import com.bumptech.glide.Glide;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.List;
@@ -28,7 +31,7 @@ public class UserUploadPicAdapter extends RecyclerView.Adapter<RecyclerView.View
   private static final int TYPE_FOOTER = 1;
   private static final int TYPE_NORMAL = 2;
   private OnAddPicListener addPicListener = null;
-  private OnRemovePicListener removePicListener = null;
+  private OnOperationListener operationListener = null;
   private static final int MAX_USER_PIC_NUMBER = 9;
 
   public UserUploadPicAdapter(List<UserPicInfo> userPicInfos) {
@@ -39,8 +42,8 @@ public class UserUploadPicAdapter extends RecyclerView.Adapter<RecyclerView.View
     this.addPicListener = onAddPicListener;
   }
 
-  public void setOnRemovePicListener(OnRemovePicListener onRemovePicListener) {
-    this.removePicListener = onRemovePicListener;
+  public void setOnOperationListener(OnOperationListener onOperationListener) {
+    this.operationListener = onOperationListener;
   }
 
   @Override
@@ -60,11 +63,9 @@ public class UserUploadPicAdapter extends RecyclerView.Adapter<RecyclerView.View
   }
 
   @Override
-  public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+  public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
     switch (getItemViewType(position)) {
       case TYPE_FOOTER:
-        /*((ImageViewHolder) holder).userUploadPicImageView.setImageURI(Uri.parse(GlobalString
-            .URI_RES_PREFIX + R.drawable.add_photo));*/
         if (addPicListener != null) {
           ((ImageViewHolder) holder).userUploadPicImageView.setOnClickListener(new View
               .OnClickListener() {
@@ -82,19 +83,33 @@ public class UserUploadPicAdapter extends RecyclerView.Adapter<RecyclerView.View
         break;
       case TYPE_NORMAL:
         //从本地文件显示
-        /*((ImageViewHolder) holder).userUploadPicImageView.setImageURI(Uri.fromFile(new File
-            (userPicInfos.get(position).getLocalPath())));*/
-        ((ImageViewHolder) holder).userUploadPicImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Glide.with(BiuApp.getContext()).load(new File(userPicInfos.get(position).getLocalPath()))
-            .into(((ImageViewHolder) holder).userUploadPicImageView);
+        ((ImageViewHolder) holder).userUploadPicImageView.setScaleType(ImageView.ScaleType
+            .CENTER_CROP);
+        if (!StringUtils.isEmpty(userPicInfos.get(position).getLocalPath())) {
+          Glide.with(BiuApp.getContext()).load(new File(userPicInfos.get(position).getLocalPath()))
+              .into(((ImageViewHolder) holder).userUploadPicImageView);
+        } else {
+          Glide.with(BiuApp.getContext()).load(GlobalString.BASE_URL+"/"+userPicInfos.get(position).getNetAddress())
+              .into(((ImageViewHolder) holder).userUploadPicImageView);
+        }
         ((ImageViewHolder) holder).userUploadPicImageView.setOnLongClickListener(new View
             .OnLongClickListener() {
           @Override
           public boolean onLongClick(View v) {
-            if (removePicListener != null) {
-              return removePicListener.onRemoveClick(v, position);
+            if (operationListener != null) {
+              return operationListener.onRemoveClick(v, position);
             } else {
               return false;
+            }
+          }
+        });
+        ((ImageViewHolder) holder).userUploadPicImageView.setOnClickListener(new View
+            .OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            if (operationListener != null) {
+              operationListener.onLookDetailClick(((ImageViewHolder) holder)
+                  .userUploadPicImageView, userPicInfos.get(position));
             }
           }
         });
@@ -113,8 +128,10 @@ public class UserUploadPicAdapter extends RecyclerView.Adapter<RecyclerView.View
     void onAddClick(View view);
   }
 
-  public interface OnRemovePicListener {
+  public interface OnOperationListener {
     boolean onRemoveClick(View view, int position);
+
+    void onLookDetailClick(View view, UserPicInfo userPicInfo);
   }
 
   class ImageViewHolder extends RecyclerView.ViewHolder {

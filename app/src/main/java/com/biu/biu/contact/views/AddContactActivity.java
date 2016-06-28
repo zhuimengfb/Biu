@@ -1,6 +1,10 @@
 package com.biu.biu.contact.views;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +21,7 @@ import com.biu.biu.contact.entity.AddContactRequest;
 import com.biu.biu.contact.presenter.AddContactPresenter;
 import com.biu.biu.contact.views.adapter.AddContactListAdapter;
 import com.biu.biu.user.entity.SimpleUserInfo;
+import com.biu.biu.utils.GlobalString;
 import com.biu.biu.views.base.BaseActivity;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +53,7 @@ public class AddContactActivity extends BaseActivity implements IAddContactView 
   private List<AddContactBean> addContactBeanList;
 
   private AddContactPresenter addContactPresenter = new AddContactPresenter();
+  private MyReceiver myReceiver = new MyReceiver();
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +69,7 @@ public class AddContactActivity extends BaseActivity implements IAddContactView 
   private void initData() {
     addContactBeanList = new ArrayList<>();
     addContactListAdapter = new AddContactListAdapter(addContactBeanList);
+    addContactListAdapter.setContext(this);
     addContactRecyclerView.setAdapter(addContactListAdapter);
     addContactPresenter.getAddContactList();
   }
@@ -88,11 +95,11 @@ public class AddContactActivity extends BaseActivity implements IAddContactView 
         AlertDialog alertDialog = new AlertDialog.Builder(AddContactActivity.this).setTitle
             (getString(R.string.delete_request)).setPositiveButton(getString(R.string.confirm),
             new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            addContactPresenter.removeAddRequest(addContactBean, position);
-          }
-        }).setNegativeButton(getString(R.string.cancle), new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                addContactPresenter.removeAddRequest(addContactBean, position);
+              }
+            }).setNegativeButton(getString(R.string.cancle), new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
             dialog.dismiss();
@@ -101,6 +108,21 @@ public class AddContactActivity extends BaseActivity implements IAddContactView 
         alertDialog.show();
       }
     });
+  }
+
+  @Override
+  protected void onResume() {
+    IntentFilter intentFilter = new IntentFilter();
+    intentFilter.addAction(GlobalString.ACTION_FRIEND_REQUEST_CHANGE);
+    intentFilter.addAction(GlobalString.ACTION_FRIEND_DELETED);
+    registerReceiver(myReceiver, intentFilter);
+    super.onResume();
+  }
+
+  @Override
+  protected void onPause() {
+    unregisterReceiver(myReceiver);
+    super.onPause();
   }
 
   private void initToolbar() {
@@ -112,9 +134,11 @@ public class AddContactActivity extends BaseActivity implements IAddContactView 
   private void showNoRequest() {
     nothingLayout.setVisibility(View.VISIBLE);
   }
+
   private void hideNoRequest() {
     nothingLayout.setVisibility(View.GONE);
   }
+
   private void updateNoRequestView() {
     if (addContactBeanList.size() > 0) {
       hideNoRequest();
@@ -122,6 +146,7 @@ public class AddContactActivity extends BaseActivity implements IAddContactView 
       showNoRequest();
     }
   }
+
   @Override
   public void updateList(List<AddContactBean> addContactBeanList) {
     this.addContactBeanList.clear();
@@ -164,5 +189,28 @@ public class AddContactActivity extends BaseActivity implements IAddContactView 
     addContactBeanList.remove(position);
     addContactListAdapter.notifyDataSetChanged();
     updateNoRequestView();
+  }
+
+  class MyReceiver extends BroadcastReceiver{
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      if (intent != null) {
+        switch (intent.getAction()) {
+          case GlobalString.ACTION_FRIEND_REQUEST_CHANGE:
+            if (addContactPresenter != null) {
+              addContactPresenter.getAddContactList();
+            }
+            break;
+          case GlobalString.ACTION_FRIEND_DELETED:
+            if (addContactPresenter != null) {
+              addContactPresenter.getAddContactList();
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    }
   }
 }

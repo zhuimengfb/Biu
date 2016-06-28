@@ -96,6 +96,8 @@ public class HomeListAdapter extends BaseAdapter {
     public ImageView userHeadIcon;
     public TextView userName;
     public RelativeLayout itemLayout;
+    public RelativeLayout shareLayout;
+    public RelativeLayout likeLayout;
   }
 
   public HomeListAdapter(Context context, ArrayList<TipItemInfo> topicInfo) {
@@ -219,8 +221,11 @@ public class HomeListAdapter extends BaseAdapter {
       listItemView.TopCounttv = (TextView) convertView.findViewById(R.id.likecounttv);
       listItemView.biumain = (RelativeLayout) convertView.findViewById(R.id.biumain);
       listItemView.shareIcon = (ImageView) convertView.findViewById(R.id.iv_share_icon);
-      listItemView.userInfoLayout = (RelativeLayout) convertView.findViewById(R.id.user_info_layout);
+      listItemView.userInfoLayout = (RelativeLayout) convertView.findViewById(R.id
+          .user_info_layout);
       listItemView.userHeadIcon = (ImageView) convertView.findViewById(R.id.iv_head_icon);
+      listItemView.shareLayout = (RelativeLayout) convertView.findViewById(R.id.share_layout);
+      listItemView.likeLayout = (RelativeLayout) convertView.findViewById(R.id.like_layout);
       if (isShowMore) {
         listItemView.morehottips = (TextView) convertView.findViewById(R.id.morehottv);
         listItemView.morehottips.setOnClickListener(new MoreHotTipsClickListener());
@@ -231,6 +236,15 @@ public class HomeListAdapter extends BaseAdapter {
       listItemView = (ListItemView) convertView.getTag();
     }
 
+    listItemView.shareLayout.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (activityWeakReference != null && activityWeakReference.get() != null) {
+          ShareUtils shareUtils = new ShareUtils(activityWeakReference.get());
+          shareUtils.openShare();
+        }
+      }
+    });
     listItemView.shareIcon.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -240,6 +254,7 @@ public class HomeListAdapter extends BaseAdapter {
         }
       }
     });
+
 
     // 设置默认显示资源图片
     // listItemView.hometopbtn.setImageResource(R.drawable.home_icon3);
@@ -313,6 +328,12 @@ public class HomeListAdapter extends BaseAdapter {
         listItemView.userName.setText("匿名");
         Glide.with(context).load(GlobalString.URI_RES_PREFIX + R.drawable.default_user_icon2)
             .into(listItemView.userHeadIcon);
+        listItemView.userInfoLayout.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View view) {
+
+          }
+        });
       }
 
       // if(blikestate){
@@ -368,9 +389,11 @@ public class HomeListAdapter extends BaseAdapter {
       if (blikestate) {
         nlikestate = 1;
       } else {
-        nlikestate = btreadstate ? - 1 : 0;
+        nlikestate = btreadstate ? -1 : 0;
       }
       String tipid = mlistItemsinfo.get(position).id;
+      listItemView.likeLayout.setOnClickListener(new HomeTopbtnListener(position, tipid,
+          nlikestate));
       listItemView.hometopbtn.setOnClickListener(new HomeTopbtnListener(
           position, tipid, nlikestate));
       listItemView.homedownbtn.setOnClickListener(new HomeDownbtnListener(position,
@@ -399,7 +422,7 @@ public class HomeListAdapter extends BaseAdapter {
                     tipid));*/
       // 处理图片
       String urltemp = mlistItemsinfo.get(position).imgurl;
-      if (urltemp != null && ! urltemp.equals("null")) {
+      if (urltemp != null && !urltemp.equals("null")) {
         final String url = "http://api.bbbiu.com:1234/" + urltemp;
         listItemView.img.setTag(String.valueOf(position)); // 用索引作为标记
         // listItemView.img.setImageResource(android.R.drawable.stat_sys_download_done);
@@ -412,8 +435,8 @@ public class HomeListAdapter extends BaseAdapter {
             new OnImageDownload() {
               @Override
               public void onDownloadSucc(String tag,
-                  Bitmap bitmap, String c_url,
-                  ImageView mimageView) {
+                                         Bitmap bitmap, String c_url,
+                                         ImageView mimageView) {
                 ImageView imageView = (ImageView) mListView
                     .findViewWithTag(tag);
                 if (imageView != null) {
@@ -439,11 +462,13 @@ public class HomeListAdapter extends BaseAdapter {
   public void setTopicNumberListener(TopicNumberListener topicNumberListener) {
     this.topicNumberListener = topicNumberListener;
   }
-  public interface TopicNumberListener{
+
+  public interface TopicNumberListener {
     void showNoTopic();
 
     void hideNoTopic();
   }
+
   private class HomeContentClickListener implements OnClickListener {
     private String mTipId = "";
 
@@ -478,7 +503,7 @@ public class HomeListAdapter extends BaseAdapter {
     private String murl = "";
 
     public HomeTopbtnListener(int nPosition, int topcount, String tread_id,
-        boolean hasliked) {
+                              boolean hasliked) {
       this.mtipid = tread_id;
       mPosition = nPosition;
       this.mtopcount = topcount;
@@ -522,7 +547,7 @@ public class HomeListAdapter extends BaseAdapter {
     @Override
     public void onClick(View v) {
       // TODO Auto-generated method stub
-      if (! flag) {
+      if (!flag) {
         return;
       } else {
         setFlag();
@@ -532,25 +557,25 @@ public class HomeListAdapter extends BaseAdapter {
       Integer nlikenum = Integer
           .parseInt(mlistItemsinfo.get(mPosition).like_num);
       switch (mlikeState) {
-        case - 1:
+        case -1:
           // 当前为踩，点击顶，取消踩。
           murl += "/action:tread" + "/?device_id="
               + UserConfigParams.device_id + "&is_repeal=1";
-          ++ nlikenum;
+          ++nlikenum;
           mlistItemsinfo.get(mPosition).hastreaded = false;
           break;
         case 0:
           // 当前无，点击顶，设为顶
           murl += "/action:like" + "/?device_id="
               + UserConfigParams.device_id;
-          ++ nlikenum;
+          ++nlikenum;
           mlistItemsinfo.get(mPosition).hasliked = true;
           break;
         case 1:
           // 当前顶，点击顶，取消顶
           murl += "/action:like" + "/?device_id="
               + UserConfigParams.device_id + "&is_repeal=1";
-          -- nlikenum;
+          --nlikenum;
           mlistItemsinfo.get(mPosition).hasliked = false;
           break;
       }
@@ -604,7 +629,7 @@ public class HomeListAdapter extends BaseAdapter {
      */
     @Override
     public void onClick(View v) {
-      if (! flag) {
+      if (!flag) {
         return;
       } else {
         setFlag();
@@ -615,25 +640,25 @@ public class HomeListAdapter extends BaseAdapter {
           .parseInt(mlistItemsinfo.get(mPosition).like_num);
       // 当前处于顶的状态
       switch (mlikeState) {
-        case - 1:
+        case -1:
           // 当前为踩，点击踩，取消踩。
           murl += "/action:tread" + "/?device_id="
               + UserConfigParams.device_id + "&is_repeal=1";
-          ++ nlikenum;
+          ++nlikenum;
           mlistItemsinfo.get(mPosition).hastreaded = false;
           break;
         case 0:
           // 当前无，点击踩，设为踩
           murl += "/action:tread" + "/?device_id="
               + UserConfigParams.device_id;
-          -- nlikenum;
+          --nlikenum;
           mlistItemsinfo.get(mPosition).hastreaded = true;
           break;
         case 1:
           // 当前顶，点击踩，取消顶
           murl += "/action:like" + "/?device_id="
               + UserConfigParams.device_id + "&is_repeal=1";
-          -- nlikenum;
+          --nlikenum;
           mlistItemsinfo.get(mPosition).hasliked = false;
           break;
       }
@@ -774,7 +799,7 @@ public class HomeListAdapter extends BaseAdapter {
      * @param treadurl      :操作的url地址
      */
     public TreadDownThread(Handler targethandler, String threadid,
-        String treadurl) {
+                           String treadurl) {
       this.mhandler = targethandler;
       this.thread_id = threadid;
       this.url = treadurl;

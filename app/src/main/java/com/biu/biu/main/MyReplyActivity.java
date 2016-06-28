@@ -182,15 +182,7 @@ public class MyReplyActivity extends BaseActivity implements OnRefreshListener,
     // "replycontent", "replyInfo" }, new int[] {
     // R.id.myreplytimetv, R.id.myreplycontent,
     // R.id.myreplyiteminfotv });
-    ReplythreadInfo replythreadInfo = new ReplythreadInfo();
-    replythreadInfo.setPush_num(1);
-    replythreadInfo.setReply_id("11");
-    replythreadInfo.setReply_to_id("11");
-    replythreadInfo.setReplycontent("1111");
-    replythreadInfo.setReplytime("111");
-    replythreadInfo.setReplyToContent("3333");
-    replythreadInfo.setType("1");
-    mmyReplyInfo.add(replythreadInfo);
+
     myReplyAdapter = new MyReplyAdapter(this, R.layout.myreplylistitem, mmyReplyInfo);
     mListView.setAdapter(myReplyAdapter);
     mListView.setOnRefreshListener(this);

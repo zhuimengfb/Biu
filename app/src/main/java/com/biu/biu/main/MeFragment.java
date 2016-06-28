@@ -20,6 +20,7 @@ import com.biu.biu.user.utils.UserPreferenceUtil;
 import com.biu.biu.user.views.UserInfoActivity;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.biu.biu.utils.GlideCircleTransform;
+import com.biu.biu.utils.GlobalString;
 import com.biu.biu.views.ActivityUserAgreement;
 import com.bumptech.glide.Glide;
 import com.umeng.update.UmengUpdateAgent;
@@ -83,7 +84,8 @@ public class MeFragment extends Fragment {
     return meFragment;
   }
 
-  public MeFragment() {}
+  public MeFragment() {
+  }
 
   @Override
   public void onResume() {
@@ -122,7 +124,7 @@ public class MeFragment extends Fragment {
 
   @Override
   public View onCreateView(LayoutInflater inflater,
-      @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+                           @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     // TODO Auto-generated method stub
     super.onCreateView(inflater, container, savedInstanceState);
     msgNumHandler = new MsgNumHandler();
@@ -136,15 +138,21 @@ public class MeFragment extends Fragment {
   }
 
   private void showNickName() {
-    if (! StringUtils.isEmpty(UserPreferenceUtil.getUserPreferenceNickName())) {
+    if (!StringUtils.isEmpty(UserPreferenceUtil.getUserPreferenceNickName())) {
       userName.setText(UserPreferenceUtil.getUserPreferenceNickName());
     }
   }
 
   private void showUserIcon() {
-    Glide.with(getActivity()).load(Uri.fromFile(new File(UserPreferenceUtil.getUserIconAddress())
-    )).error(R.drawable.default_user_icon2).transform(new GlideCircleTransform(getActivity()))
-        .into(userIcon);
+    if (!StringUtils.isEmpty(UserPreferenceUtil.getUserIconAddress())) {
+      Glide.with(getActivity()).load(Uri.fromFile(new File(UserPreferenceUtil.getUserIconAddress())
+      )).error(R.drawable.user_icon_big).transform(new GlideCircleTransform(getActivity()))
+          .into(userIcon);
+      return;
+    }
+    Glide.with(getActivity()).load(GlobalString.BASE_URL + "/" + UserPreferenceUtil
+        .getUserIconLargeNet()).placeholder(R.drawable.default_big_icon).error(R.drawable
+        .default_big_icon).transform(new GlideCircleTransform(getActivity())).into(userIcon);
   }
 
   private void initEvent() {
@@ -213,7 +221,7 @@ public class MeFragment extends Fragment {
     @Override
     public void onClick(View v) {
       // TODO Auto-generated method stub
-      if (! flag) {
+      if (!flag) {
         return;
       } else {
         setFlag();
@@ -317,7 +325,7 @@ public class MeFragment extends Fragment {
               //myPublishNum.setVisibility(TextView.VISIBLE);
               if (msgNumDetail.getInt("publish") < 99) {
                             /*myPublishNum.setText(msgNumDetail
-									.getString("publish"));*/
+                  .getString("publish"));*/
                 publishFrame.showTextBadge(msgNumDetail
                     .getString("publish"));
               } else {
@@ -376,7 +384,7 @@ public class MeFragment extends Fragment {
   }
 
   private final static int MSG_NUM_OK = 0;
-  private final static int MSG_NUM_ERR = - 1;
+  private final static int MSG_NUM_ERR = -1;
 
   // 请求新消息数目的方法
   private void refreshMsgNum() {

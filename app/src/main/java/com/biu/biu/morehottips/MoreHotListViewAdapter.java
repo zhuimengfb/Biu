@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.biu.biu.main.PeepDetailActivity;
@@ -22,7 +23,12 @@ import com.biu.biu.netimage.ImageDownloader;
 import com.biu.biu.netimage.OnImageDownload;
 import com.biu.biu.netoperate.TipLikeTreadThread;
 import com.biu.biu.tools.AutoListView;
+import com.biu.biu.user.views.ShowUserInfoActivity;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.utils.GlideCircleTransform;
+import com.biu.biu.utils.GlobalString;
+import com.biu.biu.utils.ShareUtils;
+import com.bumptech.glide.Glide;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -32,6 +38,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import grf.biu.R;
@@ -47,6 +54,23 @@ public class MoreHotListViewAdapter extends BaseAdapter {
   // 识别是当地用户还是游客
   private boolean localornot;
   ImageDownloader mDownloader;
+  private WeakReference<Activity> activityWeakReference;
+
+  public void setActivity(Activity activity) {
+    activityWeakReference = new WeakReference<>(activity);
+  }
+
+  private TopicNumberListener topicNumberListener;
+
+  public void setTopicNumberListener(TopicNumberListener topicNumberListener) {
+    this.topicNumberListener = topicNumberListener;
+  }
+
+  public interface TopicNumberListener {
+    void showNoTopic();
+
+    void hideNoTopic();
+  }
 
   /**
    * @param context   :运行上下文，这里是MoreHotActivity
@@ -338,7 +362,7 @@ public class MoreHotListViewAdapter extends BaseAdapter {
   }
 
   @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
+  public View getView(final int position, View convertView, ViewGroup parent) {
     // TODO Auto-generated method stub
     // 自定义视图
     ListItemView listItemView = null; // 与ViewHolder类似
@@ -350,24 +374,23 @@ public class MoreHotListViewAdapter extends BaseAdapter {
       convertView = listContainer.inflate(R.layout.peeptopicitemlayout,
           null);
       // 获取控件对象
-      listItemView.homeContenttv = (TextView) convertView
-          .findViewById(R.id.topiccontent);
-      listItemView.img = (ImageView) convertView
-          .findViewById(R.id.topicimg);
-      listItemView.publishPlacetv = (TextView) convertView
-          .findViewById(R.id.publishplace);
-      listItemView.publishTimetv = (TextView) convertView
-          .findViewById(R.id.create_at_tv);
-      listItemView.replayCounttv = (TextView) convertView
-          .findViewById(R.id.reply_num_tv);
-      listItemView.hometopbtn = (ImageView) convertView
-          .findViewById(R.id.likebtn);
-      listItemView.homedownbtn = (ImageButton) convertView
-          .findViewById(R.id.treadbtn);
-      listItemView.TopCounttv = (TextView) convertView
-          .findViewById(R.id.likecounttv);
+      listItemView.itemLayout = (RelativeLayout) convertView.findViewById(R.id.news_card);
+      listItemView.homeContenttv = (TextView) convertView.findViewById(R.id.topiccontent);
+      listItemView.img = (ImageView) convertView.findViewById(R.id.topicimg);
+      listItemView.publishPlacetv = (TextView) convertView.findViewById(R.id.publishplace);
+      listItemView.publishTimetv = (TextView) convertView.findViewById(R.id.create_at_tv);
+      listItemView.replayCounttv = (TextView) convertView.findViewById(R.id.reply_num_tv);
+      listItemView.hometopbtn = (ImageView) convertView.findViewById(R.id.likebtn);
+      listItemView.homedownbtn = (ImageButton) convertView.findViewById(R.id.treadbtn);
+      listItemView.TopCounttv = (TextView) convertView.findViewById(R.id.likecounttv);
       listItemView.replyIcon = (ImageView) convertView.findViewById(R.id.iv_reply_icon);
       listItemView.shareIcon = (ImageView) convertView.findViewById(R.id.iv_share_icon);
+      listItemView.userName = (TextView) convertView.findViewById(R.id.tv_user_name);
+      listItemView.userHeadIcon = (ImageView) convertView.findViewById(R.id.iv_head_icon);
+      listItemView.shareLayout = (RelativeLayout) convertView.findViewById(R.id.share_layout);
+      listItemView.likeLayout = (RelativeLayout) convertView.findViewById(R.id.like_layout);
+      listItemView.userInfoLayout = (RelativeLayout) convertView.findViewById(R.id
+          .user_info_layout);
       // 设置控件集到convertView
       convertView.setTag(listItemView);
     } else {
@@ -377,6 +400,10 @@ public class MoreHotListViewAdapter extends BaseAdapter {
     // 设置默认显示资源图片
     if (mlistItemsinfo.get(position).isEmpty) {
       // 无数据
+      if (topicNumberListener != null) {
+        topicNumberListener.showNoTopic();
+      }
+      listItemView.itemLayout.setVisibility(View.GONE);
       listItemView.homeContenttv.setText("很遗憾，您附近没有热门贴。");
       listItemView.publishPlacetv.setVisibility(TextView.GONE); // 位置信息
       listItemView.replayCounttv.setVisibility(TextView.GONE); // 回复数
@@ -393,6 +420,9 @@ public class MoreHotListViewAdapter extends BaseAdapter {
       // listItemView.replyImg.setVisibility(ImageView.GONE);
     } else {
       // 显示所有控件
+      if (topicNumberListener != null) {
+        topicNumberListener.hideNoTopic();
+      }
       listItemView.publishPlacetv.setVisibility(TextView.VISIBLE); // 位置信息
       listItemView.replayCounttv.setVisibility(TextView.VISIBLE); // 回复数
       // listItemView.DownCounttv.setVisibility(TextView.VISIBLE); // 踩数
@@ -405,7 +435,49 @@ public class MoreHotListViewAdapter extends BaseAdapter {
         listItemView.homedownbtn.setVisibility(ImageButton.GONE);
         listItemView.hometopbtn.setVisibility(ImageButton.GONE);
       }
+      listItemView.shareLayout.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          if (activityWeakReference != null && activityWeakReference.get() != null) {
+            ShareUtils shareUtils = new ShareUtils(activityWeakReference.get());
+            shareUtils.openShare();
+          }
+        }
+      });
+      listItemView.shareIcon.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          if (activityWeakReference != null && activityWeakReference.get() != null) {
+            ShareUtils shareUtils = new ShareUtils(activityWeakReference.get());
+            shareUtils.openShare();
+          }
+        }
+      });
 
+      //匿名状态
+      if (mlistItemsinfo.get(position).anony == 0) {
+        listItemView.userName.setText(mlistItemsinfo.get(position).simpleUserInfo.getNickname());
+        Glide.with(context).load(GlobalString.BASE_URL + "/" + mlistItemsinfo.get(position)
+            .simpleUserInfo.getIcon_small()).transform(new GlideCircleTransform(context)).into
+            (listItemView.userHeadIcon);
+        listItemView.userInfoLayout.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            ShowUserInfoActivity.toShowUserPicActivity(context, mlistItemsinfo.get(position)
+                .device_id);
+          }
+        });
+      } else {
+        listItemView.userName.setText("匿名");
+        Glide.with(context).load(GlobalString.URI_RES_PREFIX + R.drawable.default_user_icon2)
+            .into(listItemView.userHeadIcon);
+        listItemView.userInfoLayout.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View view) {
+
+          }
+        });
+      }
       // 发表时间图标
       // listItemView.pubtimeImg.setVisibility(ImageView.VISIBLE);
       // 回复数图标
@@ -416,8 +488,7 @@ public class MoreHotListViewAdapter extends BaseAdapter {
       boolean blikestate = mlistItemsinfo.get(position).hasliked;
       boolean btreadstate = mlistItemsinfo.get(position).hastreaded;
       if (blikestate) {
-        listItemView.hometopbtn
-            .setImageResource(R.drawable.like_after_icon);
+        listItemView.hometopbtn.setImageResource(R.drawable.like_after_icon);
       } else {
         listItemView.hometopbtn.setImageResource(R.drawable.like_before_icon);
       }
@@ -449,8 +520,7 @@ public class MoreHotListViewAdapter extends BaseAdapter {
       // Integer.parseInt(mlistItemsinfo.get(position).get("downCount").toString());
       listItemView.publishTimetv
           .setText(mlistItemsinfo.get(position).created_at);
-      listItemView.replayCounttv
-          .setText(mlistItemsinfo.get(position).reply_num + "条回复");
+      listItemView.replayCounttv.setText(mlistItemsinfo.get(position).reply_num+"");
       listItemView.TopCounttv.setText(topcount.toString());
       // listItemView.DownCounttv.setText(downcount.toString());
       String itemPlace = mlistItemsinfo.get(position).pubplace;
@@ -468,6 +538,8 @@ public class MoreHotListViewAdapter extends BaseAdapter {
         nlikestate = btreadstate ? - 1 : 0;
       }
       String tipid = mlistItemsinfo.get(position).id;
+      listItemView.likeLayout.setOnClickListener(new TopbtnListener(position, tipid,
+          nlikestate));
       listItemView.hometopbtn.setOnClickListener(new TopbtnListener(
           position, tipid, nlikestate));
       listItemView.homedownbtn.setOnClickListener(new DownbtnListener(
@@ -573,6 +645,12 @@ public class MoreHotListViewAdapter extends BaseAdapter {
     public ImageView replyIcon;
     public ImageView shareIcon;
     // public TextView morehottips; // 更多热帖
+    public ImageView userHeadIcon;
+    public TextView userName;
+    public RelativeLayout itemLayout;
+    public RelativeLayout shareLayout;
+    public RelativeLayout likeLayout;
+    public RelativeLayout userInfoLayout;
   }
 
   public void setListView(AutoListView listView) {

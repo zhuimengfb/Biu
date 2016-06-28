@@ -110,13 +110,12 @@
     <string name="user_name">昵称</string>
     <string name="agreement">协议</string>
     <string name="agreement1">不能谩骂，诽谤，伤害他人</string>
-    <string name="agreement2">不需要注册同时请保持风度</string>
-    <string name="agreement3">不要发表攻击性的，不堪入目的言论，如果有此类信息可以举报，我们会做相应处理</string>
+    <string name="agreement2">不要发表攻击性的，不堪入目的言论，如果有此类信息可以举报，我们会做相应处理</string>
+    <string name="agreement3">如果你的言论持续被举报超过三次，那么你将受到警告或封号</string>
     <string name="help">帮助</string>
-    <string name="user_help_new">Biu是一款匿名的社交软件，在这里我们只能看到周围1500米内大家都在谈论些什么。不需要高、大、上、牛奔的标准就是您的帖子被赞次数，得到赞最多的几个
-        将成为热门贴！此外探索页面我们可以参与本校热门话题的讨论。还等什么，有什么想法、观察、笑话想跟周围的人分享，就来biu一下吧！</string>
-    <string name="agreement4">如果你的言论持续被举报超过三次，那么你将收到警告或封号</string>
-    <string name="agreement5">向您保证，你的隐私绝对安全，因为我们也不知道你到底是谁</string>
+    <string name="user_help_new">Biu是一款基于地理位置的匿名社交软件，在这里我们只能看到周围1500米内大家都在谈论些什么。被赞数目多的帖子将被顶上热门。
+        除了分享信息外还能与附近人互加好友，记住只有附近1500米以内的人才能看到你哦！！还等什么，有什么想法、观察、笑话想跟周围的人分享，就来biu一下吧！</string>
+    <string name="agreement4">向您保证，你的隐私绝对安全，因为我们也不知道你到底是谁</string>
     <string name="add_contact">添加新的朋友</string>
     <string name="contact_number">位好友</string>
     <string name="head_icon">头像</string>
@@ -148,4 +147,11 @@
     <string name="anonymity">匿名</string>
     <string name="delete_fail">删除失败，请稍后再试</string>
     <string name="delete_success">删除成功</string>
+    <string name="delete_request">删除好友请求</string>
+    <string name="no_friend_yet">还没有朋友，快去新鲜事发现吧</string>
+    <string name="no_publish_yet">还没有任何发表</string>
+    <string name="delete_contact">删除好友</string>
+    <string name="no_topic">附近还没有新帖，点击右下角发表新帖子吧</string>
+    <string name="submit_success">提交成功</string>
+    <string name="no_hot_topic">附近还没有热帖</string>
 </resources>

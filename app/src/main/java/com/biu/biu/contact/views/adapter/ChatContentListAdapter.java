@@ -14,11 +14,13 @@ import android.widget.TextView;
 import com.biu.biu.app.BiuApp;
 import com.biu.biu.contact.entity.ContactInfo;
 import com.biu.biu.contact.utils.DateParseUtil;
+import com.biu.biu.contact.views.ChatActivity;
 import com.biu.biu.contact.views.ChatPicOriginalActivity;
 import com.biu.biu.user.utils.UserPreferenceUtil;
 import com.biu.biu.user.views.ShowUserInfoActivity;
 import com.biu.biu.utils.GlideCircleTransform;
 import com.biu.biu.utils.GlobalString;
+import com.biu.biu.utils.ShowImageUtil;
 import com.bumptech.glide.Glide;
 import com.rockerhieu.emojicon.EmojiconTextView;
 
@@ -52,6 +54,7 @@ public class ChatContentListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   private ContactInfo contactInfo;
   private WeakReference<Activity> activityWeakReference;
   private float mDensity;
+  private File userIconFile = new File(UserPreferenceUtil.getUserIconAddress());
 
   public void setActivity(Activity activity) {
     activityWeakReference = new WeakReference<Activity>(activity);
@@ -119,9 +122,17 @@ public class ChatContentListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         } else if (chatMessages.get(position).getContentType() == ContentType.image) {
           showImage(holder, position);
         }
-        Glide.with(BiuApp.getContext()).load(Uri.fromFile(new File(UserPreferenceUtil
-            .getUserIconAddress()))).transform(new GlideCircleTransform(BiuApp.getContext()))
-            .error(R.drawable.default_user_icon2).into(((ContentViewHolder) holder).userIcon);
+        if (userIconFile.exists()) {
+          Glide.with(BiuApp.getContext()).load(Uri.fromFile(userIconFile))
+              .transform(new GlideCircleTransform(BiuApp.getContext()))
+              .placeholder(R.drawable.default_user_icon2).error(R.drawable.default_user_icon2)
+              .into(((ContentViewHolder) holder).userIcon);
+        } else {
+          Glide.with(BiuApp.getContext()).load(GlobalString.BASE_URL + "/" + UserPreferenceUtil
+              .getUserIconSmallNet()).transform(new GlideCircleTransform(BiuApp.getContext()))
+              .placeholder(R.drawable.default_user_icon2).error(R.drawable.default_user_icon2)
+              .into(((ContentViewHolder) holder).userIcon);
+        }
         break;
       default:
         break;
@@ -177,9 +188,9 @@ public class ChatContentListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     ((ContentViewHolder) holder).chatContent.setVisibility(View.GONE);
     ((ContentViewHolder) holder).chatPicImageView.setVisibility(View.VISIBLE);
     ImageContent imageContent = (ImageContent) chatMessages.get(position).getContent();
-    final String path = imageContent.getLocalThumbnailPath();
+    final String path = imageContent.getLocalPath();
     if (path == null) {
-      imageContent.downloadThumbnailImage(chatMessages.get(position), new
+      imageContent.downloadOriginImage(chatMessages.get(position), new
           DownloadCompletionCallback() {
             @Override
             public void onComplete(int i, String s, File file) {
@@ -196,8 +207,10 @@ public class ChatContentListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     ((ContentViewHolder) holder).chatPicImageView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        ChatPicOriginalActivity.toPicOriginalActivity(activityWeakReference.get(), contactInfo
-            .getUserId(), position);
+        new ShowImageUtil(activityWeakReference.get(), ((ContentViewHolder) holder)
+            .chatPicImageView).showImage();
+        /*ChatPicOriginalActivity.toPicOriginalActivity(activityWeakReference.get(), contactInfo
+            .getUserId(), position);*/
       }
     });
   }

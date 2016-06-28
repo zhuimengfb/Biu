@@ -1,22 +1,30 @@
 package com.biu.biu.contact.views;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +35,7 @@ import com.biu.biu.contact.utils.ContactAction;
 import com.biu.biu.contact.views.adapter.ChatContentListAdapter;
 import com.biu.biu.main.ChooseImageActivity;
 import com.biu.biu.main.ChooseImgResActivity;
+import com.biu.biu.utils.GlobalString;
 import com.biu.biu.views.base.BaseActivity;
 import com.rockerhieu.emojicon.EmojiconEditText;
 import com.rockerhieu.emojicon.EmojiconGridFragment;
@@ -37,6 +46,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,6 +54,7 @@ import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.enums.ConversationType;
 import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import grf.biu.R;
@@ -70,17 +81,25 @@ public class ChatActivity extends BaseActivity
   ImageView emojImageView;
   @BindView(R.id.iv_send_pic)
   ImageView sendPicView;
+  @BindView(R.id.layout_chat_room)
+  RelativeLayout rvChatroom;
+  @BindView(R.id.tv_send)
+  TextView sendText;
 
   private int currentPage = 0;
   private ChatContentListAdapter chatContentListAdapter;
   private List<Message> chatMessages = new ArrayList<>();
   private ContactInfo contactInfo;
   private ChatPresenter chatPresenter;
+  private String contactId;
+  private boolean hasMoreHistoryMessage = true;
 
   private final int REQUEST_CODE_PICK_IMAGE = 100;
   private final int REQUEST_CODE_CAPTURE_CAMEIA = 101;
   private final int REQUEST_CODE_CHOOSE_IMAGE_SOURCE = 102;
   private String mCapturePhotoPath; // 拍照得到的相片存储地址
+
+  private MyReceiver myReceiver = new MyReceiver();
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,17 +113,35 @@ public class ChatActivity extends BaseActivity
     initEvent();
   }
 
+  private void initReceiver() {
+    IntentFilter intentFilter = new IntentFilter();
+    intentFilter.addAction(GlobalString.ACTION_FRIEND_DELETED);
+    registerReceiver(myReceiver, intentFilter);
+  }
+
   @Override
   protected void onResume() {
     initContact();
+    initReceiver();
     JMessageClient.enterSingleConversation(contactInfo.getUserId());
     JMessageClient.registerEventReceiver(this);
+    Conversation conversation = JMessageClient.getSingleConversation(contactId);
+    if (conversation != null) {
+      conversation.resetUnreadCount();
+    }
     super.onResume();
   }
 
   @Override
   protected void onPause() {
+    hideKeyBoard();
+    hideEmoj();
+    Conversation conversation = JMessageClient.getSingleConversation(contactId);
+    if (conversation != null) {
+      conversation.resetUnreadCount();
+    }
     JMessageClient.exitConversation();
+    unregisterReceiver(myReceiver);
     super.onPause();
   }
 
@@ -112,9 +149,11 @@ public class ChatActivity extends BaseActivity
     if (StringUtils.isEmpty(getIntent().getStringExtra(ContactAction.KEY_CONTACT_ID))) {
       finish();
     }
+    contactId = getIntent().getStringExtra(ContactAction.KEY_CONTACT_ID);
     ContactInfo contactInfo = chatPresenter.getContactInfo(getIntent().getStringExtra
         (ContactAction.KEY_CONTACT_ID));
-    if (contactInfo == null) {
+    if (contactInfo == null || StringUtils.isEmpty(contactInfo.getUserId())) {
+      setResult(120);
       finish();
     } else {
       this.contactInfo = contactInfo;
@@ -141,13 +180,41 @@ public class ChatActivity extends BaseActivity
   }
 
   private void initEvent() {
-    chatContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+    /*chatContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override
       public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEND) {
           sendMessage(chatContent.getText().toString());
         }
         return false;
+      }
+    });*/
+    chatContent.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+        if (StringUtils.isEmpty(editable.toString())) {
+          hideSendText();
+          showSendPic();
+        } else {
+          hideSendPic();
+          showSendText();
+        }
+      }
+    });
+    sendText.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        sendMessage(chatContent.getEditableText().toString());
       }
     });
     emojImageView.setOnClickListener(new View.OnClickListener() {
@@ -192,7 +259,7 @@ public class ChatActivity extends BaseActivity
           position = ((LinearLayoutManager) recyclerView.getLayoutManager())
               .findLastVisibleItemPosition();
         }
-        if (position == chatMessages.size() - 1) {
+        if (position == chatMessages.size() - 1 && hasMoreHistoryMessage) {
           currentPage++;
           chatPresenter.queryChatHistory(contactInfo.getUserId(), currentPage);
         }
@@ -204,6 +271,73 @@ public class ChatActivity extends BaseActivity
         super.onScrollStateChanged(recyclerView, newState);
       }
     });
+    chatRecyclerView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        hideKeyBoard();
+        hideEmoj();
+      }
+    });
+  }
+
+  private void hideSendText() {
+    sendText.setVisibility(View.GONE);
+  }
+
+  private void showSendText() {
+    sendText.setVisibility(View.VISIBLE);
+  }
+
+  private void hideSendPic() {
+    sendPicView.setVisibility(View.GONE);
+  }
+
+  private void showSendPic() {
+    sendPicView.setVisibility(View.VISIBLE);
+  }
+  @Override
+  public boolean dispatchTouchEvent(MotionEvent ev) {
+    if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+      View v = getCurrentFocus();
+      if (isShouldHideInput(v, ev)) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context
+            .INPUT_METHOD_SERVICE);
+        float a = getWindow().getWindowManager().getDefaultDisplay().getHeight() - ev.getY();
+        int b = emojLayout.getMeasuredHeight();
+        if (imm != null) {
+          imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+        if (Math.round(a) > b) {
+          hideEmoj();
+        }
+      }
+      return super.dispatchTouchEvent(ev);
+    }
+    // 必不可少，否则所有的组件都不会有TouchEvent了
+    if (getWindow().superDispatchTouchEvent(ev)) {
+      return true;
+    }
+    return onTouchEvent(ev);
+  }
+
+  public boolean isShouldHideInput(View v, MotionEvent event) {
+    if (v != null && (v instanceof EditText)) {
+      int[] leftTop = {0, 0};
+      //获取输入框当前的location位置
+      v.getLocationInWindow(leftTop);
+      int left = leftTop[0];
+      int top = leftTop[1];
+      int bottom = top + v.getHeight();
+      int right = left + v.getWidth();
+      if (event.getX() > left && event.getX() < right
+          && event.getY() > top && event.getY() < bottom) {
+        // 点击的是输入框区域，保留点击EditText的事件
+        return false;
+      } else {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override
@@ -215,7 +349,6 @@ public class ChatActivity extends BaseActivity
           return;
         }
         Uri uri = data.getData();
-        // to do find the path of pic
         if (uri != null) {
           chatPresenter.sendImageMessage(contactInfo.getUserId(), uri.getPath());
         }
@@ -275,8 +408,7 @@ public class ChatActivity extends BaseActivity
   }
 
   private void setEmojiconFragment(boolean useSystemDefault) {
-    getSupportFragmentManager()
-        .beginTransaction()
+    getSupportFragmentManager().beginTransaction()
         .replace(R.id.emojicons, EmojiconsFragment.newInstance(useSystemDefault))
         .commit();
     hideEmoj();
@@ -300,8 +432,11 @@ public class ChatActivity extends BaseActivity
           String targetId = userInfo.getUserName();
           String appKey = userInfo.getAppKey();
           //判断消息是否在当前会话中
-          if (StringUtils.equals(targetId, contactInfo.getUserId())) {
-            Message lastMsg = chatMessages.get(0);
+          if (contactInfo != null && StringUtils.equals(targetId, contactId)) {
+            Message lastMsg = null;
+            if (chatMessages.size() > 0) {
+              lastMsg = chatMessages.get(0);
+            }
             //收到的消息和Adapter中最后一条消息比较，如果最后一条为空或者不相同，则加入到MsgList
             if (lastMsg == null || msg.getId() != lastMsg.getId()) {
               chatMessages.add(0, msg);
@@ -313,12 +448,34 @@ public class ChatActivity extends BaseActivity
     });
   }
 
-  private void showEmoj() {
+  public void showEmoj() {
     emojLayout.setVisibility(View.VISIBLE);
   }
 
-  private void hideEmoj() {
+  public void hideEmoj() {
     emojLayout.setVisibility(View.GONE);
+  }
+
+  private void showNoMoreFriend() {
+    AlertDialog alertDialog = new AlertDialog.Builder(this)
+        .setCancelable(false).setTitle(R
+            .string.hint)
+        .setMessage("好友不存在，返回通讯录")
+        .setPositiveButton(R.string.confirm, new
+            DialogInterface.OnClickListener() {
+
+              @Override
+              public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+              }
+            }).create();
+    alertDialog.show();
+  }
+
+  @Override
+  public void onBackPressed() {
+    finish();
+    super.onBackPressed();
   }
 
   @Override
@@ -333,6 +490,10 @@ public class ChatActivity extends BaseActivity
 
   @Override
   public void updateChatMessages(List<Message> chatMessageBeen) {
+    if (chatMessageBeen == null || chatMessageBeen.size() == 0) {
+      hasMoreHistoryMessage = false;
+      return;
+    }
     this.chatMessages.addAll(chatMessageBeen);
     chatContentListAdapter.notifyDataSetChanged();
   }
@@ -342,4 +503,24 @@ public class ChatActivity extends BaseActivity
     chatMessages.add(0, message);
     chatContentListAdapter.notifyDataSetChanged();
   }
+
+  class MyReceiver extends BroadcastReceiver {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      if (intent != null && intent.getAction() != null) {
+        switch (intent.getAction()) {
+          case GlobalString.ACTION_FRIEND_DELETED:
+            String friendId = intent.getStringExtra(GlobalString.KEY_DELETED_FRIEND_ID);
+            if (!StringUtils.isEmpty(friendId) && StringUtils.equals(contactId, friendId)) {
+              showNoMoreFriend();
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
+
 }

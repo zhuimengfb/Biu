@@ -1,11 +1,13 @@
 package com.biu.biu.contact.entity;
 
 import com.biu.biu.user.entity.SimpleUserInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Created by fubo on 2016/6/19 0019.
  * email:bofu1993@163.com
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AddRequestUserInfo {
 
   public static final String KEY_DEVICE_ID = "device_id";
@@ -15,7 +17,7 @@ public class AddRequestUserInfo {
   private String nickname;
   private String icon_large;
   private String icon_small;
-  private String message;
+  private String description;
   private int state;
 
   public String getDevice_id() {
@@ -58,12 +60,12 @@ public class AddRequestUserInfo {
     this.icon_small = icon_small;
   }
 
-  public String getMessage() {
-    return message;
+  public String getDescription() {
+    return description;
   }
 
-  public void setMessage(String message) {
-    this.message = message;
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public int getState() {

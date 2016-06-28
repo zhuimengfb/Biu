@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:id="@+id/news_card"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/news_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/background_light"
@@ -118,8 +118,8 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/reply_before_icon"
                 android:scaleType="centerInside"
+                android:src="@drawable/reply_before_icon"
                 />
 
 
@@ -138,35 +138,49 @@
                 android:id="@+id/likecounttv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/gray"
                 android:text="123"
+                android:textColor="@color/gray"
                 android:textSize="@dimen/tagSize"/>
-            <ImageView
-                android:id="@+id/likebtn"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_centerVertical="true"
+
+            <RelativeLayout
+                android:id="@+id/like_layout"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_toLeftOf="@id/likecounttv"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/like_before_icon"
-                android:scaleType="centerInside"/>
+                >
 
+                <ImageView
+                    android:id="@+id/likebtn"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/like_before_icon"/>
+            </RelativeLayout>
 
-
-            <ImageView
-                android:id="@+id/iv_share_icon"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="30dp"
+            <RelativeLayout
+                android:id="@+id/share_layout"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@id/reply_num_tv"
-                android:src="@drawable/share_before"
-                android:scaleType="centerInside"
-                />
+                android:gravity="center"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_share_icon"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/share_before"
+                    />
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:id="@+id/topandtreadlayout"

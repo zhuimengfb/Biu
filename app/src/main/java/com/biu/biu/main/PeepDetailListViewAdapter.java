@@ -82,7 +82,7 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
   }
 
   public PeepDetailListViewAdapter(PeepDetailActivity context,
-      ArrayList<TipItemInfo> tipInfoArray) {
+                                   ArrayList<TipItemInfo> tipInfoArray) {
     // TODO Auto-generated constructor stub
     this.mContext = context;
     this.mListItemsInfo = tipInfoArray;
@@ -91,7 +91,7 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
   }
 
   public PeepDetailListViewAdapter(PeepDetailActivity context,
-      ArrayList<TipItemInfo> tipInfoArray, boolean localornot) {
+                                   ArrayList<TipItemInfo> tipInfoArray, boolean localornot) {
     // TODO Auto-generated constructor stub
     this.mContext = context;
     this.mListItemsInfo = tipInfoArray;
@@ -191,6 +191,13 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
       });
     } else {
       listItemView.userName.setText("匿名");
+      Glide.with(mContext).load(GlobalString.URI_RES_PREFIX + R.drawable.default_user_icon2)
+          .transform(new GlideCircleTransform(mContext)).into(listItemView.userHeadIcon);
+      listItemView.userInfoLayout.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+        }
+      });
     }
     listItemView.contentTv.setText(mListItemsInfo.get(position).content);
     // 设置发表时间和回复数
@@ -228,7 +235,7 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
       if (blikestate) {
         nlikestate = 1;
       } else {
-        nlikestate = btreadstate ? - 1 : 0;
+        nlikestate = btreadstate ? -1 : 0;
       }
       listItemView.likebtn.setOnClickListener(new TipLikeClickListener(
           position, tipid, nlikestate));
@@ -238,7 +245,7 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
     // 处理图片操作
     if (isTitle) {
       String urltemp = mListItemsInfo.get(position).imgurl;
-      if (! urltemp.equals("null")) {
+      if (!urltemp.equals("null")) {
         final String imgurl = "http://api.bbbiu.com:1234/" + urltemp;
         listItemView.imageView.setTag(String.valueOf(position));
         // listItemView.imageView.setImageResource(android.R.drawable.stat_sys_download_done);
@@ -269,11 +276,9 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
             // 定义新的显示图片
             showImgDialog.show();
             Activity activity = (Activity) mContext;
-            WindowManager windowManager = activity
-                .getWindowManager();
+            WindowManager windowManager = activity.getWindowManager();
             Display display = windowManager.getDefaultDisplay();
-            WindowManager.LayoutParams lp = showImgDialog
-                .getWindow().getAttributes();
+            WindowManager.LayoutParams lp = showImgDialog.getWindow().getAttributes();
             lp.width = (int) (display.getWidth()); // 设置宽度
             lp.height = (int) (display.getHeight());
             showImgDialog.getWindow().setAttributes(lp);
@@ -299,8 +304,8 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
             new OnImageDownload() {
               @Override
               public void onDownloadSucc(String tag,
-                  Bitmap bitmap, String c_url,
-                  ImageView mimageView) {
+                                         Bitmap bitmap, String c_url,
+                                         ImageView mimageView) {
                 ImageView imageView = (ImageView) mListView
                     .findViewWithTag(tag);
                 if (imageView != null) {
@@ -328,7 +333,7 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
     // // 显示为月光宝盒详情页
     // listItemView.pubtimeImg.setVisibility(View.GONE);
     // listItemView.replyimage.setVisibility(View.INVISIBLE);
-    if (! localornot) {
+    if (!localornot) {
       listItemView.likebtn.setVisibility(View.GONE);
       listItemView.treadbtn.setVisibility(View.GONE);
       listItemView.likecounttv.setVisibility(View.GONE);
@@ -359,25 +364,25 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
       Integer nlikenum = Integer
           .parseInt(mListItemsInfo.get(mposition).like_num);
       switch (mlikeState) {
-        case - 1:
+        case -1:
           // 当前为踩，点击顶，取消踩。
           murl += "/action:tread" + "/?device_id="
               + UserConfigParams.device_id + "&is_repeal=1";
-          ++ nlikenum;
+          ++nlikenum;
           mListItemsInfo.get(mposition).hastreaded = false;
           break;
         case 0:
           // 当前无，点击顶，设为顶
           murl += "/action:like" + "/?device_id="
               + UserConfigParams.device_id;
-          ++ nlikenum;
+          ++nlikenum;
           mListItemsInfo.get(mposition).hasliked = true;
           break;
         case 1:
           // 当前顶，点击顶，取消顶
           murl += "/action:like" + "/?device_id="
               + UserConfigParams.device_id + "&is_repeal=1";
-          -- nlikenum;
+          --nlikenum;
           mListItemsInfo.get(mposition).hasliked = false;
           break;
       }
@@ -415,25 +420,25 @@ public class PeepDetailListViewAdapter extends BaseAdapter {
           .parseInt(mListItemsInfo.get(mposition).like_num);
       // 当前处于顶的状态
       switch (mlikeState) {
-        case - 1:
+        case -1:
           // 当前为踩，点击踩，取消踩。
           murl += "/action:tread" + "/?device_id="
               + UserConfigParams.device_id + "&is_repeal=1";
-          ++ nlikenum;
+          ++nlikenum;
           mListItemsInfo.get(mposition).hastreaded = false;
           break;
         case 0:
           // 当前无，点击踩，设为踩
           murl += "/action:tread" + "/?device_id="
               + UserConfigParams.device_id;
-          -- nlikenum;
+          --nlikenum;
           mListItemsInfo.get(mposition).hastreaded = true;
           break;
         case 1:
           // 当前顶，点击踩，取消顶
           murl += "/action:like" + "/?device_id="
               + UserConfigParams.device_id + "&is_repeal=1";
-          -- nlikenum;
+          --nlikenum;
           mListItemsInfo.get(mposition).hasliked = false;
           break;
       }

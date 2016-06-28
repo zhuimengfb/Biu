@@ -2,7 +2,9 @@ package com.biu.biu.user.presenter;
 
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.biu.biu.app.BiuApp;
 import com.biu.biu.user.entity.UserPicInfo;
 import com.biu.biu.user.entity.UserPicInfoCommons;
 import com.biu.biu.user.model.UserModel;
@@ -11,6 +13,7 @@ import com.biu.biu.user.utils.UserPreferenceUtil;
 import com.biu.biu.user.views.ISendRequestView;
 import com.biu.biu.user.views.IUserInfo;
 import com.biu.biu.utils.FileUtils;
+import com.biu.biu.utils.ImageUtil;
 import com.biu.biu.utils.NetUtils;
 import com.biu.biu.utils.UUIDGenerator;
 
@@ -38,13 +41,15 @@ public class UserPresenter {
   private IUserInfo userInfo;
   private UserModel userModel;
   private ISendRequestView sendRequestView;
+  private static long lastUploadTime =0;
+
 
   public UserPresenter(ISendRequestView sendRequestView) {
     this.sendRequestView = sendRequestView;
     userModel = new UserModel();
   }
 
-  public void sendFriendRequest(String jmId,String message) {
+  public void sendFriendRequest(String jmId, String message) {
     userModel.requestFriend(jmId, message, new UserModel.OnPostFriendRequest() {
       @Override
       public void success() {
@@ -67,7 +72,7 @@ public class UserPresenter {
     if (StringUtils.isEmpty(nickName)) {
       userInfo.showInputNullName();
     } else {
-      if (! NetUtils.isNetConnected()) {
+      if (!NetUtils.isNetConnected()) {
         userInfo.showNetFailure();
       } else {
         //保存到本地
@@ -87,11 +92,13 @@ public class UserPresenter {
         .map(new Func1<String, String>() {
           @Override
           public String call(String s) {
+            //图片压缩处理
             String oldPath = UserPreferenceUtil.getUserIconAddress();
             String localAddress = CommonString.USER_ICON_PATH + UserPreferenceUtil
                 .getUserPreferenceId() + "-" + UUIDGenerator.getUUID() + ".png";
             FileUtils.copy(s, localAddress);
             UserPreferenceUtil.setUserIconLocalAddress(localAddress);
+            ImageUtil.saveBitmap(ImageUtil.getCompressedImage(localAddress),localAddress);
             FileUtils.deleteFile(oldPath);
             return localAddress;
           }
@@ -99,14 +106,14 @@ public class UserPresenter {
         .doOnNext(new Action1<String>() {
           @Override
           public void call(String s) {
-            //TODO 上传到服务器
+            //上传到服务器
             userModel.modifyHeadIcon(UserPreferenceUtil.getUserPreferenceId(), s);
           }
         })
         .doOnNext(new Action1<String>() {
           @Override
           public void call(String s) {
-            //TODO 更新JMessage
+            //更新JMessage
             JMessageClient.updateUserAvatar(new File(s), new BasicCallback() {
               @Override
               public void gotResult(int i, String s) {
@@ -153,6 +160,11 @@ public class UserPresenter {
   }
 
   public void uploadUserPic(final Uri data) {
+    if (System.currentTimeMillis() - lastUploadTime < 1000 * 5) {
+      Toast.makeText(BiuApp.getContext(),"服务器君有点忙，请稍后上传吧",Toast.LENGTH_SHORT).show();
+      return ;
+    }
+    lastUploadTime =System.currentTimeMillis();
     userInfo.showUploadPic();
     Observable.just(data.getPath()).map(new Func1<String, String>() {
       @Override
@@ -162,15 +174,15 @@ public class UserPresenter {
             .getUserPreferenceId() + "-" + picId + ".png";
         //保存本地
         FileUtils.copy(s, localAddress);
+        ImageUtil.saveBitmap(ImageUtil.getCompressedImage(localAddress),localAddress);
         UserPicInfo userPicInfo = new UserPicInfo();
         userPicInfo.setUserId(UserPreferenceUtil.getUserPreferenceId());
         userPicInfo.setLocalPath(localAddress);
         userPicInfo.setPicId(picId);
         userPicInfo.setFlag(UserPicInfoCommons.FLAG_NORMAL);
         userModel.saveUserPicToDB(userPicInfo);
-        //TODO 上传服务器
+        //上传服务器
         userModel.uploadPhoto(UserPreferenceUtil.getUserPreferenceId(), localAddress);
-
         return localAddress;
       }
     }).subscribeOn(Schedulers.io())
@@ -201,8 +213,8 @@ public class UserPresenter {
       @Override
       public void call(UserPicInfo userPicInfo) {
         //TODO 等待完善删除接口
-        // userModel.deleteUserPicNet(position);
-        userModel.deleteUserPicFromDB(userPicInfo);
+        int number = position + 1;
+        userModel.deleteUserPicNet(userPicInfo, number);
       }
     }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())

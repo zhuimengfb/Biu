@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,8 +42,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import grf.biu.R;
 
 public class HomeFragment extends BaseFragment
@@ -82,8 +81,7 @@ public class HomeFragment extends BaseFragment
   private boolean mfirstRefresh = true;
   private TextView mMoreHottv = null;
   private FloatingActionButton floatingActionButton;
-  @BindView(R.id.iv_no_publish)
-  ImageView ivNoPublish;
+  RelativeLayout noPublishLayout;
 
   // 设置一个变量也用识别是否是在刷新 使得nextlistItemsBuffer清空
   private boolean ctrlRefresh = false;
@@ -150,6 +148,7 @@ public class HomeFragment extends BaseFragment
         this.resetAllValues();
         UserConfigParams.isHomeRefresh = false;
         getFirstPageFromServer();
+        mHomeListView.smoothScrollToPosition(0);
       }
     }
     super.onResume();
@@ -181,11 +180,11 @@ public class HomeFragment extends BaseFragment
    */
   @Override
   public View onCreateView(LayoutInflater inflater,
-      @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+                           @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     // TODO Auto-generated method stub
     super.onCreateView(inflater, container, savedInstanceState);
     View homeView = inflater.inflate(R.layout.activity_tab_home, container, false);
-    ButterKnife.bind(getActivity(), homeView);
+    noPublishLayout = (RelativeLayout) homeView.findViewById(R.id.rl_nothing_layout);
     return homeView;
   }
 
@@ -198,6 +197,8 @@ public class HomeFragment extends BaseFragment
     super.onViewCreated(view, savedInstanceState);
     floatingActionButton = (FloatingActionButton) (getActivity().findViewById(R.id.fab_add));
     mHomeListView = (AutoListView) (getActivity().findViewById(R.id.home_showtopic));
+    mHomeListView.setHeaderDividersEnabled(false);
+    mHomeListView.setFooterDividersEnabled(false);
     listViewAdapter = new HomeListAdapter(this.getActivity(), mHomeListItems);// 第一次实例化
     listViewAdapter.setActivity(this.getActivity());
     listViewAdapter.setListView(mHomeListView);
@@ -359,7 +360,7 @@ public class HomeFragment extends BaseFragment
     public void run() {
       // TODO Auto-generated method stub
       ncount = 1;
-      while (! UserConfigParams.hasGettedLocation()) { // 没得到经纬度就一直等着
+      while (!UserConfigParams.hasGettedLocation()) { // 没得到经纬度就一直等着
         // Toast.makeText(getActivity(), "等待高德经纬度",
         // Toast.LENGTH_SHORT).show();
         try {
@@ -609,8 +610,12 @@ public class HomeFragment extends BaseFragment
         item.hasliked = everyJsonObject.getBoolean("has_liked");
         item.hastreaded = everyJsonObject.getBoolean("has_treaded");
         SimpleUserInfo simpleUserInfo = new SimpleUserInfo();
-        item.anony = Integer.parseInt(everyJsonObject.getString("anony"));
-        if (! everyJsonObject.isNull("publisher") && everyJsonObject.get("publisher") != null) {
+        if (everyJsonObject.isNull("anony")) {
+          item.anony = 1;
+        } else {
+          item.anony = Integer.parseInt(everyJsonObject.getString("anony"));
+        }
+        if (!everyJsonObject.isNull("publisher") && everyJsonObject.get("publisher") != null) {
           JSONObject userJson = everyJsonObject.getJSONObject("publisher");
           simpleUserInfo.setJm_id(userJson.getString("jm_id"));
           simpleUserInfo.setDevice_id(userJson.getString("jm_id"));
@@ -637,14 +642,14 @@ public class HomeFragment extends BaseFragment
   }
 
   private void showNoPublish() {
-    if (ivNoPublish.getVisibility() != View.VISIBLE) {
-      ivNoPublish.setVisibility(View.VISIBLE);
+    if (noPublishLayout.getVisibility() != View.VISIBLE) {
+      noPublishLayout.setVisibility(View.VISIBLE);
     }
   }
 
   public void hideNoPublish() {
-    if (ivNoPublish.getVisibility() != View.GONE) {
-      ivNoPublish.setVisibility(View.GONE);
+    if (noPublishLayout.getVisibility() != View.GONE) {
+      noPublishLayout.setVisibility(View.GONE);
     }
   }
 
@@ -685,7 +690,7 @@ public class HomeFragment extends BaseFragment
       return;
     }
     // 若未获得经纬度
-    if (! UserConfigParams.hasGettedLocation()) {
+    if (!UserConfigParams.hasGettedLocation()) {
       mHomeListView.onLoadComplete();
       return;
     }
@@ -745,7 +750,7 @@ public class HomeFragment extends BaseFragment
     // Message msg = homeHandler.obtainMessage();
     // msg.what = HOME_LISTVIEW_REFRESH;
     // // 发送刷新消息
-    if (! UserConfigParams.hasGettedLocation()) {
+    if (!UserConfigParams.hasGettedLocation()) {
       mHomeListView.onRefreshComplete();
       Toast.makeText(getActivity(), "获取定位信息失败！", Toast.LENGTH_SHORT)
           .show();
@@ -759,12 +764,12 @@ public class HomeFragment extends BaseFragment
     // 触发刷新操作，开始执行线程，线程执行成功后，发送刷新操作
     Log.i("HCTEST", "刷新数据！！！");
     // 刷新以后要将各个变量参数重置，不然会出现问题
-    firstlistItemsBuffer.clear();
+    //firstlistItemsBuffer.clear();
     nextlistItemsBuffer.clear();
     mtipsGettedCount = 0;
     nextPageSize = 0;
     // AutoListView的适配器中的数据也应该清空(好像又不需要了)
-    // listViewAdapter.getListItems().clear();
+    listViewAdapter.getListItems().clear();
     ctrlRefresh = true;
     mfirstRefresh = true;
     getFirstPageFromServer();

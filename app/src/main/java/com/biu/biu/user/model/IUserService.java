@@ -52,7 +52,7 @@ public interface IUserService {
   @POST("/friend_request")
   Call<ResponseBody> requestFriend(
       @Field("requester") String requesterId,
-      @Field("receiver") String receiverId, @Field("message") String message);
+      @Field("receiver") String receiverId, @Field("description") String message);
 
 
   @GET("/biuer_detail")
@@ -60,7 +60,7 @@ public interface IUserService {
       @Query("jm_id") String jmId, @Query("other_jm_id") String otherJmId);
 
 
-  //TODO 待完善接口
-  @GET("/delete_photo/")
-  Call<ResponseBody> deletePhoto(@Path("jm_id") String jmId, @Path("sequence") int sequence);
+  @FormUrlEncoded
+  @POST("/del_single_img")
+  Call<ResponseBody> deletePhoto(@Field("jm_id") String jmId, @Field("number") int sequence);
 }

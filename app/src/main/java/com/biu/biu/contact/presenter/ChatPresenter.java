@@ -52,7 +52,7 @@ public class ChatPresenter {
 
   public void sendImageMessage(String userId, String imagePath) {
     try {
-      Message message = JMessageClient.getSingleConversation(userId).createSendImageMessage(new
+      Message message = JMessageClient.createSingleImageMessage(userId,new
           File(imagePath));
       JMessageClient.sendMessage(message);
       chatActivityView.updateChatMessage(message);

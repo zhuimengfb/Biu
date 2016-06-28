@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -43,6 +45,7 @@ import com.umeng.socialize.weixin.controller.UMWXHandler;
 import com.umeng.socialize.weixin.media.CircleShareContent;
 import com.umeng.socialize.weixin.media.WeiXinShareContent;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -85,7 +88,7 @@ public class PeepDetailActivity extends BaseActivity {
   private final int GET_DETAILMSG_OK = 0;
   private final int GET_DETAILMSG_ERROR = 1;
   private final int POST_NEWREPLY_OK = 2;
-  private final int POST_NEWREPLY_ERROR = - 1;
+  private final int POST_NEWREPLY_ERROR = -1;
   private final int DELETE_TIP_OK = 3;
   private final int DELETE_TIP_ERROR = 4;
   private String mlat = null;
@@ -97,15 +100,21 @@ public class PeepDetailActivity extends BaseActivity {
   public final static int TIPDETAIL_FOR_HOMETIP = 0; // 首页帖子的详情
   public final static int TIPDETAIL_FOR_MOONBOOX = 1; // 月光宝盒帖子的详情
   public final static int TIPDETAIL_FOR_PEEPTOPIC = 2; // 话题帖子的详情
-  @BindView(R.id.toolbar)
+  /*@BindView(R.id.toolbar)
   Toolbar toolbar;
   @BindView(R.id.toolbar_title)
-  TextView toolbarTitle;
+  TextView toolbarTitle;*/
+  @BindView(R.id.toolbar_peep)
+  Toolbar peepToolbar;
 
   @BindView(R.id.layout_anonymity)
   RelativeLayout anonymityLayout;
   @BindView(R.id.iv_annoymity_reply)
   ImageView anonymityImageView;
+  @BindView(R.id.tv_send)
+  TextView sendText;
+  @BindView(R.id.layout_anony)
+  RelativeLayout anonyLayout;
 
   private boolean annoyReplyFlag = false;
 
@@ -171,7 +180,7 @@ public class PeepDetailActivity extends BaseActivity {
     if (imgUrl != null) {
       urlImage = new UMImage(this, imgUrl);
     } else {
-      urlImage = new UMImage(this, R.drawable.icon72);
+      urlImage = new UMImage(this, R.drawable.icon);
       // urlImage = new UMImage(this, BitmapFactory.decodeResource(
       // getResources(), R.drawable.icon320));
       // Bitmap logo = BitmapFactory.decodeResource(getResources(),
@@ -354,6 +363,41 @@ public class PeepDetailActivity extends BaseActivity {
         return false;
       }
     });
+    mReplyContentEdit.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+        if (StringUtils.isEmpty(editable.toString())) {
+          hideSendText();
+          showAnony();
+        } else {
+          hideAnony();
+          showSendText();
+        }
+      }
+    });
+    sendText.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        String replycontent = mReplyContentEdit.getText().toString();
+        if (replycontent.isEmpty()) {
+          Toast.makeText(PeepDetailActivity.this, "请输入回复内容！",
+              Toast.LENGTH_SHORT).show();
+        }
+        mIsScrolltoEnd = true;
+        mReplyContentEdit.setText("");
+        postNewReply(replycontent);
+      }
+    });
     // 如果是从“我的发表”页面过来的，则显示删除按钮
     if (mCanDeleteTip) {
       // 修改后此控件已经是可见了(zb)
@@ -416,7 +460,20 @@ public class PeepDetailActivity extends BaseActivity {
     }
     // 当发表回复编辑框获得输入焦点后，显示到
   }
+  private void hideSendText() {
+    sendText.setVisibility(View.GONE);
+  }
 
+  private void showSendText() {
+    sendText.setVisibility(View.VISIBLE);
+  }
+  private void hideAnony() {
+    anonyLayout.setVisibility(View.GONE);
+  }
+
+  private void showAnony() {
+    anonyLayout.setVisibility(View.VISIBLE);
+  }
   /**
    * 删除帖子线程
    *
@@ -497,7 +554,7 @@ public class PeepDetailActivity extends BaseActivity {
 
       mTargetTipInfo.anony = Integer.parseInt(mJsonObject.getString("anony"));
       SimpleUserInfo simpleUserInfo = new SimpleUserInfo();
-      if (! mJsonObject.isNull("publisher") && mJsonObject.getJSONObject("publisher") != null) {
+      if (!mJsonObject.isNull("publisher") && mJsonObject.getJSONObject("publisher") != null) {
         JSONObject userJson = mJsonObject.getJSONObject("publisher");
         simpleUserInfo.setJm_id(userJson.getString("jm_id"));
         simpleUserInfo.setDevice_id(userJson.getString("jm_id"));
@@ -525,9 +582,13 @@ public class PeepDetailActivity extends BaseActivity {
         replyIteminfo.hasliked = everyJsonObject.getBoolean("has_liked");
         replyIteminfo.hastreaded = everyJsonObject.getBoolean("has_treaded");
 
-        replyIteminfo.anony = Integer.parseInt(everyJsonObject.getString("anony"));
+        if (everyJsonObject.isNull("anony")) {
+          replyIteminfo.anony = 1;
+        } else {
+          replyIteminfo.anony = Integer.parseInt(everyJsonObject.getString("anony"));
+        }
         SimpleUserInfo simpleReplyUserInfo = new SimpleUserInfo();
-        if (! everyJsonObject.isNull("publisher") && everyJsonObject.getJSONObject("publisher")
+        if (!everyJsonObject.isNull("publisher") && everyJsonObject.getJSONObject("publisher")
             != null) {
           JSONObject userReplyJson = everyJsonObject.getJSONObject("publisher");
           simpleReplyUserInfo.setJm_id(userReplyJson.getString("jm_id"));
@@ -546,7 +607,7 @@ public class PeepDetailActivity extends BaseActivity {
       }
 
       // 定义分享的内容
-      if (tempUrl != null && ! tempUrl.equals("null")) {
+      if (tempUrl != null && !tempUrl.equals("null")) {
         String imgUrl = "http://api.bbbiu.com:1234/" + tempUrl;
         setShareContent(mTargetTipInfo.content, imgUrl);
       } else {
@@ -625,10 +686,13 @@ public class PeepDetailActivity extends BaseActivity {
 
         break;
     }
-    url = "http://api.bbbiu.com:1234/topic/" + UserConfigParams.device_id
-        + "/release/";
+//    url = "http://api.bbbiu.com:1234/topic/" + UserConfigParams.device_id
+//        + "/release/";
+    url = "http://api.bbbiu.com:1234/devices/" + UserConfigParams.device_id
+        + "/threads";
     String content = replycontent;
     NameValuePair vp1 = new BasicNameValuePair("content", content);
+    nameValuePairs.add(new BasicNameValuePair("title", content));
     NameValuePair vp2 = new BasicNameValuePair("reply_to", mTargetTipInfo.id);
     if (annoyReplyFlag) {
       nameValuePairs.add(new BasicNameValuePair("anony", String.valueOf(1)));
@@ -638,10 +702,8 @@ public class PeepDetailActivity extends BaseActivity {
     nameValuePairs.add(vp1);
     nameValuePairs.add(vp2);
     try {
-      HttpEntity requestHttpEntity = new UrlEncodedFormEntity(
-          nameValuePairs, HTTP.UTF_8);
-      PostTopicReplyThread thread = new PostTopicReplyThread(mHandler,
-          url, requestHttpEntity);
+      HttpEntity requestHttpEntity = new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8);
+      PostTopicReplyThread thread = new PostTopicReplyThread(mHandler, url, requestHttpEntity);
       thread.setReturnMsgCode(POST_NEWREPLY_OK, POST_NEWREPLY_ERROR); // 设置操作成功返回代码
       // 向服务器发送发表帖子的post信息
       thread.start();
@@ -651,9 +713,8 @@ public class PeepDetailActivity extends BaseActivity {
   }
 
   private void initToolbar() {
-    setSupportActionBar(toolbar);
-    setBackableToolbar(toolbar);
-    toolbarTitle.setText(getString(R.string.reply));
+    setSupportActionBar(peepToolbar);
+    setBackableToolbar(peepToolbar);
   }
 
   private void initParam() {
@@ -662,11 +723,13 @@ public class PeepDetailActivity extends BaseActivity {
     mTargetTipInfo.id = intent.getStringExtra("thread_id"); // 帖子ID
     mDetailMode = intent.getIntExtra("DetailMode", TIPDETAIL_FOR_HOMETIP);
     mCanDeleteTip = intent.getBooleanExtra("CanDeleteTip", false);
-    if (! mCanDeleteTip) {
+    if (!mCanDeleteTip) {
       // mDeleteTipBtn.setBackgroundResource(R.drawable.more);
-      mDeleteTipBtn.setImageResource(R.drawable.ic_share_white_36dp);
+//      mDeleteTipBtn.setImageResource(R.drawable.ic_share_white_36dp);
+      mDeleteTipBtn.setVisibility(View.GONE);
     } else {
-      mDeleteTipBtn.setImageResource(R.drawable.trash);
+//      mDeleteTipBtn.setImageResource(R.drawable.trash);
+      mDeleteTipBtn.setVisibility(View.VISIBLE);
       // mDeleteTipBtn.setBackgroundResource(R.drawable.trash);
     }
     mlat = UserConfigParams.latitude;
@@ -679,7 +742,7 @@ public class PeepDetailActivity extends BaseActivity {
     mReplyContentEdit = (EditText) findViewById(R.id.myreplyedit);
     mSendReplyBtn = (ImageButton) findViewById(R.id.sendreplybtn); // 发送按钮
     mDeleteTipBtn = (ImageButton) findViewById(R.id.shareButton); // 从我的发表进入后显示该
-    if (! localornot) {
+    if (!localornot) {
       mReplyContentEdit.setVisibility(View.GONE);
       mSendReplyBtn.setVisibility(View.GONE);
     }
@@ -694,5 +757,17 @@ public class PeepDetailActivity extends BaseActivity {
     UserConfigParams.device_id = preferences.getString("device_ID", "");
     getTipDetail(); // 获取帖子详情
     MobclickAgent.onResume(this);
+  }
+
+  private void hideKeyBoard() {
+    if (mReplyContentEdit!=null) {
+      ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow
+          (mReplyContentEdit.getWindowToken(), 0);
+    }
+  }
+  @Override
+  protected void onPause() {
+    hideKeyBoard();
+    super.onPause();
   }
 }

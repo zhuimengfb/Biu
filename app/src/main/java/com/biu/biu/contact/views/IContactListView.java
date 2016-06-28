@@ -13,4 +13,8 @@ public interface IContactListView {
   void updateContactList(List<ContactInfo> contactInfoList);
 
   void hasNewRequest(int number);
+
+  void deleteContactSuccess(int position);
+
+  void showNoFriend();
 }

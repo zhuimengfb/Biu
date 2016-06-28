@@ -39,13 +39,25 @@ import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.biu.biu.app.BiuApp;
 import com.biu.biu.contact.views.ContactListFragment;
+import com.biu.biu.service.StickyService;
 import com.biu.biu.thread.PostTempPosition;
 import com.biu.biu.user.entity.AppUserInfo;
+import com.biu.biu.user.entity.SimpleUserInfo;
+import com.biu.biu.user.entity.UserPicInfo;
+import com.biu.biu.user.entity.UserPicInfoCommons;
 import com.biu.biu.user.model.UserModel;
+import com.biu.biu.user.utils.CommonString;
 import com.biu.biu.user.utils.UserPreferenceUtil;
 import com.biu.biu.userconfig.UserConfigParams;
+import com.biu.biu.utils.FileUtils;
+import com.biu.biu.utils.GlobalString;
+import com.biu.biu.utils.UUIDGenerator;
 import com.biu.biu.views.base.BaseActivity;
+import com.bumptech.glide.BitmapRequestBuilder;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
@@ -54,8 +66,11 @@ import com.umeng.update.UpdateStatus;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,6 +81,10 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import grf.biu.R;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author grf
@@ -106,6 +125,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
   private ImageView peepStatusView = null;
   private ImageView meStatusView = null;
 
+  //简单使用，因此直接创建
+  private UserModel userModel = new UserModel();
+
   @BindView(R.id.bottom_navigation_bar)
   BottomNavigationBar bottomNavigationBar;
   @BindView(R.id.toolbar)
@@ -127,12 +149,136 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     defineHomeBt();
     checkSoftwareUpdate();
     initUserName();
+    Bundle bundle = getIntent().getExtras();
+    if (bundle != null && bundle.getBoolean("newFriend")) {
+      mPageVp.setCurrentItem(1);
+    }
   }
 
   private void initUserName() {
     if (StringUtils.isEmpty(UserPreferenceUtil.getPreferences().getString(UserPreferenceUtil
         .USER_PREFERENCE_NAME_KEY, ""))) {
-      showSetNameDialog();
+      if (UserPreferenceUtil.geteFirstLaunch()) {
+        userModel.getMyInfo(UserConfigParams.device_id, new Subscriber<SimpleUserInfo>() {
+          @Override
+          public void onCompleted() {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+            e.printStackTrace();
+            showSetNameDialog();
+          }
+
+          @Override
+          public void onNext(SimpleUserInfo simpleUserInfo) {
+            if (simpleUserInfo != null && !StringUtils.isEmpty(simpleUserInfo.getDevice_id())) {
+              UserPreferenceUtil.updateFirstLaunch();
+              UserPreferenceUtil.updateUserInfo(simpleUserInfo);
+              //更新JMessage
+              Observable.just(simpleUserInfo).subscribeOn(Schedulers.newThread())
+                  .subscribe(new Subscriber<SimpleUserInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(SimpleUserInfo simpleUserInfo) {
+                      UserInfo userInfo = JMessageClient.getMyInfo();
+                      userInfo.setNickname(simpleUserInfo.getNickname());
+                      JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new
+                          BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                              if (i != 0) {
+                                UserPreferenceUtil.setUpdateNickNameFail();
+                              } else {
+                                UserPreferenceUtil.setUpdateNickNameSuccess();
+                              }
+                            }
+                          });
+                    }
+                  });
+              //更新个人头像信息
+              Observable.just(simpleUserInfo.getIcon_large()).subscribeOn(Schedulers.newThread())
+                  .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                      e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                      try {
+                        File file = Glide.with(BiuApp.getContext()).load(GlobalString.BASE_URL +
+                            "/" + s).downloadOnly(1920, 1080).get();
+                        String localAddress = CommonString.USER_ICON_PATH + UserPreferenceUtil
+                            .getUserPreferenceId() + "-" + UUIDGenerator.getUUID() + ".png";
+                        FileUtils.saveFile(file, localAddress);
+                        UserPreferenceUtil.setUserIconLocalAddress(localAddress);
+                      } catch (InterruptedException e) {
+                        e.printStackTrace();
+                      } catch (ExecutionException e) {
+                        e.printStackTrace();
+                      }
+                    }
+                  });
+              //更新照片墙信息
+              String[] picAddress = simpleUserInfo.getShowoff().split(";");
+              Observable.from(picAddress).subscribeOn(Schedulers.newThread())
+                  .subscribe(new Subscriber<String>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                      e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                      UserPicInfo userPicInfo = new UserPicInfo();
+                      String picId = UUIDGenerator.getUUID();
+                      String localAddress = CommonString.USER_PIC_SHOW_PATH + UserPreferenceUtil
+                          .getUserPreferenceId() + "-" + picId + ".png";
+                      try {
+                        File file = Glide.with(BiuApp.getContext()).load(GlobalString.BASE_URL +
+                            "/" + s).downloadOnly(1920, 1080).get();
+                        FileUtils.saveFile(file, localAddress);
+                        userPicInfo.setLocalPath(localAddress);
+                      } catch (InterruptedException e) {
+                        e.printStackTrace();
+                      } catch (ExecutionException e) {
+                        e.printStackTrace();
+                      }
+                      userPicInfo.setUserId(UserPreferenceUtil.getUserPreferenceId());
+                      userPicInfo.setNetAddress(s);
+                      userPicInfo.setPicId(picId);
+                      userPicInfo.setFlag(UserPicInfoCommons.FLAG_NORMAL);
+                      userModel.saveUserPicToDB(userPicInfo);
+                    }
+                  });
+            } else {
+              showSetNameDialog();
+            }
+          }
+        });
+      }
     } else {
       if (UserPreferenceUtil.getPreferences().getBoolean(UserPreferenceUtil
           .USER_UPDATE_NICK_NAME_FAIL, true)) {
@@ -153,7 +299,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
             DialogInterface.OnClickListener() {
               @Override
               public void onClick(DialogInterface dialog, int which) {
-                if (! StringUtils.isEmpty(editText.getText().toString())) {
+                if (!StringUtils.isEmpty(editText.getText().toString())) {
                   UserPreferenceUtil.getPreferences().edit().putString(UserPreferenceUtil
                       .USER_PREFERENCE_NAME_KEY, editText.getText().toString()).apply();
                   updateUserNickName(editText.getText().toString());
@@ -182,6 +328,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
       });
     }
     //TODO 服务器更新
+    userModel.renameNickName(UserConfigParams.device_id, nickName);
   }
 
   private void initReceiver() {
@@ -189,6 +336,8 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     IntentFilter intentFilter = new IntentFilter();
     intentFilter.addAction(MeFragment.ME_FRAGMENT_MSG_UPDATE_ACTION);
     intentFilter.addAction(PeepFragment.PEEP_FRAGMENT_MSG_UPDATE_ACTION);
+    intentFilter.addAction(GlobalString.ACTION_NEW_FRIEND_REQUEST);
+    intentFilter.addAction(GlobalString.ACTION_CLEAR_BADGE);
     registerReceiver(myReceiver, intentFilter);
   }
 
@@ -197,7 +346,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     // 定义通知
     BasicPushNotificationBuilder basicBuild = new BasicPushNotificationBuilder(
         MainActivity.this);
-    basicBuild.statusBarDrawable = R.drawable.icon72;
+    basicBuild.statusBarDrawable = R.drawable.icon;
     basicBuild.notificationFlags = Notification.FLAG_AUTO_CANCEL
         | Notification.FLAG_SHOW_LIGHTS; // 设置为自动消失和呼吸灯闪烁
     basicBuild.notificationDefaults = Notification.DEFAULT_SOUND
@@ -208,9 +357,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         MainActivity.this, R.layout.biu_notication_style, R.id.icon,
         R.id.title, R.id.text);
     // 指定定制的 Notification Layout
-    builder.statusBarDrawable = R.drawable.icon72;
+    builder.statusBarDrawable = R.drawable.icon;
     // 指定最顶层状态栏小图标
-    builder.layoutIconDrawable = R.drawable.icon72;
+    builder.layoutIconDrawable = R.drawable.icon;
     JPushInterface.setPushNotificationBuilder(2, builder);
   }
 
@@ -271,7 +420,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
 
       @Override
       public void onUpdateReturned(int updateStatus,
-          UpdateResponse updateInfo) {
+                                   UpdateResponse updateInfo) {
         // TODO Auto-generated method stub
         switch (updateStatus) {
           case UpdateStatus.Yes:
@@ -318,9 +467,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
 
   private void initBottomNavigation() {
     bottomNavigationBar.addItem(new BottomNavigationItem(R.drawable.tab_home_page, getString(R
-        .string.home))).addItem(new BottomNavigationItem(R.drawable.tab_contact_page,
-        getString(R.string.contact))).addItem(new BottomNavigationItem(R.drawable.tab_me,
-        getString(R.string.me)));
+        .string.home)))
+        .addItem(new BottomNavigationItem(R.drawable.tab_contact_page, getString(R.string.contact)))
+        .addItem(new BottomNavigationItem(R.drawable.tab_me, getString(R.string.me)));
     bottomNavigationBar.initialise();
     bottomNavigationBar.selectTab(START_PAGE_INDEX);
     bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -360,6 +509,12 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
             break;
           case PeepFragment.PEEP_FRAGMENT_MSG_UPDATE_ACTION:
             bottomNavigationBar.showCircleBadge(0);
+            break;
+          case GlobalString.ACTION_NEW_FRIEND_REQUEST:
+            bottomNavigationBar.showCircleBadge(1);
+            break;
+          case GlobalString.ACTION_CLEAR_BADGE:
+            bottomNavigationBar.hideBadge(1);
             break;
           default:
             break;
@@ -417,8 +572,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     MobclickAgent.onResume(this);
     JPushInterface.onResume(this);
     initAppUserInfo();
-    new UserModel().postJMessageId(UserPreferenceUtil.getUserPreferenceId(), UserPreferenceUtil
+    userModel.postJMessageId(UserPreferenceUtil.getUserPreferenceId(), UserPreferenceUtil
         .getUserPreferenceId());
+    StickyService.startService(this);
   }
 
   //TODO 此处需要初始化更多的信息
@@ -485,6 +641,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
           // TODO Auto-generated method stub
           modifyToolbar(position);
           bottomNavigationBar.selectTab(position);
+          bottomNavigationBar.hideBadge(position);
         }
       });
       mfirstStartInit = false;
@@ -493,6 +650,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
       // mHomeFg.SetLatandLng(mainLat.toString(), mainLng.toString());
     }
   }
+
 
   public void modifyToolbar(int position) {
     switch (position) {
@@ -676,7 +834,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
 
   // 华为手机桌面角标设置
   private void defineHWBadgeNum() {
-    if (! isSupportedBade) {
+    if (!isSupportedBade) {
       Log.i("badgedemo", "not supported badge!");
       return;
     }
@@ -717,4 +875,5 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     unregisterReceiver(myReceiver);
     super.onDestroy();
   }
+
 }

@@ -1,17 +1,22 @@
 <!-- 我评论的 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
      >
 
 
     <include
+        android:id="@+id/toolbar_layout"
         layout="@layout/normal_toolbar_layout"/>
     
     <com.biu.biu.tools.AutoListView 
         android:id="@+id/myreplylistview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:layout_below="@id/toolbar_layout"
         android:divider="@color/timeColor"
         android:dividerHeight="1dp"
         >

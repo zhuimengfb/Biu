@@ -74,7 +74,7 @@ public class SplashActivity extends Activity {
     super.onResume();
     getDeviceuuId(); // 每次程序启动时，首先获取设备ID作为全局参数。
     MobclickAgent.onResume(this);
-    if (! preferences.getBoolean("registered", false)) {
+    if (!preferences.getBoolean("registered", false)) {
       register(getDeviceID(), "123456");
     } else {
       if (System.currentTimeMillis() - preferences.getLong("lastLogin", 0L) > 60000 * 60 * 24 *
@@ -123,6 +123,12 @@ public class SplashActivity extends Activity {
       public void gotResult(int i, String s) {
         Log.d("register callback", i + s);
         if (i == 0) {
+          //注册成功，进行登陆
+          preferences.edit().putBoolean("registered", true).putString("userName", userName)
+              .putString("password", password).apply();
+          login(userName, password);
+        } else if (i == 898001 || i == 899001) {
+          //用户已经存在，则直接登陆
           preferences.edit().putBoolean("registered", true).putString("userName", userName)
               .putString("password", password).apply();
           login(userName, password);

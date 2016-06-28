@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.biu.biu.morehottips.GetMoreHotThread;
@@ -43,6 +44,7 @@ public class HotHomeFragment extends Fragment implements OnRefreshListener,
   private int mOffset = 0;
   private boolean mfirstRefreshMore; // 只在首次启动时自动刷新一次
   private boolean localornot = true;
+  RelativeLayout noPublishLayout;
 
   // @Override
   // protected void onCreate(Bundle savedInstanceState) {
@@ -93,16 +95,17 @@ public class HotHomeFragment extends Fragment implements OnRefreshListener,
             mlistView.onRefreshComplete();
             // 操作执行成功
             try {
-              mjsonArray = new JSONArray(mGetThread.getHttpResult());
-              parseHttpResult();
-
+              if (mGetThread != null && mGetThread.getHttpResult() != null) {
+                mjsonArray = new JSONArray(mGetThread.getHttpResult());
+                parseHttpResult();
+              }
             } catch (JSONException e) {
               e.printStackTrace();
             }
 
             mlistView.onLoadComplete();
             break;
-          case - 1:
+          case -1:
             // 操作执行失败
             String errorMsg = msg.getData().getString("e_msg");
             showToast(errorMsg, 1500); // 显示1.5秒
@@ -147,9 +150,13 @@ public class HotHomeFragment extends Fragment implements OnRefreshListener,
             item.pubplace = everyJsonObject.getString("address");
             item.hasliked = everyJsonObject.getBoolean("has_liked");
             item.hastreaded = everyJsonObject.getBoolean("has_treaded");
-            item.anony = Integer.parseInt(everyJsonObject.getString("anony"));
+            if (everyJsonObject.isNull("anony")) {
+              item.anony = 1;
+            } else {
+              item.anony = Integer.parseInt(everyJsonObject.getString("anony"));
+            }
             SimpleUserInfo simpleUserInfo = new SimpleUserInfo();
-            if (! everyJsonObject.isNull("publisher") && everyJsonObject.get("publisher") != null) {
+            if (!everyJsonObject.isNull("publisher") && everyJsonObject.get("publisher") != null) {
               JSONObject userJson = everyJsonObject.getJSONObject("publisher");
               simpleUserInfo.setJm_id(userJson.getString("jm_id"));
               simpleUserInfo.setDevice_id(userJson.getString("jm_id"));
@@ -205,12 +212,12 @@ public class HotHomeFragment extends Fragment implements OnRefreshListener,
 
   @Override
   public View onCreateView(LayoutInflater inflater,
-      @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+                           @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     // TODO Auto-generated method stub
     super.onCreateView(inflater, container, savedInstanceState);
     View hotView = inflater.inflate(R.layout.fragment_hot_home, container,
         false);
-
+    noPublishLayout = (RelativeLayout) hotView.findViewById(R.id.rl_nothing_layout);
     return hotView;
   }
 
@@ -223,6 +230,17 @@ public class HotHomeFragment extends Fragment implements OnRefreshListener,
     initView();
 
     this.initLatLng();
+    mlistViewAdapter.setTopicNumberListener(new MoreHotListViewAdapter.TopicNumberListener() {
+      @Override
+      public void showNoTopic() {
+        showNoPublish();
+      }
+
+      @Override
+      public void hideNoTopic() {
+        hideNoPublish();
+      }
+    });
   }
 
   /**
@@ -312,6 +330,18 @@ public class HotHomeFragment extends Fragment implements OnRefreshListener,
   public void cancelToast() {
     if (mToast != null) {
       mToast.cancel();
+    }
+  }
+
+  private void showNoPublish() {
+    if (noPublishLayout.getVisibility() != View.VISIBLE) {
+      noPublishLayout.setVisibility(View.VISIBLE);
+    }
+  }
+
+  public void hideNoPublish() {
+    if (noPublishLayout.getVisibility() != View.GONE) {
+      noPublishLayout.setVisibility(View.GONE);
     }
   }
 }

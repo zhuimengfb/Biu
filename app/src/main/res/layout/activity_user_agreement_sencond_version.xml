@@ -1,29 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/user_agreement_background"
     >
-    <!--<RelativeLayout
-        android:id="@+id/toolbar_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_user_agreement"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:fillViewport="false"
-            app:title="@string/title_activity_activity_user_agreement"
-            app:titleTextColor="@color/white"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            >
-        </android.support.v7.widget.Toolbar>
-    </RelativeLayout>-->
     <include
         layout="@layout/normal_toolbar_layout"/>
 
@@ -131,27 +113,7 @@
                 />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            >
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/small_circle"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/agreement5"
-                android:layout_marginLeft="10dp"
-                android:textSize="@dimen/userAgreementSize"
-                android:textColor="@color/smallTitleColor"
-                />
-        </LinearLayout>
+
 
     </LinearLayout>
     <LinearLayout

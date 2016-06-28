@@ -1,11 +1,13 @@
 package com.biu.biu.contact.entity;
 
 import com.biu.biu.utils.PinyinUtil;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Created by fubo on 2016/6/9 0009.
  * email:bofu1993@163.com
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class biu_friends {
   private String jm_id;
   private String nickname;
@@ -41,7 +43,7 @@ public class biu_friends {
     contactInfo.setName(nickname);
     contactInfo.setIconNetAddress(icon_small);
     contactInfo.setEnglishName(PinyinUtil.getPinYin(nickname));
-    contactInfo.setFlag(1);
+    contactInfo.setFlag(ContactInfo.FLAG_NORMAL);
     return contactInfo;
   }
 

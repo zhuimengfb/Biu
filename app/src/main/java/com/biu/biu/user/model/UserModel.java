@@ -86,23 +86,7 @@ public class UserModel {
         t.printStackTrace();
       }
     });
-    /*.subscribeOn(Schedulers.newThread())
-        .subscribe(new Subscriber<ResponseBody>() {
-      @Override
-      public void onCompleted() {
-        Log.d("postJid", "complete");
-      }
 
-      @Override
-      public void onError(Throwable e) {
-        e.printStackTrace();
-      }
-
-      @Override
-      public void onNext(ResponseBody s) {
-        Log.d("postJ", s.toString());
-      }
-    });*/
   }
 
   public void modifyHeadIcon(String deviceId, String iconPath) {
@@ -190,13 +174,16 @@ public class UserModel {
     realm.commitTransaction();
   }
 
-  public void deleteUserPicNet(int position) {
+  public void deleteUserPicNet(final UserPicInfo userPicInfo, int position) {
     Call<ResponseBody> call = userService.deletePhoto(UserPreferenceUtil.getUserPreferenceId(),
         position);
     call.enqueue(new Callback<ResponseBody>() {
       @Override
       public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
         Log.d("deletePhoto", response.body().toString());
+        if (response.isSuccessful()) {
+          deleteUserPicFromDB(userPicInfo);
+        }
       }
 
       @Override

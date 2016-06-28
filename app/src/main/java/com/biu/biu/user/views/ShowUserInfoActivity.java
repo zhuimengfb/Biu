@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.biu.biu.app.BiuApp;
 import com.biu.biu.user.entity.ShowUserInfoBean;
 import com.biu.biu.user.presenter.UserShowPresenter;
 import com.biu.biu.user.utils.CommonAction;
@@ -59,6 +60,7 @@ public class ShowUserInfoActivity extends BaseActivity implements IShowUserInfo 
   private String userJmId;
   private UserShowPresenter userShowPresenter;
   private boolean canRequestFriend = true;
+  private String[] picAddress;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,10 +105,6 @@ public class ShowUserInfoActivity extends BaseActivity implements IShowUserInfo 
       }
       indicatorLayout.addView(bt);
     }
-    /*SimpleUserInfo simpleUserInfo = new SimpleUserInfo();
-    simpleUserInfo.setNickname("FBi");
-    simpleUserInfo.setIcon_large("123");
-    showUserInfo(simpleUserInfo);*/
   }
 
   private void initEvent() {
@@ -118,6 +116,11 @@ public class ShowUserInfoActivity extends BaseActivity implements IShowUserInfo 
 
       @Override
       public void onPageSelected(int position) {
+        if (position != 0 && picAddress != null) {
+          Glide.with(BiuApp.getContext()).load(GlobalString.BASE_URL + "/" + picAddress[position
+              - 1]).error(R.drawable.default_big_icon).into((ImageView) showViews.get(position)
+              .findViewById(R.id.iv_show_user_pic));
+        }
         if (preSelectedBt != null) {
           preSelectedBt.setBackgroundResource(R.drawable.dot_indicator_normal);
           preSelectedBt.setLayoutParams(normalDotParams);
@@ -169,9 +172,10 @@ public class ShowUserInfoActivity extends BaseActivity implements IShowUserInfo 
   public void showUserInfo(ShowUserInfoBean userInfo) {
     ((TextView) showViews.get(0).findViewById(R.id.tv_show_user_name)).setText(userInfo
         .getNickname());
-    Glide.with(this).load(GlobalString.BASE_URL + "/" + userInfo.getIcon_large()).error(R
-        .drawable.default_user_icon2).transform(new GlideCircleTransform(this)).into((ImageView)
-        showViews.get(0).findViewById(R.id.iv_show_user_head));
+    Glide.with(this).load(GlobalString.BASE_URL + "/" + userInfo.getIcon_large()).placeholder(R
+        .drawable.default_big_icon).error(R.drawable.default_big_icon).transform(new GlideCircleTransform(this)).into(
+        (ImageView)
+            showViews.get(0).findViewById(R.id.iv_show_user_head));
     userPicShowAdapter.notifyDataSetChanged();
   }
 
@@ -189,10 +193,11 @@ public class ShowUserInfoActivity extends BaseActivity implements IShowUserInfo 
 
   @Override
   public void updateUserPic(String[] picAddresses) {
+    this.picAddress = picAddresses;
     for (int i = 0; i < picAddresses.length; i++) {
       View view = LayoutInflater.from(this).inflate(R.layout.item_show_user_info, null);
-      Glide.with(this).load(GlobalString.BASE_URL + "/" + picAddresses[i]).error(R.drawable
-          .default_user_icon2).into((ImageView) view.findViewById(R.id.iv_show_user_pic));
+      /*Glide.with(this).load(GlobalString.BASE_URL + "/" + picAddresses[i]).error(R.drawable
+          .default_big_icon).into((ImageView) view.findViewById(R.id.iv_show_user_pic));*/
       showViews.add(view);
       Button bt = new Button(this);
       bt.setBackgroundResource(R.drawable.dot_indicator_normal);

@@ -110,4 +110,16 @@ public class ContactInfo extends RealmObject {
       return false;
     }
   }
+
+  public static ContactInfo toNormalContactInfo(ContactInfo contactInfoCopy){
+    ContactInfo contactInfo = new ContactInfo();
+    contactInfo.setEnglishName(contactInfoCopy.getEnglishName());
+    contactInfo.setFlag(contactInfoCopy.getFlag());
+    contactInfo.setIconFileAddress(contactInfoCopy.getIconFileAddress());
+    contactInfo.setIconNetAddress(contactInfoCopy.getIconNetAddress());
+    contactInfo.setName(contactInfoCopy.getName());
+    contactInfo.setStartDate(contactInfoCopy.getStartDate());
+    contactInfo.setUserId(contactInfoCopy.getUserId());
+    return contactInfo;
+  }
 }

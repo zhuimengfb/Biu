@@ -36,4 +36,10 @@ public interface IContactModel {
   void queryAllAddContactBeanFromNet(Subscriber<List<AddContactBean>> subscriber);
 
   void deleteAddContactRequest(AddContactRequest addContactRequest);
+
+  void deleteContact(ContactInfo contactInfo);
+
+  void deleteAllContact();
+
+  void deleteContactInfoInDB(ContactInfo contactInfo);
 }

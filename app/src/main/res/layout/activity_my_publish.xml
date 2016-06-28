@@ -1,7 +1,7 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     >
 
     <include
@@ -16,6 +16,8 @@
         android:layout_below="@id/toolbar_layout"
         android:divider="@color/timeColor"
         android:dividerHeight="1dp"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
         >
     </com.biu.biu.tools.AutoListView>
 
@@ -26,13 +28,15 @@
         android:layout_centerInParent="true"
         android:visibility="gone"
         >
+
         <ImageView
             android:id="@+id/iv_nothing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/nothing"
             android:layout_centerHorizontal="true"
+            android:src="@drawable/nothing"
             />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

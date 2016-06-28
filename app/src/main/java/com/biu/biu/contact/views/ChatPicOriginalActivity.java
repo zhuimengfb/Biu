@@ -38,8 +38,8 @@ public class ChatPicOriginalActivity extends BaseActivity {
     setContentView(R.layout.activity_show_pic_original);
     ButterKnife.bind(this);
     String userId = getIntent().getStringExtra("userId");
-    int position = getIntent().getIntExtra("position", - 1);
-    if (position == - 1) {
+    int position = getIntent().getIntExtra("position", -1);
+    if (position == -1) {
       finish();
     }
     Conversation conversation = JMessageClient.getSingleConversation(userId);

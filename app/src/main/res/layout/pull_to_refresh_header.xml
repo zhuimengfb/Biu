@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp" >
+        android:paddingBottom="10dp">
 
         <LinearLayout
             android:id="@+id/layout"
@@ -16,27 +17,27 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ProgressBar
                 android:id="@+id/refreshing"
+                style="?android:attr/progressBarStyleInverse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="?android:attr/progressBarStyleInverse"
                 />
 
             <TextView
                 android:id="@+id/tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"/>
 
             <TextView
                 android:id="@+id/lastUpdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="12sp" />
+                android:textSize="12sp"/>
         </LinearLayout>
 
         <ImageView
@@ -47,7 +48,7 @@
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@id/layout"
             android:contentDescription="@string/d"
-            android:src="@drawable/pull_to_refresh_arrow" />
+            android:src="@drawable/pull_to_refresh_arrow"/>
     </RelativeLayout>
 
     <!--<ImageView

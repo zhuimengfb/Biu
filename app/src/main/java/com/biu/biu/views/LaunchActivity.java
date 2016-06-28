@@ -30,6 +30,10 @@ public class LaunchActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launch);
 		Log.d("packageName", getPackageName());
+		if (!isTaskRoot()) {
+			finish();
+			return;
+		}
 	}
 	@Override
 	protected void onResume() {

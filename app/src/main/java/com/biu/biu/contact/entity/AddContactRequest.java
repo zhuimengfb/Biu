@@ -16,6 +16,12 @@ public class AddContactRequest extends RealmObject {
   public static final String KEY_STATUS = "status";
   @Ignore
   public static final String KEY_JM_ID = "senderJmId";
+  @Ignore
+  public static final String GENERATE_DATE = "generateDate";
+  @Ignore
+  public static final String ID = "id";
+  @Ignore
+  public static String Key_REQUESTER_ID="senderId";
 
   @PrimaryKey
   private String id;
@@ -97,6 +103,7 @@ public class AddContactRequest extends RealmObject {
     addContactRequest.setSenderId(realmRequest.getSenderId());
     addContactRequest.setSenderJmId(realmRequest.getSenderJmId());
     addContactRequest.setReceiverId(realmRequest.getReceiverId());
+    addContactRequest.setReceiverJmId(realmRequest.getReceiverJmId());
     addContactRequest.setId(realmRequest.getId());
     addContactRequest.setMessage(realmRequest.getMessage());
     return addContactRequest;

@@ -12,6 +12,7 @@
        android:divider="@color/timeColor"
        android:dividerHeight="1dp"
        android:footerDividersEnabled="false"
+       android:headerDividersEnabled="false"
        android:descendantFocusability="blocksDescendants"/>
 
     <android.support.design.widget.FloatingActionButton
@@ -26,12 +27,28 @@
         android:src="@drawable/fab_add"
         app:rippleColor="@color/colorPrimaryDark"
         />
+    <RelativeLayout
+        android:id="@+id/rl_nothing_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        >
     <ImageView
         android:id="@+id/iv_no_publish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/no_publish"
-        android:visibility="gone"
         />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_no_publish"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:text="@string/no_topic"
+            />
+    </RelativeLayout>
+
 </RelativeLayout>

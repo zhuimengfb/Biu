@@ -28,6 +28,8 @@ import com.biu.biu.user.utils.UserPreferenceUtil;
 import com.biu.biu.user.views.adapter.UserUploadPicAdapter;
 import com.biu.biu.userconfig.UserConfigParams;
 import com.biu.biu.utils.GlideCircleTransform;
+import com.biu.biu.utils.GlobalString;
+import com.biu.biu.utils.ShowImageUtil;
 import com.biu.biu.views.base.BaseActivity;
 import com.bumptech.glide.Glide;
 
@@ -87,11 +89,17 @@ public class UserInfoActivity extends BaseActivity implements IUserInfo {
   private void initView() {
     setBackableToolbar(toolbar);
     toolbarTitle.setText(getString(R.string.edit_user_info));
-    if (! StringUtils.isEmpty(UserPreferenceUtil.getUserPreferenceNickName())) {
+    if (!StringUtils.isEmpty(UserPreferenceUtil.getUserPreferenceNickName())) {
       tvSettingUserName.setText(UserPreferenceUtil.getUserPreferenceNickName());
     }
-    Glide.with(this).load(new File(UserPreferenceUtil.getUserIconAddress())).transform(new
-        GlideCircleTransform(this)).into(ivSetUserIcon);
+    if (!StringUtils.isEmpty(UserPreferenceUtil.getUserIconAddress())) {
+      Glide.with(this).load(new File(UserPreferenceUtil.getUserIconAddress())).transform(new
+          GlideCircleTransform(this)).into(ivSetUserIcon);
+      return;
+    }
+    Glide.with(this).load(GlobalString.BASE_URL + "/" + UserPreferenceUtil
+        .getUserIconLargeNet()).placeholder(R.drawable.default_user_icon2).error(R.drawable
+        .default_user_icon2).transform(new GlideCircleTransform(this)).into(ivSetUserIcon);
   }
 
   private void initData() {
@@ -123,7 +131,7 @@ public class UserInfoActivity extends BaseActivity implements IUserInfo {
         startActivityForResult(intent, REQUEST_USER_PIC);
       }
     });
-    userUploadPicAdapter.setOnRemovePicListener(new UserUploadPicAdapter.OnRemovePicListener() {
+    userUploadPicAdapter.setOnOperationListener(new UserUploadPicAdapter.OnOperationListener() {
       @Override
       public boolean onRemoveClick(View view, final int position) {
         showDialog(getString(R.string.sure_to_delete), new DialogInterface.OnClickListener() {
@@ -133,6 +141,11 @@ public class UserInfoActivity extends BaseActivity implements IUserInfo {
           }
         });
         return false;
+      }
+
+      @Override
+      public void onLookDetailClick(View view, UserPicInfo userPicInfo) {
+        new ShowImageUtil(UserInfoActivity.this, (ImageView) view).showImage();
       }
     });
   }
@@ -147,7 +160,6 @@ public class UserInfoActivity extends BaseActivity implements IUserInfo {
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     switch (requestCode) {
       case REQUEST_USER_ICON_PIC:
-        //TODO 选择头像后更新头像imageview并上传
         if (data != null) {
           Uri uri = data.getData();
           userPresenter.modifyUserIcon(uri);
@@ -219,7 +231,6 @@ public class UserInfoActivity extends BaseActivity implements IUserInfo {
 
   @Override
   public void addUserPic(Uri uri) {
-    //TODO 更新照片墙
     UserPicInfo userPicInfo = new UserPicInfo();
     userPicInfo.setLocalPath(uri.getPath());
     userPicInfo.setUserId(UserPreferenceUtil.getUserPreferenceId());

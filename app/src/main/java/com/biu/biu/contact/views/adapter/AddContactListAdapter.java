@@ -1,5 +1,6 @@
 package com.biu.biu.contact.views.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 
 import com.biu.biu.app.BiuApp;
 import com.biu.biu.contact.entity.AddContactBean;
+import com.biu.biu.user.views.ShowUserInfoActivity;
 import com.biu.biu.utils.GlideCircleTransform;
+import com.biu.biu.utils.GlobalString;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -30,9 +33,14 @@ public class AddContactListAdapter
   private List<AddContactBean> requestList;
   private AcceptRequestListener acceptRequestListener;
   private RemoveRequestListener removeRequestListener;
+  private Context context;
 
   public AddContactListAdapter(List<AddContactBean> requestList) {
     this.requestList = requestList;
+  }
+
+  public void setContext(Context context) {
+    this.context = context;
   }
 
   public void setRemoveRequestListener(RemoveRequestListener removeRequestListener) {
@@ -48,10 +56,20 @@ public class AddContactListAdapter
   @Override
   public void onBindViewHolder(AddContactViewHolder holder, final int position) {
     holder.addContactName.setText(requestList.get(position).getSenderInfo().getNickname());
-    Glide.with(BiuApp.getContext()).load(requestList.get(position).getSenderInfo().getIcon_small
-        ()).transform(new GlideCircleTransform(BiuApp.getContext())).placeholder(R.drawable
-        .default_user_icon2).error(R.drawable.default_user_icon2).into(holder.addContactIcon);
+    Glide.with(BiuApp.getContext()).load(GlobalString.BASE_URL + "/" + requestList.get(position)
+        .getSenderInfo().getIcon_small()).transform(new GlideCircleTransform(BiuApp.getContext())
+    ).placeholder(R.drawable.default_user_icon2).error(R.drawable.default_user_icon2).into(holder
+        .addContactIcon);
     holder.addMessage.setText(requestList.get(position).getAddContactRequest().getMessage());
+    holder.addContactIcon.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (context != null) {
+          ShowUserInfoActivity.toShowUserPicActivity(context, requestList.get(position)
+              .getAddContactRequest().getSenderJmId());
+        }
+      }
+    });
     switch (requestList.get(position).getAddContactRequest().getStatus()) {
       case AddContactBean.STATUS_ADD_ALREADY:
         holder.showAddAlready();

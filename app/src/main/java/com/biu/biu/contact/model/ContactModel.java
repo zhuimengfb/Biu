@@ -1,5 +1,7 @@
 package com.biu.biu.contact.model;
 
+import android.util.Log;
+
 import com.biu.biu.app.BiuApp;
 import com.biu.biu.contact.entity.AddContactBean;
 import com.biu.biu.contact.entity.AddContactRequest;
@@ -11,6 +13,8 @@ import com.biu.biu.user.utils.UserPreferenceUtil;
 import com.biu.biu.utils.GlobalString;
 import com.biu.biu.utils.PinyinUtil;
 import com.biu.biu.utils.UUIDGenerator;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,9 +66,14 @@ public class ContactModel implements IContactModel {
         (ContactInfo.KEY_USER_ID, contactId).equalTo(ContactInfo.KEY_FLAG, ContactInfo
         .FLAG_NORMAL).findAll();
     if (contactInfos != null && contactInfos.size() > 0) {
-      return contactInfos.get(0);
+      return ContactInfo.toNormalContactInfo(contactInfos.get(0));
     }
+    realm.close();
     return null;
+  }
+
+  private boolean hasContactInfo(String userId) {
+    return queryContactInfo(userId) != null;
   }
 
   @Override
@@ -106,7 +115,8 @@ public class ContactModel implements IContactModel {
         });
   }
 
-  private void deleteContactInfoInDB(ContactInfo contactInfo) {
+  @Override
+  public void deleteContactInfoInDB(ContactInfo contactInfo) {
     Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
     realm.beginTransaction();
     contactInfo.setFlag(ContactInfo.FLAG_DELETED);
@@ -114,12 +124,14 @@ public class ContactModel implements IContactModel {
     realm.commitTransaction();
     realm.close();
   }
+
   @Override
   public List<AddContactBean> queryAllAddContactBean() {
     List<AddContactBean> addContactBeanList = new ArrayList<>();
     Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
     RealmResults<AddContactRequest> addContactRequests = realm.where(AddContactRequest.class)
-        .findAll();
+        .notEqualTo(AddContactRequest.KEY_STATUS, AddContactBean.STATUS_UNKNOWN).findAllSorted
+            (AddContactRequest.GENERATE_DATE, false);
     for (AddContactRequest addContactRequest : addContactRequests) {
       AddContactBean addContactBean = new AddContactBean();
       addContactBean.setAddContactRequest(AddContactRequest.getFromRealm(addContactRequest));
@@ -137,8 +149,8 @@ public class ContactModel implements IContactModel {
   @Override
   public void acceptFriendRequest(final AddContactBean addContactBean) {
     Call<ResponseBody> call = contactApiService.acceptFriendRequest(addContactBean
-        .getAddContactRequest().getSenderJmId(), addContactBean.getAddContactRequest()
-        .getReceiverJmId());
+        .getAddContactRequest().getSenderId(), addContactBean.getAddContactRequest()
+        .getReceiverId());
     call.enqueue(new Callback<ResponseBody>() {
       @Override
       public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -165,6 +177,7 @@ public class ContactModel implements IContactModel {
     realm.beginTransaction();
     realm.copyToRealmOrUpdate(addContactBean.getAddContactRequest());
     realm.commitTransaction();
+    realm.close();
   }
 
   @Override
@@ -177,49 +190,113 @@ public class ContactModel implements IContactModel {
 
   @Override
   public void queryAllAddContactBeanFromNet(Subscriber<List<AddContactBean>> subscriber) {
-    contactApiService.getAddContactList(UserPreferenceUtil.getUserPreferenceId())
-        .map(new Func1<List<AddRequestUserInfo>, List<AddContactBean>>() {
-          @Override
-          public List<AddContactBean> call(List<AddRequestUserInfo> addRequestUserInfos) {
-            for (AddRequestUserInfo addRequestUserInfo : addRequestUserInfos) {
-              if (! addAlready(addRequestUserInfo.getJm_id())) {
-                //如果没有添加，则保存联系人
-                SimpleUserInfo simpleUserInfo = addRequestUserInfo.getSimpleUserInfo();
-                saveSimpleUserInfo(simpleUserInfo);
-                AddContactBean addContactBean = new AddContactBean();
-                AddContactRequest addContactRequest = new AddContactRequest();
-                addContactBean.setSenderInfo(simpleUserInfo);
-                addContactRequest.setId(UUIDGenerator.getUUID());
-                addContactRequest.setReceiverId(UserPreferenceUtil.getUserPreferenceId());
-                addContactRequest.setReceiverJmId(UserPreferenceUtil.getUserPreferenceId());
-                addContactRequest.setSenderId(addRequestUserInfo.getDevice_id());
-                addContactRequest.setSenderJmId(addRequestUserInfo.getJm_id());
-                addContactRequest.setStatus(addContactBean.STATUS_ADD_NORMAL);
-                addContactRequest.setMessage(addRequestUserInfo.getMessage());
-                addContactBean.setAddContactRequest(addContactRequest);
-                saveAddContactRequest(addContactRequest);
-              }
+    Observable<List<AddRequestUserInfo>> observable = contactApiService.getAddContactList
+        (UserPreferenceUtil.getUserPreferenceId());
+    observable.map(new Func1<List<AddRequestUserInfo>, List<AddContactBean>>() {
+      @Override
+      public List<AddContactBean> call(List<AddRequestUserInfo> addRequestUserInfos) {
+        for (AddRequestUserInfo addRequestUserInfo : addRequestUserInfos) {
+          if (!addAlready(addRequestUserInfo.getJm_id())) {
+            //如果没有添加，则保存联系人
+            SimpleUserInfo simpleUserInfo = addRequestUserInfo.getSimpleUserInfo();
+            saveSimpleUserInfo(simpleUserInfo);
+            AddContactBean addContactBean = new AddContactBean();
+            AddContactRequest addContactRequest = new AddContactRequest();
+            addContactBean.setSenderInfo(simpleUserInfo);
+            addContactRequest.setId(UUIDGenerator.getUUID());
+            addContactRequest.setReceiverId(UserPreferenceUtil.getUserPreferenceId());
+            addContactRequest.setReceiverJmId(UserPreferenceUtil.getUserPreferenceId());
+            addContactRequest.setSenderId(addRequestUserInfo.getJm_id());
+            addContactRequest.setSenderJmId(addRequestUserInfo.getJm_id());
+            addContactRequest.setStatus(AddContactBean.parseServerState(addRequestUserInfo
+                .getState()));
+            addContactRequest.setMessage(addRequestUserInfo.getDescription());
+            addContactBean.setAddContactRequest(addContactRequest);
+            saveAddContactRequest(addContactRequest);
+          } else {
+            AddContactRequest addContactRequest = queryAddContactRequest(addRequestUserInfo.getJm_id());
+            if (addContactRequest != null) {
+              addContactRequest.setStatus(addRequestUserInfo.getState());
+              addContactRequest.setMessage(addRequestUserInfo.getDescription());
+              Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
+              realm.beginTransaction();
+              realm.copyToRealmOrUpdate(addContactRequest);
+              realm.commitTransaction();
+              realm.close();
             }
-            return queryAllAddContactBean();
           }
-        })
+        }
+        return queryAllAddContactBean();
+      }
+    })
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(subscriber);
   }
 
   @Override
-  public void deleteAddContactRequest(AddContactRequest addContactRequest) {
-    contactApiService.refuseRequest(addContactRequest.getSenderJmId(), addContactRequest
-        .getReceiverJmId());
-    deleteAddContactRequestInDB(addContactRequest);
+  public void deleteAddContactRequest(final AddContactRequest addContactRequest) {
+    if (addContactRequest != null && !StringUtils.isEmpty(addContactRequest.getSenderId())) {
+      Call<ResponseBody> call = contactApiService.refuseRequest(addContactRequest.getSenderId(),
+          addContactRequest.getReceiverId());
+      call.enqueue(new Callback<ResponseBody>() {
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+          if (response.body() != null) {
+            deleteAddContactRequestInDB(addContactRequest);
+          }
+        }
+
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable t) {
+          t.printStackTrace();
+        }
+      });
+    }
+  }
+
+  @Override
+  public void deleteContact(final ContactInfo contactInfo) {
+    Call<ResponseBody> call = contactApiService.deleteFriend(UserPreferenceUtil
+        .getUserPreferenceId(), contactInfo.getUserId());
+    call.enqueue(new Callback<ResponseBody>() {
+      @Override
+      public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+        if (response.body() != null) {
+          deleteContactInfoInDB(contactInfo);
+          deleteAddContactRequest(queryAddContactRequest(contactInfo.getUserId()));
+        }
+      }
+
+      @Override
+      public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+      }
+    });
   }
 
   private void deleteAddContactRequestInDB(AddContactRequest addContactRequest) {
     Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
-    realm.beginTransaction();
-    addContactRequest.removeFromRealm();
-    realm.commitTransaction();
+    RealmResults<AddContactRequest> requests = realm.where(AddContactRequest.class).equalTo
+        (AddContactRequest.ID, addContactRequest.getId()).findAll();
+    if (requests.size() > 0) {
+      realm.beginTransaction();
+      requests.get(0).removeFromRealm();
+      realm.commitTransaction();
+    }
+    realm.close();
+  }
+
+  private void deleteAddContactRequestInDB(String senderId) {
+    Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
+    RealmResults<AddContactRequest> requests = realm.where(AddContactRequest.class).equalTo
+        (AddContactRequest.KEY_JM_ID, senderId).findAll();
+    if (requests.size() > 0) {
+      realm.beginTransaction();
+      requests.get(0).removeFromRealm();
+      realm.commitTransaction();
+    }
+    realm.close();
   }
 
   @Override
@@ -230,7 +307,7 @@ public class ContactModel implements IContactModel {
     realm.commitTransaction();
   }
 
-  private void saveSimpleUserInfo(SimpleUserInfo simpleUserInfo) {
+  public void saveSimpleUserInfo(SimpleUserInfo simpleUserInfo) {
     Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
     realm.beginTransaction();
     realm.copyToRealmOrUpdate(simpleUserInfo);
@@ -241,14 +318,6 @@ public class ContactModel implements IContactModel {
   public void queryContactListFromNet(String userId) {
     contactApiService.queryContactList(userId)
         .subscribeOn(Schedulers.newThread())
-        .doOnNext(new Action1<ContactListNetBean>() {
-          @Override
-          public void call(ContactListNetBean contactListNetBean) {
-            for (int i = 0; i < contactListNetBean.getBiu_friends().size(); i++) {
-              saveContactInfo(contactListNetBean.getBiu_friends().get(i).toContactInfo());
-            }
-          }
-        })
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Subscriber<ContactListNetBean>() {
           @Override
@@ -284,11 +353,43 @@ public class ContactModel implements IContactModel {
     }
   }
 
+  public AddContactRequest queryAddContactRequest(String id) {
+    Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
+    RealmResults<AddContactRequest> addContactRequests = realm.where(AddContactRequest.class)
+        .equalTo(AddContactRequest.KEY_JM_ID, id).findAll();
+    if (addContactRequests != null && addContactRequests.size() > 0) {
+      return AddContactRequest.getFromRealm(addContactRequests.get(0));
+    } else {
+      return null;
+    }
+  }
+
+  public AddContactRequest queryAddContactRequestByRequestId(String requesterId) {
+    Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
+    RealmResults<AddContactRequest> addContactRequests = realm.where(AddContactRequest.class)
+        .equalTo(AddContactRequest.Key_REQUESTER_ID, requesterId).findAll();
+    if (addContactRequests != null && addContactRequests.size() > 0) {
+      return AddContactRequest.getFromRealm(addContactRequests.get(0));
+    } else {
+      return null;
+    }
+  }
+
   public void saveAddContactRequest(AddContactRequest addContactRequest) {
     Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
     realm.beginTransaction();
     realm.copyToRealmOrUpdate(addContactRequest);
     realm.commitTransaction();
+    realm.close();
+  }
+
+  @Override
+  public void deleteAllContact() {
+    Realm realm = Realm.getInstance(BiuApp.getRealmConfiguration());
+    realm.beginTransaction();
+    realm.clear(ContactInfo.class);
+    realm.commitTransaction();
+    realm.close();
   }
 
   public interface GetContactListener {

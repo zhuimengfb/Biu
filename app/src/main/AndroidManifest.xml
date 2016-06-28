@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="grf.biu"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <!-- android:targetSdkVersion="23" -->
     <!-- 注册权限 -->
@@ -43,8 +44,9 @@
     <application
         android:name="com.biu.biu.app.BiuApp"
         android:allowBackup="true"
-        android:icon="@drawable/icon72"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
+        tools:replace="android:icon"
         android:theme="@style/AppTheme">
         <activity
             android:name="com.biu.biu.views.LaunchActivity"
@@ -68,12 +70,12 @@
         </activity>
         <activity android:name="com.biu.biu.main.SplashActivity"/>
         <!-- 百度地图KEY -->
-        <!--<meta-data
+        <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="KBGtG5v9ZWxP1NEONobHPZub"/>-->
-            <meta-data
+            android:value="KBGtG5v9ZWxP1NEONobHPZub"/>
+            <!--<meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="tLjgI5oEAZYF5Ok7f3dsvWhyRizOtYmg" />
+            android:value="4H90FzDoTcfnEXTmVAdn4gd3KmmT6Z77" />-->
         <!--
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -82,12 +84,12 @@
 
 
         <!-- 郭荣峰的高德KEY -->
-        <!--<meta-data
+        <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="149e899129266d8f5796d0adb05af5bb"/>-->
-            <meta-data
+            android:value="149e899129266d8f5796d0adb05af5bb"/>
+            <!--<meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7e1fecefab6c4c192aec321c491d7da2" />
+            android:value="69bee72e17112f1444598168b179a227" />-->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="55278b7cfd98c5a2b90009b9"/>
@@ -222,6 +224,8 @@
         <activity android:name="com.biu.biu.user.views.SendRequestActivity"
                   android:theme="@style/MyDialogStyleBottom"/>
         <activity android:name="com.biu.biu.contact.views.ChatPicOriginalActivity"/>
+        <activity android:name="com.biu.biu.user.views.PicOriginalActivity"/>
+        <service android:name="com.biu.biu.service.StickyService"/>
 
         <!-- JPush -->
         <!-- Required SDK核心功能 -->
@@ -266,6 +270,13 @@
                 <action android:name="cn.jpush.im.android.action.NOTIFICATION_CLICK_PROXY" />
 
                 <category android:name="grf.biu" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.biu.biu.receiver.WakeReceiver">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.SCREEN_ON"/>
             </intent-filter>
         </receiver>
 
@@ -338,14 +349,13 @@
         </receiver>
 
         <meta-data
-            android:name="JPUSH_CHANNEL"
-            android:value="developer-default"/>
+            android:name="JPUSH_CHANNEL" android:value="developer-default"/>
+        <meta-data
+            android:name="JPUSH_APPKEY"
+            android:value="3cbacd70535af370941760ef"/>
         <!--<meta-data
-            android:name="JPUSH_APPKEY"
-            android:value="3cbacd70535af370941760ef"/>-->
-            <meta-data
-            android:name="JPUSH_APPKEY"
-            android:value="e901f1b12ba2ffdc2f779a35" />
+        android:name="JPUSH_APPKEY"
+        android:value="e901f1b12ba2ffdc2f779a35" />-->
 
         <activity
             android:name="com.umeng.socialize.view.ShareActivity"
